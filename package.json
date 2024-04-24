@@ -1,5 +1,5 @@
 {
-  "name": "time-tracker",
+  "name": "task-reactor",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,7 +9,9 @@
     "axios": "^1.6.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-router-dom": "^6.23.0",
+    "react-scripts": "5.0.1",
+    "reactstrap": "^9.2.2"
   },
   "scripts": {
     "start": "react-scripts start",
