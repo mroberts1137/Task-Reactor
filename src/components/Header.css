@@ -9,12 +9,17 @@
 }
 
 .navbar {
-  display: flex;
-  justify-content: space-around;
-  padding: 16px;
+  justify-content: space-between;
+  padding: 1rem;
   box-shadow: 0 1px 3px -2px black;
   background: rgb(128, 119, 103);
   height: 6rem;
+  color: #000;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
 }
 
 .nav-logo {
@@ -28,9 +33,7 @@
 .nav-title {
   font-size: 38px;
   font-weight: 600;
-}
-
-.toggler {
+  margin-top: 1rem;
 }
 
 .nav-menu {

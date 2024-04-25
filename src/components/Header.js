@@ -22,22 +22,29 @@ const Header = () => {
         <h1 className='mt-1 nav-title'>Task Reactor</h1>
       </NavbarBrand>
 
-      {/* <NavbarToggler onClick={toggle} className='toggler' /> */}
+      <NavbarToggler onClick={toggle} className='toggler' />
 
-      {/* <Collapse isOpen={menuOpen} navbar> */}
-      <Nav className='ms-auto' navbar>
-        <NavItem>
-          <NavLink className='nav-link' to='/'>
-            Home
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink className='nav-link' to='/register'>
-            Register
-          </NavLink>
-        </NavItem>
-      </Nav>
-      {/* </Collapse> */}
+      <Collapse isOpen={menuOpen} navbar>
+        <Nav className='ms-auto nav-menu' navbar>
+          <NavItem>
+            <NavLink className='nav-link' to='/'>
+              Home
+            </NavLink>
+          </NavItem>
+
+          <NavItem>
+            <NavLink className='nav-link' to='/login'>
+              Login
+            </NavLink>
+          </NavItem>
+
+          <NavItem>
+            <NavLink className='nav-link' to='/register'>
+              Register
+            </NavLink>
+          </NavItem>
+        </Nav>
+      </Collapse>
     </Navbar>
   );
 };

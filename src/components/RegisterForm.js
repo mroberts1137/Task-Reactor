@@ -12,6 +12,9 @@ import './RegisterForm.css';
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
+/**
+ * TODO: Make sure URL matches API
+ */
 const REGISTER_URL = '/register';
 
 const RegisterForm = () => {
@@ -61,6 +64,9 @@ const RegisterForm = () => {
     }
 
     try {
+      console.log(
+        `Submitting credentials to ${axios.defaults.baseURL + REGISTER_URL}`
+      );
       const response = await axios.post(
         REGISTER_URL,
         JSON.stringify({ username: user, password: pwd }),
@@ -69,6 +75,10 @@ const RegisterForm = () => {
           withCredentials: true
         }
       );
+
+      /**
+       * TODO: Add login
+       */
       // console.log(response.data);
       // console.log(response.accessToken);
       console.log(JSON.stringify(response));
@@ -94,9 +104,6 @@ const RegisterForm = () => {
       {success ? (
         <section>
           <h1>Success!</h1>
-          <p>
-            <a href='#'>Sign In</a>
-          </p>
         </section>
       ) : (
         <section>
@@ -221,9 +228,7 @@ const RegisterForm = () => {
           <p>
             Already registered?
             <br />
-            <Link to={'/login'}>
-              <p>Login</p>
-            </Link>
+            <Link to={'/login'}>Login</Link>
           </p>
         </section>
       )}

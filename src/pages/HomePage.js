@@ -1,9 +1,7 @@
+import Dashboard from '../components/dashboard/Dashboard';
+
 const HomePage = () => {
-  return (
-    <>
-      <h1>Task Reactor</h1>
-    </>
-  );
+  return <Dashboard />;
 };
 
 export default HomePage;

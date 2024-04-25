@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import axios from '../api/axios';
 import './RegisterForm.css';
 
+/**
+ * TODO: Make sure URL matches API
+ */
 const LOGIN_URL = '/login';
 
 const RegisterForm = () => {
@@ -30,6 +33,9 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(
+        `Submitting credentials to ${axios.defaults.baseURL + LOGIN_URL}`
+      );
       const response = await axios.post(
         LOGIN_URL,
         JSON.stringify({ username: user, password: pwd }),
@@ -38,6 +44,10 @@ const RegisterForm = () => {
           withCredentials: true
         }
       );
+
+      /**
+       * TODO: Add login
+       */
       console.log(JSON.stringify(response));
 
       setSuccess(true);
@@ -69,7 +79,7 @@ const RegisterForm = () => {
             {errMsg}
           </p>
 
-          <h1>Log In</h1>
+          <h1>Login</h1>
           <form onSubmit={handleSubmit}>
             <label htmlFor='username'>Username:</label>
             <input
@@ -98,9 +108,7 @@ const RegisterForm = () => {
           <p>
             Create an account:
             <br />
-            <Link to={'/register'}>
-              <p>Register</p>
-            </Link>
+            <Link to={'/register'}>Register</Link>
           </p>
         </section>
       )}

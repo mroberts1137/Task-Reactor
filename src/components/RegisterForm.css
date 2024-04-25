@@ -7,7 +7,7 @@
   padding: 1rem 0.5rem;
 }
 
-section {
+#register-form section {
   width: 100%;
   max-width: 420px;
   min-height: 400px;
@@ -18,7 +18,7 @@ section {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-form {
+#register-form form {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -26,27 +26,27 @@ form {
   padding-bottom: 1rem;
 }
 
-a,
-a:visited {
+#register-form a,
+#register-form a:visited {
   color: #fff;
 }
 
-input[type='text'],
-input[type='password'],
-button,
-textarea {
+#register-form input[type='text'],
+#register-form input[type='password'],
+#register-form button,
+#register-form textarea {
   font-family: 'Nunito', sans-serif;
   font-size: 22px;
   padding: 0.25rem;
   border-radius: 0.5rem;
 }
 
-label,
-button {
+#register-form label,
+#register-form button {
   margin-top: 1rem;
 }
 
-button {
+#register-form button {
   padding: 0.5rem;
 }
 
