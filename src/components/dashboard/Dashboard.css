@@ -6,7 +6,7 @@
   align-items: center;
   min-height: 100vh;
   border: 2px solid rgb(113, 113, 113);
-  background-color: rgb(241, 226, 206);
+  background-color: var(--dashboard-col);
   box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.3);
   color: black;
 }
