@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { removeGoal } from '../../app/goalsReducer';
 import { useSpring, animated } from 'react-spring';
 
-const ListItem = ({ item }) => {
+const ListItem = ({ item, removeItem }) => {
   const dispatch = useDispatch();
   const [animate, setAnimate] = useState(false);
 
@@ -19,7 +18,7 @@ const ListItem = ({ item }) => {
     <animated.div className='list-item' style={slideIn}>
       <button
         className='remove-item-btn'
-        onClick={() => dispatch(removeGoal(item))}
+        onClick={() => dispatch(removeItem(item))}
       >
         X
       </button>

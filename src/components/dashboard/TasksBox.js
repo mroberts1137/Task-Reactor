@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { selectAllGoals, removeGoal } from '../../app/goalsReducer';
-
-import AddItem from '../list/AddItem';
+import { selectAllTasks, removeTask } from '../../app/taskReducer';
+import AddTask from '../list/AddTask';
 import List from '../list/List';
 import '../list/List.css';
 
-const GoalsBox = () => {
-  const goals = useSelector(selectAllGoals);
+const TaskBox = () => {
+  const tasks = useSelector(selectAllTasks);
 
   const [total, setTotal] = useState(0);
 
@@ -18,23 +17,22 @@ const GoalsBox = () => {
   };
 
   useEffect(() => {
-    setTotal(sumTotal(goals));
-  }, [goals]);
+    setTotal(sumTotal(tasks));
+  }, [tasks]);
 
   return (
     <div className='container'>
       <h3>
-        Goals: $<span id='goals-total'>{total}</span>
+        Completed Tasks: $<span id='goals-total'>{total}</span>
       </h3>
 
-      <div className='input-container'>
-        <AddItem />
-      </div>
+      <AddTask />
+
       <div className='list-container'>
-        <List items={goals} removeItem={removeGoal} />
+        <List items={tasks} removeItem={removeTask} />
       </div>
     </div>
   );
 };
 
-export default GoalsBox;
+export default TaskBox;
