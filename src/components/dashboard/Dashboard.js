@@ -1,6 +1,7 @@
 import { Col, Row, Button } from 'reactstrap';
 import GoalsBox from './GoalsBox';
 import TasksBox from './TasksBox';
+import TimerBox from './TimerBox';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -10,7 +11,7 @@ const Dashboard = () => {
       <Button>START</Button>
       <Row className='row'>
         <Col className='col'>
-          <h5>Current Task</h5>
+          <TimerBox />
         </Col>
         {/* <Col className='box'>Task Info</Col> */}
       </Row>
