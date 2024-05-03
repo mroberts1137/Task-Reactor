@@ -1,18 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from 'reactstrap';
 import './TimerBox.css';
 
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+
 const TimerBox = () => {
   const [clockRunning, setClockRunning] = useState(false);
-  const [startTime, setStartTime] = useState(new Date(0));
-  const [endTime, setEndTime] = useState(new Date(0));
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(null);
   const [earnings, setEarnings] = useState(0);
+  const [rate, setRate] = useState(40);
   const [goalProgress, setGoalProgress] = useState(0);
+
+  useInterval(updateElapsedTime, clockRunning ? 1000 : null);
 
   const toggleClock = () => {
     if (clockRunning) {
-      // clearInterval(updateEarningsInterval);
       setEndTime(new Date());
       updateElapsedTime();
       // trackList.push({
@@ -23,31 +45,24 @@ const TimerBox = () => {
       // });
       // reset();
     } else {
-      // updateEarningsInterval = setInterval(updateElapsedTime, 1000);
       setStartTime(new Date());
     }
     setClockRunning(!clockRunning);
   };
 
   function updateElapsedTime() {
-    // let currentTime = new Date();
-    // elapsedTime =
-    //   Math.floor(((currentTime - startTime) / (1000 * 60 * 60)) * 100) / 100;
-    // earnings = Math.floor(elapsedTime * rate * 100) / 100;
-
-    // elapsedTimeEl.innerText = elapsedTime;
-    // earningsEl.innerText = earnings;
-    // updateProgress();
-    setElapsedTime(
-      Math.floor(((new Date() - startTime) / (1000 * 60)) * 1000) / 1000
+    let currentTime = new Date();
+    setElapsedTime(currentTime - startTime);
+    setEarnings(
+      Math.floor((elapsedTime / (1000 * 60 * 60)) * rate * 100) / 100
     );
   }
 
   function reset() {
-    // clearInterval(updateEarningsInterval);
-    setStartTime(0);
-    setEndTime(0);
-    setElapsedTime(0);
+    setClockRunning(false);
+    setStartTime(null);
+    setEndTime(null);
+    setElapsedTime(null);
     setEarnings(0);
   }
 
@@ -65,6 +80,9 @@ const TimerBox = () => {
       <Button className='start-btn' onClick={toggleClock}>
         {clockRunning ? 'Stop' : 'Start'}
       </Button>
+      <Button className='start-btn' onClick={reset}>
+        Reset
+      </Button>
 
       <div class='outputBlock'>
         <h2>
@@ -72,16 +90,38 @@ const TimerBox = () => {
         </h2>
         <table id='trackList'>
           <tr>
-            <th>
-              Start Time: {startTime.getHours()}:{startTime.getMinutes()}:
-              {startTime.getSeconds()}
-            </th>
-            <th>
-              End Time: {endTime.getHours()}:{endTime.getMinutes()}:
-              {endTime.getSeconds()}
-            </th>
-            <th>Elapsed Time (min): {elapsedTime.toString()}</th>
-            <th>Earnings: ${earnings.toString()}</th>
+            <th>Start Time:</th>
+            <th>End Time:</th>
+            <th>Elapsed Time:</th>
+            <th>Earnings:</th>
+          </tr>
+          <tr>
+            {startTime ? (
+              <td>
+                {startTime.getHours()}:{startTime.getMinutes()}:
+                {startTime.getSeconds()}
+              </td>
+            ) : (
+              <td>-</td>
+            )}
+            {endTime ? (
+              <td>
+                {endTime.getHours()}:{endTime.getMinutes()}:
+                {endTime.getSeconds()}
+              </td>
+            ) : (
+              <td>-</td>
+            )}
+            {elapsedTime ? (
+              <td>
+                {Math.floor(elapsedTime / (1000 * 60 * 60))}:
+                {Math.floor(elapsedTime / (1000 * 60)) % 60}:
+                {Math.floor(elapsedTime / 1000) % 60}
+              </td>
+            ) : (
+              <td>-</td>
+            )}
+            <td>${earnings}</td>
           </tr>
         </table>
       </div>
