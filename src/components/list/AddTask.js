@@ -6,6 +6,9 @@ const AddTask = () => {
   const [title, setTitle] = useState('');
   const [value, setValue] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [rate, setRate] = useState(0);
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
@@ -19,12 +22,16 @@ const AddTask = () => {
     const newTask = {
       title,
       value,
-      duration
+      duration,
+      startTime: null,
+      endTime: null,
+      rate
     };
     dispatch(addTask(newTask));
     setTitle('');
     setValue(0);
     setDuration(0);
+    setRate(0);
   };
 
   return (
@@ -36,7 +43,7 @@ const AddTask = () => {
         value={title}
         name='title'
       />
-      <label htmlFor='value'>Total Value: </label>
+      <label htmlFor='value'>Total Value: $</label>
       <input
         type='text'
         onChange={(e) => setValue(e.target.value)}
@@ -49,6 +56,13 @@ const AddTask = () => {
         onChange={(e) => setDuration(e.target.value)}
         value={duration}
         name='duration'
+      />
+      <label htmlFor='rate'>Rate: $</label>
+      <input
+        type='text'
+        onChange={(e) => setRate(e.target.value)}
+        value={rate}
+        name='rate'
       />
       <button type='submit'>+</button>
     </form>

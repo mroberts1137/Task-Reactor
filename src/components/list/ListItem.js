@@ -22,6 +22,14 @@ const ListItem = ({ item, removeItem }) => {
       >
         X
       </button>
+      {/* {Object.entries(item).map((key, value) => {
+        return (
+          <div>
+            <p className='item-text'>{key}</p>
+            <p className='item-text'>{value}</p>
+          </div>
+        );
+      })} */}
       <p className='item-text'>{item.title}</p>
       <p className='item-text'>{item.value}</p>
     </animated.div>

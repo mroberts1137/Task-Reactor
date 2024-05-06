@@ -5,20 +5,8 @@ import AddTask from '../list/AddTask';
 import List from '../list/List';
 import '../list/List.css';
 
-const TaskBox = () => {
+const TaskBox = ({ total }) => {
   const tasks = useSelector(selectAllTasks);
-
-  const [total, setTotal] = useState(0);
-
-  const sumTotal = (arr) => {
-    return arr
-      .map((item) => parseFloat(item.value))
-      .reduce((acc, cur) => acc + cur, 0);
-  };
-
-  useEffect(() => {
-    setTotal(sumTotal(tasks));
-  }, [tasks]);
 
   return (
     <div className='container'>

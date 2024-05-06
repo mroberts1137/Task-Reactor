@@ -6,20 +6,8 @@ import AddItem from '../list/AddItem';
 import List from '../list/List';
 import '../list/List.css';
 
-const GoalsBox = () => {
+const GoalsBox = ({ total }) => {
   const goals = useSelector(selectAllGoals);
-
-  const [total, setTotal] = useState(0);
-
-  const sumTotal = (arr) => {
-    return arr
-      .map((item) => parseFloat(item.value))
-      .reduce((acc, cur) => acc + cur, 0);
-  };
-
-  useEffect(() => {
-    setTotal(sumTotal(goals));
-  }, [goals]);
 
   return (
     <div className='container'>

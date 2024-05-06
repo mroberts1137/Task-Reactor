@@ -14,7 +14,10 @@ const taskSlice = createSlice({
         id: uuid(),
         title: action.payload.title,
         value: action.payload.value,
-        duration: action.payload.duration
+        startTime: action.payload.startTime,
+        endTime: action.payload.endTime,
+        duration: action.payload.duration,
+        rate: action.payload.rate
       });
     },
     removeTask: (state, action) => {

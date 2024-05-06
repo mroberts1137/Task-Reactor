@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { Button } from 'reactstrap';
+import { addTask } from '../../app/taskReducer';
 import './TimerBox.css';
 
 function useInterval(callback, delay) {
@@ -22,28 +24,37 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-const TimerBox = () => {
+const TimerBox = ({ earningsChange }) => {
   const [clockRunning, setClockRunning] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(null);
   const [earnings, setEarnings] = useState(0);
   const [rate, setRate] = useState(40);
-  const [goalProgress, setGoalProgress] = useState(0);
+  const [taskName, setTaskName] = useState('');
+
+  const dispatch = useDispatch();
 
   useInterval(updateElapsedTime, clockRunning ? 1000 : null);
+
+  useEffect(() => {
+    earningsChange(earnings);
+  }, [earnings]);
 
   const toggleClock = () => {
     if (clockRunning) {
       setEndTime(new Date());
       updateElapsedTime();
-      // trackList.push({
-      //   startTime,
-      //   endTime,
-      //   elapsedTime,
-      //   earnings
-      // });
-      // reset();
+      const task = {
+        title: taskName,
+        startTime,
+        endTime,
+        duration: elapsedTime,
+        value: earnings,
+        rate
+      };
+      dispatch(addTask(task));
+      reset();
     } else {
       setStartTime(new Date());
     }
@@ -66,17 +77,32 @@ const TimerBox = () => {
     setEarnings(0);
   }
 
-  function updateProgress() {
-    // setGoalProgress((totalEarnings + earnings) / totalGoalValue);
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // ctx.fillStyle = 'green';
-    // ctx.fillRect(0, 0, parseInt(canvas.width * goalProgress), canvas.height);
-    // document.querySelector('#progressPercent').innerText = Math.floor(goalProgress * 1000) / 10;
-  }
-
   return (
     <div className='container'>
-      <h3>Current Tasks: {clockRunning.toString()}</h3>
+      <h3 className='flex-row'>
+        Current Task:{' '}
+        {clockRunning ? (
+          <p style={{ color: 'green', marginLeft: '20px' }}>Running...</p>
+        ) : (
+          <></>
+        )}
+      </h3>
+      <form>
+        <label htmlFor='taskName'>Task: </label>
+        <input
+          type='text'
+          onChange={(e) => setTaskName(e.target.value)}
+          value={taskName}
+          name='taskName'
+        />
+        <label htmlFor='rate'>Rate: $</label>
+        <input
+          type='text'
+          onChange={(e) => setRate(e.target.value)}
+          value={rate}
+          name='rate'
+        />
+      </form>
       <Button className='start-btn' onClick={toggleClock}>
         {clockRunning ? 'Stop' : 'Start'}
       </Button>
