@@ -103,17 +103,19 @@ const TimerBox = ({ earningsChange }) => {
           name='rate'
         />
       </form>
-      <Button className='start-btn' onClick={toggleClock}>
-        {clockRunning ? 'Stop' : 'Start'}
-      </Button>
-      <Button className='start-btn' onClick={reset}>
-        Reset
-      </Button>
+      <div className='flex-row'>
+        <button
+          className={clockRunning ? 'stop-btn' : 'start-btn'}
+          onClick={toggleClock}
+        >
+          {clockRunning ? 'Stop' : 'Start'}
+        </button>
+        <button className='reset-btn' onClick={reset}>
+          Reset
+        </button>
+      </div>
 
       <div class='outputBlock'>
-        <h2>
-          Total Earnings: $<span id='totalEarnings'>0</span>
-        </h2>
         <table id='trackList'>
           <tr>
             <th>Start Time:</th>

@@ -64,7 +64,9 @@ const AddTask = () => {
         value={rate}
         name='rate'
       />
-      <button type='submit'>+</button>
+      <button className='add-item-btn' type='submit'>
+        +
+      </button>
     </form>
   );
 };

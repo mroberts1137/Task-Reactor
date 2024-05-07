@@ -25,13 +25,18 @@ const AddItem = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className='flex-row'
+      style={{ alignItems: 'center' }}
+    >
       <label htmlFor='title'>Title: </label>
       <input
         type='text'
         onChange={(e) => setTitle(e.target.value)}
         value={title}
         name='title'
+        className='long-input'
       />
       <label htmlFor='value'>Value: </label>
       <input
@@ -39,8 +44,11 @@ const AddItem = () => {
         onChange={(e) => setValue(e.target.value)}
         value={value}
         name='value'
+        className='short-input'
       />
-      <button type='submit'>+</button>
+      <button className='add-item-btn' type='submit'>
+        +
+      </button>
     </form>
   );
 };

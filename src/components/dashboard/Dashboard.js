@@ -38,8 +38,6 @@ const Dashboard = () => {
 
   return (
     <div className='dashboard'>
-      <h2>Dashboard</h2>
-      <Button>START</Button>
       <Row className='row'>
         <Col className='col'>
           <TimerBox earningsChange={(val) => setEarnings(val)} />
