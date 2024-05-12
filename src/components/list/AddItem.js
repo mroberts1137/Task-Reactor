@@ -10,7 +10,7 @@ const AddItem = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title || !value || value <= 0) {
+    if (!title || !value || value < 0) {
       console.log('Invalid input');
       return;
     }

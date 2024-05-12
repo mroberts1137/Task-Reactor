@@ -32,7 +32,7 @@
 .list-container {
   display: flex;
   flex-direction: column;
-  width: 75%;
+  width: 85%;
   min-height: 10rem;
   background-color: rgb(0, 0, 0, 0);
   padding: 2rem;
@@ -49,10 +49,16 @@
   padding: 0.2rem;
   border: 1px solid rgb(84, 84, 84);
   font-size: 1rem;
+  text-align: left;
 }
 
 .list-item:nth-child(even) {
   background-color: var(--list-item-even-col);
+}
+
+.list-item td,
+.list-item th {
+  text-align: left;
 }
 
 .item-text {

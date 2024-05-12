@@ -19,7 +19,11 @@ const GoalsBox = ({ total }) => {
         <AddItem />
       </div>
       <div className='list-container'>
-        <List items={goals} removeItem={removeGoal} />
+        <List
+          items={goals}
+          removeItem={removeGoal}
+          displayKeys={{ title: 'String', value: 'Currency' }}
+        />
       </div>
     </div>
   );

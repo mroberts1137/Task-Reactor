@@ -149,7 +149,7 @@ const TimerBox = ({ earningsChange }) => {
             ) : (
               <td>-</td>
             )}
-            <td>${earnings}</td>
+            <td>${earnings.toFixed(2)}</td>
           </tr>
         </table>
       </div>

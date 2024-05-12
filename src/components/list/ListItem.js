@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
 
-const ListItem = ({ item, removeItem }) => {
+const ListItem = ({ item, removeItem, displayKeys }) => {
   const dispatch = useDispatch();
   const [animate, setAnimate] = useState(false);
 
@@ -15,24 +15,46 @@ const ListItem = ({ item, removeItem }) => {
   useEffect(() => setAnimate(true), []);
 
   return (
-    <animated.div className='list-item' style={slideIn}>
-      <button
-        className='remove-item-btn'
-        onClick={() => dispatch(removeItem(item))}
-      >
-        X
-      </button>
-      {/* {Object.entries(item).map((key, value) => {
-        return (
-          <div>
-            <p className='item-text'>{key}</p>
-            <p className='item-text'>{value}</p>
-          </div>
-        );
-      })} */}
-      <p className='item-text'>{item.title}</p>
-      <p className='item-text'>{item.value}</p>
-    </animated.div>
+    <animated.tr className='list-item' style={slideIn}>
+      <td>
+        <button
+          className='remove-item-btn'
+          onClick={() => dispatch(removeItem(item))}
+        >
+          X
+        </button>
+      </td>
+      {Object.keys(displayKeys).map((key, index) => {
+        switch (displayKeys[key]) {
+          case 'Currency':
+            return (
+              <td key={index} className='item-text'>
+                ${parseFloat(item[key]).toFixed(2)}
+              </td>
+            );
+          case 'String':
+            return (
+              <td key={index} className='item-text'>
+                {item[key]}
+              </td>
+            );
+          case 'DateTime':
+            return (
+              <td key={index} className='item-text'>
+                {Math.floor(item[key] / (1000 * 60 * 60))}:
+                {Math.floor(item[key] / (1000 * 60)) % 60}:
+                {Math.floor(item[key] / 1000) % 60}
+              </td>
+            );
+          default:
+            return (
+              <td key={index} className='item-text'>
+                {item[key]}
+              </td>
+            );
+        }
+      })}
+    </animated.tr>
   );
 };
 

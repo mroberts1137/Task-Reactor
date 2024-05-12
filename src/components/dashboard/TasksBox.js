@@ -11,13 +11,22 @@ const TaskBox = ({ total }) => {
   return (
     <div className='container'>
       <h3>
-        Completed Tasks: $<span id='goals-total'>{total}</span>
+        Completed Tasks: $<span id='goals-total'>{total.toFixed(2)}</span>
       </h3>
 
       <AddTask />
 
       <div className='list-container'>
-        <List items={tasks} removeItem={removeTask} />
+        <List
+          items={tasks}
+          removeItem={removeTask}
+          displayKeys={{
+            title: 'String',
+            rate: 'Currency',
+            duration: 'DateTime',
+            value: 'Currency'
+          }}
+        />
       </div>
     </div>
   );
