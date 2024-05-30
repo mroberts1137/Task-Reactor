@@ -24,10 +24,13 @@ const goalsSlice = createSlice({
       state.goalsArray = state.goalsArray.filter(
         (goal) => goal.id !== action.payload.id
       );
+    },
+    setGoals: (state, action) => {
+      state = action.payload;
     }
   }
 });
 
 export const goalsReducer = goalsSlice.reducer;
-export const { addGoal, removeGoal } = goalsSlice.actions;
+export const { addGoal, removeGoal, setGoals } = goalsSlice.actions;
 export const selectAllGoals = (state) => state.goals.goalsArray;

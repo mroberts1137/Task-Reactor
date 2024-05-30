@@ -16,6 +16,13 @@ progress::-moz-progress-bar {
   /* style rules */
 }
 
+.divider {
+  height: 100%;
+  width: 1px;
+  background-color: #ccc;
+  margin: 0 5px;
+}
+
 .info-col {
   align-items: center;
   justify-content: center;

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button } from 'reactstrap';
 import { addTask } from '../../app/taskReducer';
 import './TimerBox.css';
 
@@ -38,6 +37,7 @@ const TimerBox = ({ earningsChange }) => {
   useInterval(updateElapsedTime, clockRunning ? 1000 : null);
 
   useEffect(() => {
+    //this needs fixing. It shouldn't set(earnings) on updates of earnings -> endless loop
     earningsChange(earnings);
   }, [earnings]);
 
@@ -115,42 +115,46 @@ const TimerBox = ({ earningsChange }) => {
         </button>
       </div>
 
-      <div class='outputBlock'>
+      <div className='outputBlock'>
         <table id='trackList'>
-          <tr>
-            <th>Start Time:</th>
-            <th>End Time:</th>
-            <th>Elapsed Time:</th>
-            <th>Earnings:</th>
-          </tr>
-          <tr>
-            {startTime ? (
-              <td>
-                {startTime.getHours()}:{startTime.getMinutes()}:
-                {startTime.getSeconds()}
-              </td>
-            ) : (
-              <td>-</td>
-            )}
-            {endTime ? (
-              <td>
-                {endTime.getHours()}:{endTime.getMinutes()}:
-                {endTime.getSeconds()}
-              </td>
-            ) : (
-              <td>-</td>
-            )}
-            {elapsedTime ? (
-              <td>
-                {Math.floor(elapsedTime / (1000 * 60 * 60))}:
-                {Math.floor(elapsedTime / (1000 * 60)) % 60}:
-                {Math.floor(elapsedTime / 1000) % 60}
-              </td>
-            ) : (
-              <td>-</td>
-            )}
-            <td>${earnings.toFixed(2)}</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>Start Time:</th>
+              <th>End Time:</th>
+              <th>Elapsed Time:</th>
+              <th>Earnings:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {startTime ? (
+                <td>
+                  {startTime.getHours()}:{startTime.getMinutes()}:
+                  {startTime.getSeconds()}
+                </td>
+              ) : (
+                <td>-</td>
+              )}
+              {endTime ? (
+                <td>
+                  {endTime.getHours()}:{endTime.getMinutes()}:
+                  {endTime.getSeconds()}
+                </td>
+              ) : (
+                <td>-</td>
+              )}
+              {elapsedTime ? (
+                <td>
+                  {Math.floor(elapsedTime / (1000 * 60 * 60))}:
+                  {Math.floor(elapsedTime / (1000 * 60)) % 60}:
+                  {Math.floor(elapsedTime / 1000) % 60}
+                </td>
+              ) : (
+                <td>-</td>
+              )}
+              <td>${earnings.toFixed(2)}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

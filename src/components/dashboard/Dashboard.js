@@ -8,6 +8,8 @@ import ProgressBox from './ProgressBox';
 import './Dashboard.css';
 import { selectAllGoals } from '../../app/goalsReducer';
 import { selectAllTasks } from '../../app/taskReducer';
+import SaveLoadButtons from '../SaveLoadButtons.js';
+import SaveLoad from '../SaveLoad.js';
 
 const Dashboard = () => {
   const goals = useSelector(selectAllGoals);
@@ -41,6 +43,8 @@ const Dashboard = () => {
       <Row className='row'>
         <Col className='col'>
           <TimerBox earningsChange={(val) => setEarnings(val)} />
+          {/* <SaveLoadButtons />
+          <SaveLoad /> */}
         </Col>
       </Row>
       <Row className='row'>
