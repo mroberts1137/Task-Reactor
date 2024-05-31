@@ -1,3 +1,4 @@
+/* Base Layout */
 .container {
   display: flex;
   flex-direction: column;
@@ -6,89 +7,62 @@
   width: 100%;
 }
 
+/* Input Section */
 .input-container {
   display: flex;
-  flex-direction: row;
   align-items: center;
   width: 80%;
-  height: 0.2rem;
   padding: 1rem;
   margin-top: 2rem;
-  font-weight: bold;
+  font-weight: bold; /* Consider using a class for styling text instead */
 }
 
-.input-container input {
-  background: rgb(0, 0, 0, 0);
-  border: 2px solid black;
-  border-radius: 4px;
-  padding: 0.2rem;
-  height: 1rem;
-  margin-right: 5px;
-  font-size: 0.75rem;
-  font-family: courier;
-  font-weight: bold;
-}
-
+/* List/Table Styling */
 .list-container {
   display: flex;
-  flex-direction: column;
-  width: 85%;
+  flex-direction: column; /* Not necessary if you only have the table inside */
+  width: auto;
   min-height: 10rem;
-  background-color: rgb(0, 0, 0, 0);
   padding: 2rem;
   border-radius: 0.4rem;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
-.list-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background-color: var(--list-item-odd-col);
-  padding: 0.2rem;
-  border: 1px solid rgb(84, 84, 84);
-  font-size: 1rem;
-  text-align: left;
+table {
+  table-layout: fixed; /* Ensures columns distribute width evenly */
+  width: 100%;
+  border-collapse: collapse; /* Visually merge cell borders */
 }
 
-.list-item:nth-child(even) {
+.list-container table {
+  margin: 0 auto;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0.5rem 1rem; /* Consistent padding for cells */
+  border: 1px solid rgb(84, 84, 84); /* Moved from .list-item */
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Alternating Row Colors (using CSS variables) */
+tr:nth-child(even) {
   background-color: var(--list-item-even-col);
 }
 
-.list-item td,
-.list-item th {
-  text-align: left;
-}
-
-.item-text {
-  margin-left: 1rem;
-}
-
-.long-input {
-  width: 45%;
-}
-
-.short-input {
-  width: 10%;
-}
-
-.add-item-btn {
-  width: 1.5rem;
+/* Remove Item Button */
+.remove-item-btn {
+  width: 1.5rem; /* Slightly increased size */
   height: 1.5rem;
   font-size: 1rem;
-  border-radius: 0.1rem;
+  border-radius: 50%; /* Makes a perfect circle */
   border: none;
-  margin-left: 1rem;
-}
-
-.remove-item-btn {
-  width: 1rem;
-  height: 1rem;
-  font-size: 1rem;
-  border-radius: 0.1rem;
-  border: none;
-  margin-left: 1rem;
   background-color: rgb(199, 92, 92);
   color: white;
+  cursor: pointer; /* Indicate it's clickable */
 }
