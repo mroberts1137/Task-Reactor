@@ -15,16 +15,12 @@ const GoalsBox = ({ total }) => {
         Goals: $<span id='goals-total'>{total}</span>
       </h3>
 
-      <div className='input-container'>
-        <AddItem />
-      </div>
-      <div className='list-container'>
-        <List
-          items={goals}
-          removeItem={removeGoal}
-          displayKeys={{ title: 'String', value: 'Currency' }}
-        />
-      </div>
+      <AddItem />
+      <List
+        items={goals}
+        removeItem={removeGoal}
+        displayKeys={{ title: 'String', value: 'Currency' }}
+      />
     </div>
   );
 };

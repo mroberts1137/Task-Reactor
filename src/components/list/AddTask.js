@@ -35,39 +35,45 @@ const AddTask = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor='title'>Task: </label>
-      <input
-        type='text'
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
-        name='title'
-      />
-      <label htmlFor='value'>Total Value: $</label>
-      <input
-        type='text'
-        onChange={(e) => setValue(e.target.value)}
-        value={value}
-        name='value'
-      />
-      <label htmlFor='duration'>Duration: </label>
-      <input
-        type='text'
-        onChange={(e) => setDuration(e.target.value)}
-        value={duration}
-        name='duration'
-      />
-      <label htmlFor='rate'>Rate: $</label>
-      <input
-        type='text'
-        onChange={(e) => setRate(e.target.value)}
-        value={rate}
-        name='rate'
-      />
-      <button className='add-item-btn' type='submit'>
-        +
-      </button>
-    </form>
+    <div className='input-container'>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor='title'>Task: </label>
+        <input
+          type='text'
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
+          name='title'
+          className='long-input'
+        />
+        <label htmlFor='value'>Total Value: $</label>
+        <input
+          type='text'
+          onChange={(e) => setValue(e.target.value)}
+          value={value}
+          name='value'
+          className='short-input'
+        />
+        <label htmlFor='duration'>Duration: </label>
+        <input
+          type='text'
+          onChange={(e) => setDuration(e.target.value)}
+          value={duration}
+          name='duration'
+          className='long-input'
+        />
+        <label htmlFor='rate'>Rate: $</label>
+        <input
+          type='text'
+          onChange={(e) => setRate(e.target.value)}
+          value={rate}
+          name='rate'
+          className='short-input'
+        />
+        <button className='add-item-btn' type='submit'>
+          +
+        </button>
+      </form>
+    </div>
   );
 };
 

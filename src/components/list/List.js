@@ -2,12 +2,12 @@ import ListItem from './ListItem';
 
 const List = ({ items, removeItem, displayKeys }) => {
   return (
-    <div>
+    <div className='list-container'>
       <table>
         <colgroup>
-          <col style={{ width: '15%' }} />
-          <col style={{ width: '30%' }} />
+          <col style={{ width: '5%', minWidth: '44px' }} />
           <col style={{ width: '20%' }} />
+          <col style={{ width: '15%' }} />
         </colgroup>
         <thead>
           <tr className='list-item'>

@@ -15,19 +15,16 @@ const TaskBox = ({ total }) => {
       </h3>
 
       <AddTask />
-
-      <div className='list-container'>
-        <List
-          items={tasks}
-          removeItem={removeTask}
-          displayKeys={{
-            title: 'String',
-            rate: 'Currency',
-            duration: 'DateTime',
-            value: 'Currency'
-          }}
-        />
-      </div>
+      <List
+        items={tasks}
+        removeItem={removeTask}
+        displayKeys={{
+          title: 'String',
+          rate: 'Currency',
+          duration: 'DateTime',
+          value: 'Currency'
+        }}
+      />
     </div>
   );
 };

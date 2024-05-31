@@ -17,6 +17,18 @@
   font-weight: bold; /* Consider using a class for styling text instead */
 }
 
+.input-container input {
+  background: rgb(0, 0, 0, 0);
+  border: 2px solid black;
+  border-radius: 4px;
+  padding: 0.2rem;
+  height: 1rem;
+  margin-right: 5px;
+  font-size: 0.75rem;
+  font-family: courier;
+  font-weight: bold;
+}
+
 /* List/Table Styling */
 .list-container {
   display: flex;
@@ -42,7 +54,7 @@ table {
 
 th,
 td {
-  padding: 0.5rem 1rem; /* Consistent padding for cells */
+  padding: 0.5rem 0.5rem; /* Consistent padding for cells */
   border: 1px solid rgb(84, 84, 84); /* Moved from .list-item */
   text-align: left;
   overflow: hidden;
@@ -51,8 +63,16 @@ td {
 }
 
 /* Alternating Row Colors (using CSS variables) */
+
+tr:nth-child(odd) {
+  background-color: var(--list-item-odd-col);
+}
 tr:nth-child(even) {
   background-color: var(--list-item-even-col);
+}
+
+th {
+  background-color: rgb(170, 155, 176);
 }
 
 /* Remove Item Button */
@@ -65,4 +85,21 @@ tr:nth-child(even) {
   background-color: rgb(199, 92, 92);
   color: white;
   cursor: pointer; /* Indicate it's clickable */
+}
+
+.long-input {
+  width: 35%;
+}
+
+.short-input {
+  width: 15%;
+}
+
+.add-item-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.1rem;
+  border: none;
+  margin-left: 1rem;
 }
