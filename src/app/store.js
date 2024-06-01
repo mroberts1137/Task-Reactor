@@ -11,7 +11,7 @@ const persistConfig = {
   storage
 };
 
-storage.removeItem('persist:root');
+// storage.removeItem('persist:root');
 
 const rootReducer = combineReducers({
   goals: goalsReducer,

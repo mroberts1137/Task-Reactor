@@ -8,7 +8,6 @@ const Progress = ({ goalsTotal, totalEarnings }) => {
   const [progress, setProgress] = useState(0);
   const [goalLines, setGoalLines] = useState([]);
 
-  // get goal percentage lines
   useEffect(() => {
     setProgress(Math.floor((totalEarnings / goalsTotal) * 10000) / 100);
 
@@ -31,60 +30,34 @@ const Progress = ({ goalsTotal, totalEarnings }) => {
   return (
     <div className='container'>
       <h3>{progress}%</h3>
-      <div
-        className='flex-row'
-        style={{
-          width: '75%',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <div className='flex-col info-col'>
+      <div className='progress-container'>
+        <div className='info-col'>
           <h4>Total Earnings:</h4>
           <h4>${totalEarnings.toFixed(2)}</h4>
         </div>
-        <div
-          className='progress-bar'
-          style={{
-            width: '100%',
-            height: '40px',
-            position: 'relative',
-            backgroundColor: 'lightgray'
-          }}
-        >
+        <div className='progress-bar'>
           {goalLines.map((goalLine, index) => (
             <div
               key={index}
+              className={`goal-line ${
+                progress >= goalLine.offset + goalLine.width ? 'exceeded' : ''
+              }`}
               style={{
-                position: 'absolute',
                 left: `${goalLine.offset}%`,
-                width: `${goalLine.width}%`,
-                height: '100%',
-                backgroundColor: 'lightgray',
-                borderRight: '3px solid black',
-                borderLeft: '3px solid black'
+                width: `${goalLine.width}%`
               }}
             >
-              <span
-                style={{
-                  textWeight: 'bold'
-                }}
-              >
-                ${parseFloat(goalLine.value).toFixed(0)}
-              </span>
+              <span>${parseFloat(goalLine.value).toFixed(0)}</span>
             </div>
           ))}
           <div
+            className='progress'
             style={{
-              position: 'absolute',
-              left: 0,
-              width: `${progress}%`,
-              height: '100%',
-              backgroundColor: 'rgba(0, 50, 255, 0.5)'
+              width: `${progress}%`
             }}
           />
         </div>
-        <div className='flex-col info-col'>
+        <div className='info-col'>
           <h4>Goals Total:</h4>
           <h4>${goalsTotal.toFixed(2)}</h4>
         </div>
