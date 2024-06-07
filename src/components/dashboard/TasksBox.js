@@ -31,6 +31,10 @@ const TaskBox = ({ total }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const tasks = useSelector((state) => selectTasksByDate(state, selectedDate));
 
+  const handleSelectDate = (date) => {
+    setSelectedDate(date);
+  };
+
   return (
     <div className='container'>
       <h3>
@@ -41,7 +45,7 @@ const TaskBox = ({ total }) => {
         {selectedDate.getDate().toString()},{' '}
         {selectedDate.getFullYear().toString()}
       </p>
-      <TaskCalendar />
+      <TaskCalendar handleSelectDate={handleSelectDate} />
       <AddTask />
       <List
         items={tasks}

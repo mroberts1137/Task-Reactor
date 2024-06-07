@@ -21,11 +21,11 @@ const AddTask = () => {
 
     const newTask = {
       title,
-      value,
-      duration,
+      value: parseFloat(value),
+      duration: parseFloat(duration),
       startTime: new Date(),
       endTime: new Date(),
-      rate
+      rate: parseFloat(rate)
     };
     dispatch(addTask(newTask));
     dispatch(addTaskAsync(newTask));

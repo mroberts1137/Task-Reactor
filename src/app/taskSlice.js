@@ -95,7 +95,7 @@ const taskSlice = createSlice({
 export const taskReducer = taskSlice.reducer;
 export const { addTask, removeTask, setTasks, reset } = taskSlice.actions;
 
-export const selectAllTasks = (state) => state.tasks.taskArray;
+export const selectAllTasks = (state) => state.tasks;
 
 export const selectTasksByDate = createSelector(
   [(state) => state.tasks, (state, date) => date],

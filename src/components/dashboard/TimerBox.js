@@ -49,9 +49,9 @@ const TimerBox = ({ earningsChange }) => {
         title: taskName,
         startTime,
         endTime,
-        duration: elapsedTime,
-        value: earnings,
-        rate
+        duration: parseFloat(elapsedTime),
+        value: parseFloat(earnings),
+        rate: parseFloat(rate)
       };
       dispatch(addTask(task));
       reset();

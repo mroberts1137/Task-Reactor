@@ -37,7 +37,7 @@ const Dashboard = () => {
   }, [goals]);
 
   useEffect(() => {
-    setTasksTotal(sumTotal(tasks));
+    setTasksTotal(sumTotal(tasks.taskArray));
   }, [tasks]);
 
   useEffect(() => {
