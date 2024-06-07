@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import WeekCalendar from 'react-week-calendar';
 import { useSelector } from 'react-redux';
 import { selectAllTasks } from '../../app/taskSlice';
@@ -9,52 +9,76 @@ function TaskCalendar({ handleSelectDate }) {
   const [selectedDate, setSelectedDate] = useState(moment());
   const tasks = useSelector(selectAllTasks);
 
-  const getTaskValueForDate = (date) => {
+  const getTasksByHour = useMemo(() => {
+    const taskMap = new Map();
+
     if (tasks && tasks.taskArray) {
-      const tasksForDate = tasks.taskArray.filter((task) => {
+      tasks.taskArray.forEach((task) => {
         const taskDate = moment(task.startTime);
-        return (
-          taskDate.isValid() &&
-          taskDate.year() === date.year() &&
-          taskDate.month() === date.month() &&
-          taskDate.date() === date.date()
-        );
+        if (taskDate.isValid()) {
+          const key = taskDate.startOf('hour').format();
+          if (!taskMap.has(key)) {
+            taskMap.set(key, []);
+          }
+          taskMap.get(key).push(task);
+        }
       });
-      return tasksForDate.reduce((total, task) => total + task.value, 0);
     }
-    return 0;
-  };
+    return taskMap;
+  }, [tasks]);
 
   const handleDateChange = (date) => {
     setSelectedDate(moment(date));
     handleSelectDate(date);
   };
 
-  const renderEvent = (date) => {
-    const dailyTotal = getTaskValueForDate(date);
-    return {
-      start: moment(date).startOf('day'),
-      end: moment(date).endOf('day'),
-      value: dailyTotal > 0 ? `$${dailyTotal.toFixed(2)}` : ''
-    };
-  };
+  const renderEventsForWeek = () => {
+    const events = [];
+    const startOfWeek = moment(selectedDate).startOf('week');
 
-  const currentWeekEvents = [];
-  for (let i = 0; i < 7; i++) {
-    const date = moment(selectedDate).startOf('week').add(i, 'days');
-    currentWeekEvents.push(renderEvent(date));
-  }
+    for (let day = 0; day < 7; day++) {
+      for (let hour = 0; hour < 24; hour++) {
+        const dateKey = moment(startOfWeek)
+          .add(day, 'days')
+          .startOf('hour')
+          .add(hour, 'hours')
+          .format();
+        const tasksForHour = getTasksByHour.get(dateKey) || [];
+        const totalValue = tasksForHour.reduce(
+          (total, task) => total + task.value,
+          0
+        );
+
+        if (totalValue > 0) {
+          events.push({
+            start: moment(startOfWeek)
+              .add(day, 'days')
+              .startOf('hour')
+              .add(hour, 'hours'),
+            end: moment(startOfWeek)
+              .add(day, 'days')
+              .startOf('hour')
+              .add(hour + 1, 'hours'),
+            value: totalValue
+          });
+        }
+      }
+    }
+
+    return events;
+  };
 
   return (
     <div>
       <WeekCalendar
         firstDay={moment(selectedDate).startOf('week')}
         numberOfDays={7}
-        selectedIntervals={currentWeekEvents}
+        selectedIntervals={renderEventsForWeek()}
         onIntervalSelect={(interval) =>
           handleDateChange(interval.start.toDate())
         }
         scaleUnit={60}
+        eventComponent={({ value }) => <div>{value}</div>}
       />
     </div>
   );

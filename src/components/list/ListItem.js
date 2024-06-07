@@ -71,8 +71,7 @@ const ListItem = ({ item, removeItem, displayKeys }) => {
             return (
               <td key={index} className='item-text'>
                 {month[taskDate.getMonth()]} {taskDate.getDate()},{' '}
-                {taskDate.getFullYear()} --
-                {taskDate.getHours()}:
+                {taskDate.getFullYear()},{taskDate.getHours()}:
                 {taskDate.getMinutes().toString().padStart(2, '0')}
               </td>
             );
