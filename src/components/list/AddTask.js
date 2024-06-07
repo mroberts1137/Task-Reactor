@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTask } from '../../app/taskReducer';
+import { addTask, addTaskAsync } from '../../app/taskSlice';
 
 const AddTask = () => {
   const [title, setTitle] = useState('');
   const [value, setValue] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const [startTime, setStartTime] = useState(undefined);
+  const [endTime, setEndTime] = useState(undefined);
   const [rate, setRate] = useState(0);
   const dispatch = useDispatch();
 
@@ -23,11 +23,12 @@ const AddTask = () => {
       title,
       value,
       duration,
-      startTime: null,
-      endTime: null,
+      startTime: new Date(),
+      endTime: new Date(),
       rate
     };
     dispatch(addTask(newTask));
+    dispatch(addTaskAsync(newTask));
     setTitle('');
     setValue(0);
     setDuration(0);

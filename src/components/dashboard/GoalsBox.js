@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { selectAllGoals, removeGoal } from '../../app/goalsReducer';
+import { selectAllGoals, removeGoal } from '../../app/goalsSlice';
 
 import AddItem from '../list/AddItem';
 import List from '../list/List';

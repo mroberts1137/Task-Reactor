@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTask } from '../../app/taskReducer';
+import { addTask } from '../../app/taskSlice';
 import './TimerBox.css';
 
 function useInterval(callback, delay) {
@@ -25,9 +25,9 @@ function useInterval(callback, delay) {
 
 const TimerBox = ({ earningsChange }) => {
   const [clockRunning, setClockRunning] = useState(false);
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
-  const [elapsedTime, setElapsedTime] = useState(null);
+  const [startTime, setStartTime] = useState(undefined);
+  const [endTime, setEndTime] = useState(undefined);
+  const [elapsedTime, setElapsedTime] = useState(undefined);
   const [earnings, setEarnings] = useState(0);
   const [rate, setRate] = useState(40);
   const [taskName, setTaskName] = useState('');
@@ -71,9 +71,9 @@ const TimerBox = ({ earningsChange }) => {
 
   function reset() {
     setClockRunning(false);
-    setStartTime(null);
-    setEndTime(null);
-    setElapsedTime(null);
+    setStartTime(undefined);
+    setEndTime(undefined);
+    setElapsedTime(undefined);
     setEarnings(0);
   }
 
@@ -129,16 +129,18 @@ const TimerBox = ({ earningsChange }) => {
             <tr>
               {startTime ? (
                 <td>
-                  {startTime.getHours()}:{startTime.getMinutes()}:
-                  {startTime.getSeconds()}
+                  {startTime.getHours()}:
+                  {startTime.getMinutes().toString().padStart(2, '0')}:
+                  {startTime.getSeconds().toString().padStart(2, '0')}
                 </td>
               ) : (
                 <td>-</td>
               )}
               {endTime ? (
                 <td>
-                  {endTime.getHours()}:{endTime.getMinutes()}:
-                  {endTime.getSeconds()}
+                  {endTime.getHours()}:
+                  {endTime.getMinutes().toString().padStart(2, '0')}:
+                  {endTime.getSeconds().toString().padStart(2, '0')}
                 </td>
               ) : (
                 <td>-</td>
@@ -146,8 +148,13 @@ const TimerBox = ({ earningsChange }) => {
               {elapsedTime ? (
                 <td>
                   {Math.floor(elapsedTime / (1000 * 60 * 60))}:
-                  {Math.floor(elapsedTime / (1000 * 60)) % 60}:
-                  {Math.floor(elapsedTime / 1000) % 60}
+                  {(Math.floor(elapsedTime / (1000 * 60)) % 60)
+                    .toString()
+                    .padStart(2, '0')}
+                  :
+                  {(Math.floor(elapsedTime / 1000) % 60)
+                    .toString()
+                    .padStart(2, '0')}
                 </td>
               ) : (
                 <td>-</td>

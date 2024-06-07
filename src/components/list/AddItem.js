@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addGoal } from '../../app/goalsReducer';
+import { addGoal } from '../../app/goalsSlice';
 
 const AddItem = () => {
   const [title, setTitle] = useState('');

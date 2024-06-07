@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveAs } from 'file-saver';
-import { setGoals } from '../app/goalsReducer';
-import { setTasks } from '../app/taskReducer';
+import { setGoals } from '../app/goalsSlice';
+import { setTasks } from '../app/taskSlice';
 
 const SaveLoad = () => {
   const dispatch = useDispatch();

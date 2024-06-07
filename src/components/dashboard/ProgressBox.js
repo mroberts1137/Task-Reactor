@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import './ProgressBox.css';
-import { selectAllGoals } from '../../app/goalsReducer';
+import { selectAllGoals } from '../../app/goalsSlice';
 
 const Progress = ({ goalsTotal, totalEarnings }) => {
   const goals = useSelector(selectAllGoals);

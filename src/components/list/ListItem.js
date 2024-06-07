@@ -14,6 +14,21 @@ const ListItem = ({ item, removeItem, displayKeys }) => {
 
   useEffect(() => setAnimate(true), []);
 
+  const month = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'June',
+    'July',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
   return (
     <animated.tr className='list-item' style={slideIn}>
       <td>
@@ -38,12 +53,27 @@ const ListItem = ({ item, removeItem, displayKeys }) => {
                 {item[key]}
               </td>
             );
-          case 'DateTime':
+          case 'Duration':
             return (
               <td key={index} className='item-text'>
                 {Math.floor(item[key] / (1000 * 60 * 60))}:
-                {Math.floor(item[key] / (1000 * 60)) % 60}:
-                {Math.floor(item[key] / 1000) % 60}
+                {(Math.floor(item[key] / (1000 * 60)) % 60)
+                  .toString()
+                  .padStart(2, '0')}
+                :
+                {(Math.floor(item[key] / 1000) % 60)
+                  .toString()
+                  .padStart(2, '0')}
+              </td>
+            );
+          case 'Date':
+            const taskDate = new Date(item[key]);
+            return (
+              <td key={index} className='item-text'>
+                {month[taskDate.getMonth()]} {taskDate.getDate()},{' '}
+                {taskDate.getFullYear()} --
+                {taskDate.getHours()}:
+                {taskDate.getMinutes().toString().padStart(2, '0')}
               </td>
             );
           default:
