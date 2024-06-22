@@ -1,22 +1,22 @@
 import React, { useState, useMemo } from 'react';
-import WeekCalendar from 'react-week-calendar';
+import Calendar from 'react-calendar';
 import { useSelector } from 'react-redux';
 import { selectAllTasks } from '../../app/taskSlice';
-import 'react-week-calendar/dist/style.css';
+import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 
 function TaskCalendar({ handleSelectDate }) {
   const [selectedDate, setSelectedDate] = useState(moment());
   const tasks = useSelector(selectAllTasks);
 
-  const getTasksByHour = useMemo(() => {
+  const getTasksByDay = useMemo(() => {
     const taskMap = new Map();
 
     if (tasks && tasks.taskArray) {
       tasks.taskArray.forEach((task) => {
         const taskDate = moment(task.startTime);
         if (taskDate.isValid()) {
-          const key = taskDate.startOf('hour').format();
+          const key = taskDate.startOf('day').format();
           if (!taskMap.has(key)) {
             taskMap.set(key, []);
           }
@@ -32,53 +32,47 @@ function TaskCalendar({ handleSelectDate }) {
     handleSelectDate(date);
   };
 
-  const renderEventsForWeek = () => {
+  const renderEventsForMonth = () => {
     const events = [];
-    const startOfWeek = moment(selectedDate).startOf('week');
+    const startOfMonth = moment(selectedDate).startOf('month');
 
-    for (let day = 0; day < 7; day++) {
-      for (let hour = 0; hour < 24; hour++) {
-        const dateKey = moment(startOfWeek)
-          .add(day, 'days')
-          .startOf('hour')
-          .add(hour, 'hours')
-          .format();
-        const tasksForHour = getTasksByHour.get(dateKey) || [];
-        const totalValue = tasksForHour.reduce(
-          (total, task) => total + task.value,
-          0
-        );
+    for (let day = 0; day < startOfMonth.daysInMonth(); day++) {
+      const dateKey = moment(startOfMonth)
+        .add(day, 'days')
+        .startOf('day')
+        .format();
+      const tasksForDay = getTasksByDay.get(dateKey) || [];
+      const totalValue = tasksForDay.reduce(
+        (total, task) => total + task.value,
+        0
+      );
 
-        if (totalValue > 0) {
-          events.push({
-            start: moment(startOfWeek)
-              .add(day, 'days')
-              .startOf('hour')
-              .add(hour, 'hours'),
-            end: moment(startOfWeek)
-              .add(day, 'days')
-              .startOf('hour')
-              .add(hour + 1, 'hours'),
-            value: totalValue
-          });
-        }
+      if (totalValue > 0) {
+        events.push({
+          date: moment(startOfMonth).add(day, 'days').toDate(),
+          value: totalValue
+        });
       }
     }
 
     return events;
   };
 
+  const tileContent = ({ date }) => {
+    const events = renderEventsForMonth();
+    const event = events.find((event) =>
+      moment(event.date).isSame(date, 'day')
+    );
+    return event ? <div>{event.value}</div> : null;
+  };
+
   return (
     <div>
-      <WeekCalendar
-        firstDay={moment(selectedDate).startOf('week')}
-        numberOfDays={7}
-        selectedIntervals={renderEventsForWeek()}
-        onIntervalSelect={(interval) =>
-          handleDateChange(interval.start.toDate())
-        }
-        scaleUnit={60}
-        eventComponent={({ value }) => <div>{value}</div>}
+      <Calendar
+        value={selectedDate.toDate()}
+        onClickDay={(date) => handleDateChange(date)}
+        tileContent={tileContent}
+        showNeighboringMonth={true}
       />
     </div>
   );
