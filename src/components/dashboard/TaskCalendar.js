@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectAllTasks } from '../../app/taskSlice';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
+import './TaskCalendar.css';
 
 function TaskCalendar({ handleSelectDate }) {
   const [selectedDate, setSelectedDate] = useState(moment());
@@ -63,7 +64,9 @@ function TaskCalendar({ handleSelectDate }) {
     const event = events.find((event) =>
       moment(event.date).isSame(date, 'day')
     );
-    return event ? <div>{event.value}</div> : null;
+    return event ? (
+      <div className='content'>${event.value.toFixed(2)}</div>
+    ) : null;
   };
 
   return (
@@ -73,63 +76,10 @@ function TaskCalendar({ handleSelectDate }) {
         onClickDay={(date) => handleDateChange(date)}
         tileContent={tileContent}
         showNeighboringMonth={true}
+        calendarType='gregory'
       />
     </div>
   );
 }
 
 export default TaskCalendar;
-
-// import React, { useState } from 'react';
-// import Calendar from 'react-calendar';
-// import { useSelector } from 'react-redux';
-// import { selectTasksByDate, selectAllTasks } from '../../app/taskSlice';
-
-// function TaskCalendar({ handleSelectDate }) {
-//   const [selectedDate, setSelectedDate] = useState(new Date());
-//   const tasks = useSelector(selectAllTasks);
-//   // const tasks = useSelector((state) => selectTasksByDate(state, selectedDate));
-
-//   const handleDateChange = (date) => {
-//     setSelectedDate(date);
-//     handleSelectDate(date);
-//   };
-
-//   const getTaskValueForDate = (date) => {
-//     if (tasks && tasks.taskArray) {
-//       const tasksForDate = tasks.taskArray.filter((task) => {
-//         const taskDate = new Date(task.startTime);
-//         return (
-//           taskDate instanceof Date &&
-//           !isNaN(taskDate) &&
-//           taskDate.getFullYear() === date.getFullYear() &&
-//           taskDate.getMonth() === date.getMonth() &&
-//           taskDate.getDate() === date.getDate()
-//         );
-//       });
-//       return tasksForDate.reduce((total, task) => total + task.value, 0);
-//     }
-//     return 0;
-//   };
-
-//   const renderDay = ({ date, view }) => {
-//     const dailyTotal = getTaskValueForDate(date);
-//     if (view === 'month') {
-//       return <div>{dailyTotal > 0 ? `$${dailyTotal.toFixed(2)}` : ''}</div>;
-//     }
-//     return <div>{date.getDate()}</div>;
-//   };
-
-//   return (
-//     <div>
-//       <Calendar
-//         value={selectedDate}
-//         onChange={handleDateChange}
-//         formatDay={(locale, date) => date.getDate()}
-//         tileContent={renderDay}
-//       />
-//     </div>
-//   );
-// }
-
-// export default TaskCalendar;

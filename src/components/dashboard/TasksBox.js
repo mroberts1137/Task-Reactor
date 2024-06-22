@@ -9,7 +9,6 @@ import AddTask from '../list/AddTask';
 import List from '../list/List';
 import Calendar from './Calendar';
 import TaskCalendar from './TaskCalendar';
-// import WeeklyCalendar from './WeeklyCalendar';
 import '../list/List.css';
 
 const month = [
