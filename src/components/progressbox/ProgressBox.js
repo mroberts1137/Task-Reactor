@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import './ProgressBox.css';
 import { selectAllGoals } from '../../app/goalsSlice';
 
-const Progress = ({ goalsTotal, totalEarnings }) => {
+const Progress = ({ totalEarnings, goalsTotal }) => {
   const goals = useSelector(selectAllGoals);
   const [progress, setProgress] = useState(0);
   const [goalLines, setGoalLines] = useState([]);

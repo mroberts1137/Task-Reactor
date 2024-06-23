@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'reactstrap';
 
@@ -16,15 +16,17 @@ import { TaskContext, GoalsContext, DateContext } from '../../contexts/context';
 
 import './Dashboard.css';
 
-import { fetchTasks, selectAllTasks, reset } from '../../app/taskSlice.js';
+import {
+  fetchTasks,
+  selectAllTasks,
+  selectTasksByDate,
+  reset
+} from '../../app/taskSlice.js';
 import { selectAllGoals } from '../../app/goalsSlice.js';
 import { sumTotal } from '../../utils/functions';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-
-  const goals = useSelector(selectAllGoals);
-  const tasks = useSelector(selectAllTasks);
 
   const [goalsTotal, setGoalsTotal] = useState(0);
   const [tasksTotal, setTasksTotal] = useState(0);
@@ -32,6 +34,12 @@ const Dashboard = () => {
   const [totalEarnings, setTotalEarnings] = useState(0);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const todaysDate = new Date();
+
+  const goals = useSelector(selectAllGoals);
+  const tasks = useSelector(selectAllTasks);
+  const dailyTasks = useSelector((state) =>
+    selectTasksByDate(state, selectedDate)
+  );
 
   useEffect(() => {
     dispatch(fetchTasks());
@@ -42,8 +50,8 @@ const Dashboard = () => {
   }, [goals]);
 
   useEffect(() => {
-    setTasksTotal(sumTotal(tasks.taskArray));
-  }, [tasks]);
+    setTasksTotal(sumTotal(dailyTasks));
+  }, [dailyTasks]);
 
   useEffect(() => {
     setTotalEarnings(tasksTotal + earnings);
@@ -57,9 +65,13 @@ const Dashboard = () => {
     setSelectedDate(date);
   };
 
+  const earningsChange = useCallback((val) => {
+    setEarnings(val);
+  }, []);
+
   return (
     <DateContext.Provider value={{ selectedDate, todaysDate }}>
-      <TaskContext.Provider value={{ tasks }}>
+      <TaskContext.Provider value={{ tasks, dailyTasks }}>
         <GoalsContext.Provider value={{ goals }}>
           <div className='dashboard'>
             <div className='container'>
@@ -68,7 +80,7 @@ const Dashboard = () => {
               <button onClick={handleReset}>Reset State</button>
             </div>
             <Row className='row'>
-              <TimerBox earningsChange={(val) => setEarnings(val)} />
+              <TimerBox earningsChange={earningsChange} />
               {/* <SaveLoadButtons />
           <SaveLoad /> */}
             </Row>

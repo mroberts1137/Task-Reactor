@@ -1,6 +1,5 @@
 import { useState, useContext } from 'react';
-import { useSelector } from 'react-redux';
-import { selectTasksByDate, removeTask } from '../../app/taskSlice';
+import { removeTask } from '../../app/taskSlice';
 import DateDisplay from '../DateDisplay';
 import DropdownSelector from './DropdownSelector';
 import AddTask from '../list/AddTask';
@@ -10,9 +9,7 @@ import { sumTotal } from '../../utils/functions';
 
 const TaskBox = () => {
   const { selectedDate } = useContext(DateContext);
-  const dailyTasks = useSelector((state) =>
-    selectTasksByDate(state, selectedDate)
-  );
+  const { dailyTasks } = useContext(TaskContext);
   const total = sumTotal(dailyTasks);
 
   const [showKeys, setShowKeys] = useState({

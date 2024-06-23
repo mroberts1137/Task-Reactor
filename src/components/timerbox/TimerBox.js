@@ -19,9 +19,8 @@ const TimerBox = ({ earningsChange }) => {
   useInterval(updateElapsedTime, clockRunning ? 1000 : null);
 
   useEffect(() => {
-    //this needs fixing. It shouldn't set(earnings) on updates of earnings -> endless loop
     earningsChange(earnings);
-  }, [earnings]);
+  }, [earnings, earningsChange]);
 
   const toggleClock = () => {
     if (clockRunning) {
@@ -47,7 +46,8 @@ const TimerBox = ({ earningsChange }) => {
     let currentTime = new Date();
     setElapsedTime(currentTime - startTime);
     setEarnings(
-      Math.floor((elapsedTime / (1000 * 60 * 60)) * rate * 100) / 100
+      Math.floor(((currentTime - startTime) / (1000 * 60 * 60)) * rate * 100) /
+        100
     );
   }
 
