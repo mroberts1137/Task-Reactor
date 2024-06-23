@@ -1,14 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import Calendar from 'react-calendar';
 import { useSelector } from 'react-redux';
 import { selectAllTasks } from '../../app/taskSlice';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import './TaskCalendar.css';
+import { DateContext } from '../../contexts/context';
 
 function TaskCalendar({ handleSelectDate }) {
-  const [selectedDate, setSelectedDate] = useState(moment());
+  // const [selectedDate, setSelectedDate] = useState(moment());
   const tasks = useSelector(selectAllTasks);
+  const { selectedDate } = useContext(DateContext);
 
   const getTasksByDay = useMemo(() => {
     const taskMap = new Map();
@@ -29,7 +31,7 @@ function TaskCalendar({ handleSelectDate }) {
   }, [tasks]);
 
   const handleDateChange = (date) => {
-    setSelectedDate(moment(date));
+    // setSelectedDate(moment(date));
     handleSelectDate(date);
   };
 
@@ -72,7 +74,7 @@ function TaskCalendar({ handleSelectDate }) {
   return (
     <div>
       <Calendar
-        value={selectedDate.toDate()}
+        value={selectedDate}
         onClickDay={(date) => handleDateChange(date)}
         tileContent={tileContent}
         showNeighboringMonth={true}

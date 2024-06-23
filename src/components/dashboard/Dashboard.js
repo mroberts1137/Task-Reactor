@@ -1,22 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'reactstrap';
-import GoalsBox from './GoalsBox';
-import TasksBox from './TasksBox';
-import TimerBox from './TimerBox';
-import ProgressBox from './ProgressBox';
-import './Dashboard.css';
-import { selectAllGoals } from '../../app/goalsSlice.js';
-import { fetchTasks, selectAllTasks, reset } from '../../app/taskSlice.js';
+
+import GoalsBox from '../goalsbox/GoalsBox.js';
+import TasksBox from '../taskbox/TasksBox.js';
+import TimerBox from '../timerbox/TimerBox.js';
+import ProgressBox from '../progressbox/ProgressBox.js';
+import CalendarBox from '../calendarbox/CalendarBox';
 import SaveLoadButtons from '../SaveLoadButtons.js';
 import SaveLoad from '../SaveLoad.js';
+import DateDisplay from '../DateDisplay';
+import TimeDisplay from '../TimeDisplay';
+
+import { TaskContext, GoalsContext, DateContext } from '../../contexts/context';
+
+import './Dashboard.css';
+
+import { fetchTasks, selectAllTasks, reset } from '../../app/taskSlice.js';
+import { selectAllGoals } from '../../app/goalsSlice.js';
+import { sumTotal } from '../../utils/functions';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchTasks());
-  }, [dispatch]);
 
   const goals = useSelector(selectAllGoals);
   const tasks = useSelector(selectAllTasks);
@@ -25,12 +30,12 @@ const Dashboard = () => {
   const [tasksTotal, setTasksTotal] = useState(0);
   const [earnings, setEarnings] = useState(0);
   const [totalEarnings, setTotalEarnings] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const todaysDate = new Date();
 
-  const sumTotal = (arr) => {
-    return arr
-      .map((item) => parseFloat(item.value))
-      .reduce((acc, cur) => acc + cur, 0);
-  };
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
 
   useEffect(() => {
     setGoalsTotal(sumTotal(goals));
@@ -48,53 +53,44 @@ const Dashboard = () => {
     dispatch(reset());
   };
 
-  const date = new Date();
-
-  const month = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'June',
-    'July',
-    'Aug',
-    'Sept',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
+  const handleSelectDate = (date) => {
+    setSelectedDate(date);
+  };
 
   return (
-    <div className='dashboard'>
-      <h3>
-        {month[date.getMonth()]} {date.getDate()}, {date.getFullYear()} --
-        {date.getHours()}:{date.getMinutes().toString().padStart(2, '0')}
-      </h3>
-      <button onClick={handleReset}>Reset State</button>
-      <Row className='row'>
-        <Col className='col'>
-          <TimerBox earningsChange={(val) => setEarnings(val)} />
-          {/* <SaveLoadButtons />
+    <DateContext.Provider value={{ selectedDate, todaysDate }}>
+      <TaskContext.Provider value={{}}>
+        <GoalsContext.Provider value={{}}>
+          <div className='dashboard'>
+            <div className='container'>
+              <DateDisplay date={todaysDate} />
+              <TimeDisplay date={todaysDate} />
+              <button onClick={handleReset}>Reset State</button>
+            </div>
+            <Row className='row'>
+              <TimerBox earningsChange={(val) => setEarnings(val)} />
+              {/* <SaveLoadButtons />
           <SaveLoad /> */}
-        </Col>
-      </Row>
-      <Row className='row'>
-        <Col className='col'>
-          <ProgressBox goalsTotal={goalsTotal} totalEarnings={totalEarnings} />
-        </Col>
-      </Row>
-      <Row className='row'>
-        <Col className='col'>
-          <TasksBox total={tasksTotal} />
-        </Col>
-      </Row>
-      <Row>
-        <Col className='col'>
-          <GoalsBox total={goalsTotal} />
-        </Col>
-      </Row>
-    </div>
+            </Row>
+            <Row className='row'>
+              <ProgressBox
+                goalsTotal={goalsTotal}
+                totalEarnings={totalEarnings}
+              />
+            </Row>
+            <Row>
+              <CalendarBox handleSelectDate={handleSelectDate} />
+            </Row>
+            <Row className='row'>
+              <TasksBox total={tasksTotal} />
+            </Row>
+            <Row>
+              <GoalsBox total={goalsTotal} />
+            </Row>
+          </div>
+        </GoalsContext.Provider>
+      </TaskContext.Provider>
+    </DateContext.Provider>
   );
 };
 

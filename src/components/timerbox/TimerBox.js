@@ -1,27 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addTask } from '../../app/taskSlice';
 import './TimerBox.css';
 
-function useInterval(callback, delay) {
-  const savedCallback = useRef();
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
+import useInterval from '../../hooks/useInterval';
 
 const TimerBox = ({ earningsChange }) => {
   const [clockRunning, setClockRunning] = useState(false);
@@ -48,7 +30,7 @@ const TimerBox = ({ earningsChange }) => {
       const task = {
         title: taskName,
         startTime,
-        endTime,
+        endTime: new Date(),
         duration: parseFloat(elapsedTime),
         value: parseFloat(earnings),
         rate: parseFloat(rate)

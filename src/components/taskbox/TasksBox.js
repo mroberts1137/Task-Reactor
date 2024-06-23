@@ -1,38 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectAllTasks,
   selectTasksByDate,
   removeTask
 } from '../../app/taskSlice';
+import DateDisplay from '../DateDisplay';
 import AddTask from '../list/AddTask';
 import List from '../list/List';
-import Calendar from './Calendar';
-import TaskCalendar from './TaskCalendar';
-import '../list/List.css';
-
-const month = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'June',
-  'July',
-  'Aug',
-  'Sept',
-  'Oct',
-  'Nov',
-  'Dec'
-];
+import { DateContext } from '../../contexts/context';
 
 const TaskBox = ({ total }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const { selectedDate } = useContext(DateContext);
   const tasks = useSelector((state) => selectTasksByDate(state, selectedDate));
-
-  const handleSelectDate = (date) => {
-    setSelectedDate(date);
-  };
 
   return (
     <div className='container'>
@@ -40,20 +20,18 @@ const TaskBox = ({ total }) => {
         Completed Tasks: $<span id='goals-total'>{total.toFixed(2)}</span>
       </h3>
       <p>
-        Selected Date: {month[selectedDate.getMonth()]}{' '}
-        {selectedDate.getDate().toString()},{' '}
-        {selectedDate.getFullYear().toString()}
+        Selected Date: <DateDisplay date={selectedDate} />
       </p>
-      <TaskCalendar handleSelectDate={handleSelectDate} />
       <AddTask />
       <List
         items={tasks}
         removeItem={removeTask}
         displayKeys={{
-          startTime: 'Date',
           title: 'String',
-          rate: 'Currency',
+          startTime: 'Date',
+          endTime: 'Date',
           duration: 'Duration',
+          rate: 'Currency',
           value: 'Currency'
         }}
       />

@@ -1,4 +1,5 @@
 import ListItem from './ListItem';
+import './List.css';
 
 const List = ({ items, removeItem, displayKeys }) => {
   return (

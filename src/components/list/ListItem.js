@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
+import { month } from '../../utils/functions';
 
 const ListItem = ({ item, removeItem, displayKeys }) => {
   const dispatch = useDispatch();
@@ -13,21 +14,6 @@ const ListItem = ({ item, removeItem, displayKeys }) => {
   });
 
   useEffect(() => setAnimate(true), []);
-
-  const month = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'June',
-    'July',
-    'Aug',
-    'Sept',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
 
   return (
     <animated.tr className='list-item' style={slideIn}>
@@ -70,8 +56,7 @@ const ListItem = ({ item, removeItem, displayKeys }) => {
             const taskDate = new Date(item[key]);
             return (
               <td key={index} className='item-text'>
-                {month[taskDate.getMonth()]} {taskDate.getDate()},{' '}
-                {taskDate.getFullYear()},{taskDate.getHours()}:
+                {taskDate.getHours()}:
                 {taskDate.getMinutes().toString().padStart(2, '0')}
               </td>
             );
