@@ -26,7 +26,7 @@ const ListItem = ({ item, removeItem, displayKeys }) => {
         </button>
       </td>
       {Object.keys(displayKeys).map((key, index) => {
-        switch (displayKeys[key]) {
+        switch (displayKeys[key].type) {
           case 'Currency':
             return (
               <td key={index} className='item-text'>

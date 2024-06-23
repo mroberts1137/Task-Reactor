@@ -7,6 +7,11 @@ import List from '../list/List';
 const GoalsBox = ({ total }) => {
   const goals = useSelector(selectAllGoals);
 
+  const displayKeys = {
+    title: { name: 'Goal', type: 'String', show: true },
+    value: { name: 'Value', type: 'Currency', show: true }
+  };
+
   return (
     <div className='container'>
       <h3>
@@ -14,11 +19,7 @@ const GoalsBox = ({ total }) => {
       </h3>
 
       <AddItem />
-      <List
-        items={goals}
-        removeItem={removeGoal}
-        displayKeys={{ title: 'String', value: 'Currency' }}
-      />
+      <List items={goals} removeItem={removeGoal} displayKeys={displayKeys} />
     </div>
   );
 };

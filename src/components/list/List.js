@@ -2,6 +2,10 @@ import ListItem from './ListItem';
 import './List.css';
 
 const List = ({ items, removeItem, displayKeys }) => {
+  Object.keys(displayKeys).forEach((key) => {
+    if (!displayKeys[key].show) delete displayKeys[key];
+  });
+
   return (
     <div className='list-container'>
       <table>
@@ -14,7 +18,7 @@ const List = ({ items, removeItem, displayKeys }) => {
           <tr className='list-item'>
             <th className='list-item'></th>
             {Object.keys(displayKeys).map((key, index) => (
-              <th key={index}>-{key}-</th>
+              <th key={index}>{displayKeys[key].name}</th>
             ))}
           </tr>
         </thead>

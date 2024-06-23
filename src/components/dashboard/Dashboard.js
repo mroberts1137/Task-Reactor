@@ -59,8 +59,8 @@ const Dashboard = () => {
 
   return (
     <DateContext.Provider value={{ selectedDate, todaysDate }}>
-      <TaskContext.Provider value={{}}>
-        <GoalsContext.Provider value={{}}>
+      <TaskContext.Provider value={{ tasks }}>
+        <GoalsContext.Provider value={{ goals }}>
           <div className='dashboard'>
             <div className='container'>
               <DateDisplay date={todaysDate} />
@@ -82,7 +82,7 @@ const Dashboard = () => {
               <CalendarBox handleSelectDate={handleSelectDate} />
             </Row>
             <Row className='row'>
-              <TasksBox total={tasksTotal} />
+              <TasksBox />
             </Row>
             <Row>
               <GoalsBox total={goalsTotal} />
