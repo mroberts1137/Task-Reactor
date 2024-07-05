@@ -82,7 +82,7 @@ const Dashboard = () => {
             <Row className='row'>
               <TimerBox earningsChange={earningsChange} />
               {/* <SaveLoadButtons />
-          <SaveLoad /> */}
+              <SaveLoad /> */}
             </Row>
             <Row className='row'>
               <ProgressBox

@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addTask } from '../../app/taskSlice';
+import { saveTask } from '../../app/savedTasksSlice';
+import TaskManager from './TaskManager';
+import TaskForm from './TaskForm';
+import SavedTasks from './SavedTasks';
 import './TimerBox.css';
 
 import useInterval from '../../hooks/useInterval';
@@ -59,6 +63,20 @@ const TimerBox = ({ earningsChange }) => {
     setEarnings(0);
   }
 
+  // Model A
+
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const handleTaskSelect = (task) => {
+    setSelectedTask(task);
+  };
+
+  // End Model A
+
+  const handleSaveTask = () => {
+    dispatch(saveTask({ task: taskName, rate }));
+  };
+
   return (
     <div className='container'>
       <h3 className='flex-row'>
@@ -69,22 +87,22 @@ const TimerBox = ({ earningsChange }) => {
           <></>
         )}
       </h3>
-      <form>
-        <label htmlFor='taskName'>Task: </label>
-        <input
-          type='text'
-          onChange={(e) => setTaskName(e.target.value)}
-          value={taskName}
-          name='taskName'
-        />
-        <label htmlFor='rate'>Rate: $</label>
-        <input
-          type='text'
-          onChange={(e) => setRate(e.target.value)}
-          value={rate}
-          name='rate'
-        />
-      </form>
+
+      {/* Model B */}
+      {/* <TaskManager>
+        {(task, setTask, rate, setRate) => (
+          <div>
+            <TaskForm />
+            <SavedTasks />
+          </div>
+        )}
+      </TaskManager> */}
+
+      {/* Model A */}
+      <TaskForm selectedTask={selectedTask} />
+      <SavedTasks onTaskSelect={handleTaskSelect} />
+      {/* End Model A */}
+
       <div className='flex-row'>
         <button
           className={clockRunning ? 'stop-btn' : 'start-btn'}
