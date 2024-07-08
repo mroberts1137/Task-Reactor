@@ -14,10 +14,10 @@ const TaskBox = () => {
 
   const [showKeys, setShowKeys] = useState({
     title: true,
-    startTime: false,
-    endTime: false,
-    duration: false,
-    rate: false,
+    startTime: true,
+    endTime: true,
+    duration: true,
+    rate: true,
     value: true
   });
 
