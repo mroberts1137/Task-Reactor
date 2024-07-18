@@ -15,8 +15,7 @@ const TimerBox = ({ earningsChange }) => {
   const [endTime, setEndTime] = useState(undefined);
   const [elapsedTime, setElapsedTime] = useState(undefined);
   const [earnings, setEarnings] = useState(0);
-  const [rate, setRate] = useState(40);
-  const [taskName, setTaskName] = useState('');
+  const [selectedTask, setSelectedTask] = useState({ task: '', rate: 0 });
 
   const dispatch = useDispatch();
 
@@ -26,17 +25,21 @@ const TimerBox = ({ earningsChange }) => {
     earningsChange(earnings);
   }, [earnings, earningsChange]);
 
+  const handleTaskSelect = (task) => {
+    setSelectedTask(task);
+  };
+
   const toggleClock = () => {
     if (clockRunning) {
       setEndTime(new Date());
       updateElapsedTime();
       const task = {
-        title: taskName,
+        title: selectedTask.task,
         startTime,
         endTime: new Date(),
         duration: parseFloat(elapsedTime),
         value: parseFloat(earnings),
-        rate: parseFloat(rate)
+        rate: parseFloat(selectedTask.rate)
       };
       dispatch(addTask(task));
       reset();
@@ -50,8 +53,9 @@ const TimerBox = ({ earningsChange }) => {
     let currentTime = new Date();
     setElapsedTime(currentTime - startTime);
     setEarnings(
-      Math.floor(((currentTime - startTime) / (1000 * 60 * 60)) * rate * 100) /
-        100
+      Math.floor(
+        ((currentTime - startTime) / (1000 * 60 * 60)) * selectedTask.rate * 100
+      ) / 100
     );
   }
 
@@ -62,20 +66,6 @@ const TimerBox = ({ earningsChange }) => {
     setElapsedTime(undefined);
     setEarnings(0);
   }
-
-  // Model A
-
-  const [selectedTask, setSelectedTask] = useState(null);
-
-  const handleTaskSelect = (task) => {
-    setSelectedTask(task);
-  };
-
-  // End Model A
-
-  const handleSaveTask = () => {
-    dispatch(saveTask({ task: taskName, rate }));
-  };
 
   return (
     <div className='container'>
@@ -88,7 +78,6 @@ const TimerBox = ({ earningsChange }) => {
         )}
       </h3>
 
-      {/* Model B */}
       {/* <TaskManager>
         {(task, setTask, rate, setRate) => (
           <div>
@@ -98,10 +87,8 @@ const TimerBox = ({ earningsChange }) => {
         )}
       </TaskManager> */}
 
-      {/* Model A */}
-      <TaskForm selectedTask={selectedTask} />
+      <TaskForm selectedTask={selectedTask} setTaskSelect={handleTaskSelect} />
       <SavedTasks onTaskSelect={handleTaskSelect} />
-      {/* End Model A */}
 
       <div className='flex-row'>
         <button
