@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
 import { month } from '../../utils/functions';
 
-const ListItem = ({ item, removeItem, displayKeys }) => {
+const ListItem = ({ item, removeAction, displayKeys }) => {
   const dispatch = useDispatch();
   const [animate, setAnimate] = useState(false);
 
@@ -20,7 +20,7 @@ const ListItem = ({ item, removeItem, displayKeys }) => {
       <td>
         <button
           className='remove-item-btn'
-          onClick={() => dispatch(removeItem(item))}
+          onClick={() => dispatch(removeAction(item))}
         >
           X
         </button>

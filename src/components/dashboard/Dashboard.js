@@ -3,9 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'reactstrap';
 
 import GoalsBox from '../goalsbox/GoalsBox.js';
+import MonthlyGoalsBox from '../goalsbox/MonthlyGoalsBox.js';
 import TasksBox from '../taskbox/TasksBox.js';
 import TimerBox from '../timerbox/TimerBox.js';
 import ProgressBox from '../progressbox/ProgressBox.js';
+import MonthlyProgressBox from '../progressbox/MonthlyProgressBox.js';
 import CalendarBox from '../calendarbox/CalendarBox';
 import SaveLoadButtons from '../SaveLoadButtons.js';
 import SaveLoad from '../SaveLoad.js';
@@ -20,15 +22,18 @@ import {
   fetchTasks,
   selectAllTasks,
   selectTasksByDate,
+  selectAllTasksByMonth,
   reset
 } from '../../app/taskSlice.js';
 import { selectAllGoals } from '../../app/goalsSlice.js';
+import { selectAllGoals as selectAllMonthlyGoals } from '../../app/monthlyGoalsSlice.js';
 import { sumTotal } from '../../utils/functions';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
 
   const [goalsTotal, setGoalsTotal] = useState(0);
+  const [monthlyGoalsTotal, setMonthlyGoalsTotal] = useState(0);
   const [tasksTotal, setTasksTotal] = useState(0);
   const [earnings, setEarnings] = useState(0);
   const [totalEarnings, setTotalEarnings] = useState(0);
@@ -36,9 +41,13 @@ const Dashboard = () => {
   const todaysDate = new Date();
 
   const goals = useSelector(selectAllGoals);
+  const monthlyGoals = useSelector(selectAllMonthlyGoals);
   const tasks = useSelector(selectAllTasks);
   const dailyTasks = useSelector((state) =>
     selectTasksByDate(state, selectedDate)
+  );
+  const monthlyTasks = useSelector((state) =>
+    selectAllTasksByMonth(state, selectedDate)
   );
 
   useEffect(() => {
@@ -48,6 +57,10 @@ const Dashboard = () => {
   useEffect(() => {
     setGoalsTotal(sumTotal(goals));
   }, [goals]);
+
+  useEffect(() => {
+    setMonthlyGoalsTotal(sumTotal(monthlyGoals));
+  }, [monthlyGoals]);
 
   useEffect(() => {
     setTasksTotal(sumTotal(dailyTasks));
@@ -69,6 +82,8 @@ const Dashboard = () => {
     setEarnings(val);
   }, []);
 
+  const monthlyTotalEarnings = sumTotal(monthlyTasks);
+
   return (
     <DateContext.Provider value={{ selectedDate, todaysDate }}>
       <TaskContext.Provider value={{ tasks, dailyTasks }}>
@@ -85,10 +100,16 @@ const Dashboard = () => {
               <SaveLoad /> */}
             </Row>
             <Row className='row'>
-              <ProgressBox
-                goalsTotal={goalsTotal}
-                totalEarnings={totalEarnings}
-              />
+              <Col className='col'>
+                <ProgressBox
+                  goalsTotal={goalsTotal}
+                  totalEarnings={totalEarnings}
+                />
+                <MonthlyProgressBox
+                  goalsTotal={monthlyGoalsTotal}
+                  totalEarnings={monthlyTotalEarnings}
+                />
+              </Col>
             </Row>
             <Row>
               <CalendarBox handleSelectDate={handleSelectDate} />
@@ -97,6 +118,7 @@ const Dashboard = () => {
               <TasksBox />
             </Row>
             <Row>
+              <MonthlyGoalsBox total={monthlyGoalsTotal} />
               <GoalsBox total={goalsTotal} />
             </Row>
           </div>

@@ -100,7 +100,6 @@ export const selectAllTasks = (state) => state.tasks;
 export const selectTasksByDate = createSelector(
   [(state) => state.tasks, (state, date) => date],
   (tasks, date) => {
-    console.log('Select by Date selector running...');
     return tasks.taskArray.filter((item) => {
       const taskDate = new Date(item.startTime);
       return (
@@ -109,6 +108,23 @@ export const selectTasksByDate = createSelector(
         taskDate.getFullYear() === date.getFullYear() &&
         taskDate.getMonth() === date.getMonth() &&
         taskDate.getDate() === date.getDate()
+      );
+    });
+  }
+);
+
+export const selectAllTasksByMonth = createSelector(
+  [(state) => state.tasks, (state, date) => date],
+  (tasks, date) => {
+    return tasks.taskArray.filter((item) => {
+      const taskDate = new Date(item.startTime);
+      return (
+        taskDate instanceof Date &&
+        !isNaN(taskDate) &&
+        date instanceof Date &&
+        !isNaN(date) &&
+        taskDate.getFullYear() === date.getFullYear() &&
+        taskDate.getMonth() === date.getMonth()
       );
     });
   }

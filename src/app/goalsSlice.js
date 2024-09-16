@@ -2,17 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { v4 as uuid } from 'uuid';
 
 const initialState = {
-  goalsArray: [
-    { id: uuid(), title: 'Car Loan', value: 124 },
-    { id: uuid(), title: 'Car Insurance', value: 93 },
-    { id: uuid(), title: 'Credit Card', value: 122 },
-    { id: uuid(), title: 'Nucamp', value: 160 },
-    { id: uuid(), title: 'Phone', value: 37 },
-    { id: uuid(), title: 'Groceries', value: 413 },
-    { id: uuid(), title: 'Gas', value: 96 },
-    { id: uuid(), title: 'Restaurant/Other', value: 232 },
-    { id: uuid(), title: 'Shopping', value: 97 }
-  ]
+  goalsArray: [{ id: uuid(), title: 'Daily Minimum', value: 86 }]
 };
 
 const goalsSlice = createSlice({

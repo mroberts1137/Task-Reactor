@@ -1,10 +1,14 @@
 import { useSelector } from 'react-redux';
-import { selectAllGoals, removeGoal, addGoal } from '../../app/goalsSlice';
+import {
+  selectAllGoals,
+  removeGoal,
+  addGoal
+} from '../../app/monthlyGoalsSlice';
 
 import AddItem from '../list/AddItem';
 import List from '../list/List';
 
-const GoalsBox = ({ total }) => {
+const MonthlyGoalsBox = ({ total }) => {
   const goals = useSelector(selectAllGoals);
 
   const displayKeys = {
@@ -15,7 +19,7 @@ const GoalsBox = ({ total }) => {
   return (
     <div className='container'>
       <h3>
-        Daily Goals: $<span id='goals-total'>{total}</span>
+        Monthly Goals: $<span id='goals-total'>{total}</span>
       </h3>
 
       <AddItem addAction={addGoal} />
@@ -24,4 +28,4 @@ const GoalsBox = ({ total }) => {
   );
 };
 
-export default GoalsBox;
+export default MonthlyGoalsBox;

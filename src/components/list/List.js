@@ -1,7 +1,7 @@
 import ListItem from './ListItem';
 import './List.css';
 
-const List = ({ items, removeItem, displayKeys }) => {
+const List = ({ items, removeAction, displayKeys }) => {
   Object.keys(displayKeys).forEach((key) => {
     if (!displayKeys[key].show) delete displayKeys[key];
   });
@@ -23,14 +23,16 @@ const List = ({ items, removeItem, displayKeys }) => {
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
-            <ListItem
-              key={item.id}
-              item={item}
-              removeItem={removeItem}
-              displayKeys={displayKeys}
-            />
-          ))}
+          {items &&
+            items.length > 0 &&
+            items.map((item) => (
+              <ListItem
+                key={item.id}
+                item={item}
+                removeAction={removeAction}
+                displayKeys={displayKeys}
+              />
+            ))}
         </tbody>
       </table>
     </div>

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addGoal } from '../../app/goalsSlice';
 
-const AddItem = () => {
+const AddItem = ({ addAction }) => {
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
   const dispatch = useDispatch();
@@ -19,7 +18,7 @@ const AddItem = () => {
       title,
       value
     };
-    dispatch(addGoal(newGoal));
+    dispatch(addAction(newGoal));
     setTitle('');
     setValue('');
   };

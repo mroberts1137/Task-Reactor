@@ -1,16 +1,21 @@
 import React, { useState, useMemo, useContext } from 'react';
 import Calendar from 'react-calendar';
 import { useSelector } from 'react-redux';
-import { selectAllTasks } from '../../app/taskSlice';
+import { selectAllTasks, selectAllTasksByMonth } from '../../app/taskSlice';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import './TaskCalendar.css';
 import { DateContext } from '../../contexts/context';
+import { sumTotal } from '../../utils/functions';
 
 function TaskCalendar({ handleSelectDate }) {
-  // const [selectedDate, setSelectedDate] = useState(moment());
-  const tasks = useSelector(selectAllTasks);
   const { selectedDate } = useContext(DateContext);
+
+  const tasks = useSelector(selectAllTasks);
+  // const tasksForMonth = useSelector((state) =>
+  //   selectAllTasksByMonth(selectedDate)(state)
+  // );
+  // const monthlyTotal = sumTotal(tasksForMonth);
 
   const getTasksByDay = useMemo(() => {
     const taskMap = new Map();
@@ -31,7 +36,6 @@ function TaskCalendar({ handleSelectDate }) {
   }, [tasks]);
 
   const handleDateChange = (date) => {
-    // setSelectedDate(moment(date));
     handleSelectDate(date);
   };
 
@@ -61,36 +65,6 @@ function TaskCalendar({ handleSelectDate }) {
     return events;
   };
 
-  // Refactor: Just use reduce instead of getTasksByMonth, and getMonthlyTotal
-
-  const getTasksByMonth = useMemo(() => {
-    const taskMap = new Map();
-
-    if (tasks && tasks.taskArray) {
-      tasks.taskArray.forEach((task) => {
-        const taskDate = moment(task.startTime);
-        if (taskDate.isValid()) {
-          const key = taskDate.startOf('month').format();
-          if (!taskMap.has(key)) {
-            taskMap.set(key, []);
-          }
-          taskMap.get(key).push(task);
-        }
-      });
-    }
-    return taskMap;
-  }, [tasks]);
-
-  const getMonthlyTotal = (date) => {
-    const dateKey = moment(date).startOf('month').format();
-    const tasksForDay = getTasksByMonth.get(dateKey) || [];
-    const totalValue = tasksForDay.reduce(
-      (total, task) => total + task.value,
-      0
-    );
-    return totalValue;
-  };
-
   const tileContent = ({ date }) => {
     const events = renderEventsForMonth();
     const event = events.find((event) =>
@@ -103,7 +77,10 @@ function TaskCalendar({ handleSelectDate }) {
 
   return (
     <div>
-      <h3>Total for the Month: {getMonthlyTotal(selectedDate)}</h3>
+      {/* <h2>
+        Total for {selectedDate.toLocaleString('default', { month: 'long' })}:{' '}
+        {monthlyTotal}
+      </h2> */}
       <Calendar
         value={selectedDate}
         onClickDay={(date) => handleDateChange(date)}

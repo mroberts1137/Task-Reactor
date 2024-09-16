@@ -14,6 +14,7 @@ export const month = [
 ];
 
 export const sumTotal = (arr) => {
+  if (!arr || arr.length === 0) return 0;
   return arr
     .map((item) => parseFloat(item.value))
     .reduce((acc, cur) => acc + cur, 0);
