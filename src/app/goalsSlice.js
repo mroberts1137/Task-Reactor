@@ -3,14 +3,15 @@ import { v4 as uuid } from 'uuid';
 
 const initialState = {
   goalsArray: [
-    { id: uuid(), title: 'goal 1', value: 20 },
-    { id: uuid(), title: 'goal 2', value: 20 },
-    { id: uuid(), title: 'goal 3', value: 20 },
-    { id: uuid(), title: 'goal 4', value: 20 },
-    { id: uuid(), title: 'goal 5', value: 20 },
-    { id: uuid(), title: 'goal 6', value: 20 },
-    { id: uuid(), title: 'goal 7', value: 20 },
-    { id: uuid(), title: 'goal 8', value: 20 }
+    { id: uuid(), title: 'Car Loan', value: 124 },
+    { id: uuid(), title: 'Car Insurance', value: 93 },
+    { id: uuid(), title: 'Credit Card', value: 122 },
+    { id: uuid(), title: 'Nucamp', value: 160 },
+    { id: uuid(), title: 'Phone', value: 37 },
+    { id: uuid(), title: 'Groceries', value: 413 },
+    { id: uuid(), title: 'Gas', value: 96 },
+    { id: uuid(), title: 'Restaurant/Other', value: 232 },
+    { id: uuid(), title: 'Shopping', value: 97 }
   ]
 };
 

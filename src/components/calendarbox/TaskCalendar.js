@@ -61,6 +61,36 @@ function TaskCalendar({ handleSelectDate }) {
     return events;
   };
 
+  // Refactor: Just use reduce instead of getTasksByMonth, and getMonthlyTotal
+
+  const getTasksByMonth = useMemo(() => {
+    const taskMap = new Map();
+
+    if (tasks && tasks.taskArray) {
+      tasks.taskArray.forEach((task) => {
+        const taskDate = moment(task.startTime);
+        if (taskDate.isValid()) {
+          const key = taskDate.startOf('month').format();
+          if (!taskMap.has(key)) {
+            taskMap.set(key, []);
+          }
+          taskMap.get(key).push(task);
+        }
+      });
+    }
+    return taskMap;
+  }, [tasks]);
+
+  const getMonthlyTotal = (date) => {
+    const dateKey = moment(date).startOf('month').format();
+    const tasksForDay = getTasksByMonth.get(dateKey) || [];
+    const totalValue = tasksForDay.reduce(
+      (total, task) => total + task.value,
+      0
+    );
+    return totalValue;
+  };
+
   const tileContent = ({ date }) => {
     const events = renderEventsForMonth();
     const event = events.find((event) =>
@@ -73,6 +103,7 @@ function TaskCalendar({ handleSelectDate }) {
 
   return (
     <div>
+      <h3>Total for the Month: {getMonthlyTotal(selectedDate)}</h3>
       <Calendar
         value={selectedDate}
         onClickDay={(date) => handleDateChange(date)}
