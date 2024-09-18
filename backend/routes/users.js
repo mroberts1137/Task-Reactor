@@ -1,5 +1,4 @@
 const express = require('express');
-const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -28,7 +27,8 @@ router.get('/', auth, async (req, res) => {
 // @route   GET/PUT/DELETE api/users/:user_ID
 // @desc    CRUD logged-in user
 // @access  Private
-router.route('/:user_id')
+router
+  .route('/:user_id')
   .get(auth, async (req, res) => {
     try {
       const user = await User.findById(req.params.user_id);
@@ -43,7 +43,9 @@ router.route('/:user_id')
   })
   .put(auth, async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.user_id, req.body, { new: true });
+      const user = await User.findByIdAndUpdate(req.params.user_id, req.body, {
+        new: true
+      });
       if (!user) {
         return res.status(404).json({ msg: 'User not found' });
       }
@@ -55,7 +57,7 @@ router.route('/:user_id')
   })
   .delete(auth, async (req, res) => {
     try {
-      const user = {USERNAME} User.findByIdAndRemove(req.params.user_id);
+      const user = await User.findByIdAndRemove(req.params.user_id);
       if (!user) {
         return res.status(404).json({ msg: 'User not found' });
       }
@@ -78,7 +80,9 @@ router.post(
       const { username, email, password } = req.body;
       let user = await User.findOne({ email });
       if (user) {
-        return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'User already exists' }] });
       }
 
       user = new User({ username, email, password });
@@ -86,10 +90,15 @@ router.post(
 
       const payload = { id: user.id };
 
-      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
-        if (err) throw err;
-        res.json({ token });
-      });
+      jwt.sign(
+        payload,
+        process.env.JWT_SECRET,
+        { expiresIn: 3600 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');
@@ -108,23 +117,31 @@ router.post(
     try {
       const { email, password } = req.body;
 
-      // const user = {USERNAME} User.findOne({ email });
-      const user = User.findOne({ email });
+      const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid credentials' }] });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid credentials' }] });
       }
 
       const payload = { id: user.id };
 
-      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
-        if (err) throw err;
-        res.json({ token });
-      });
+      jwt.sign(
+        payload,
+        process.env.JWT_SECRET,
+        { expiresIn: 3600 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');

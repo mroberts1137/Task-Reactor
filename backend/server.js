@@ -1,9 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const logger = require('morgan');
 const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 
-const users = require('./routes/api/users');
+const users = require('./routes/users');
 
 dotenv.config();
 
@@ -12,12 +12,7 @@ const port = 5000;
 
 const app = express();
 
-const db = process.env.MONGODB_URI;
-
-mongoose
-  .connect(db)
-  .then(() => console.log('Connected to MongoDB server'))
-  .catch((err) => console.log(err));
+connectDB();
 
 app.use(logger('dev'));
 app.use(express.json());
