@@ -4,7 +4,7 @@
 # backend
 
 /backend/node_modules
-/backend/config
+# /backend/config
 # /backend/.env
 
 # frontend
