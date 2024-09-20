@@ -9,7 +9,7 @@ exports.validateRegister = [
 ];
 
 exports.validateLogin = [
-  check('email').isEmail().withMessage('Invalid email'),
+  check('username').notEmpty().withMessage('Username is required'),
   check('password').notEmpty().withMessage('Password is required')
 ];
 

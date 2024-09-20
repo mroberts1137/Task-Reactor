@@ -1,8 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 const logger = require('morgan');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
+const auth = require('./routes/auth');
 const users = require('./routes/users');
 const tasks = require('./routes/tasks');
 const dailyGoals = require('./routes/daily_goals');
@@ -17,6 +19,17 @@ const app = express();
 
 connectDB();
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+
+// Apply CORS middleware to all routes
+app.use(cors(corsOptions));
+
+// app.use(cors()); // Use the cors middleware
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -24,6 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 /**
  * Routes
  */
+app.use('/api/auth', auth);
 app.use('/api/users', users);
 app.use('/api/users/:user_id/tasks', tasks);
 app.use('/api/users/:user_id/daily_goals', dailyGoals);
