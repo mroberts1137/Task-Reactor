@@ -2,10 +2,10 @@ import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { goalsReducer } from './goalsSlice';
-import { monthlyGoalsReducer } from './monthlyGoalsSlice';
-import { taskReducer } from './taskSlice';
-import { loadStateReducer } from './loadStateReducer';
+import userReducer from './userSlice';
+import goalsReducer from './goalsSlice';
+import monthlyGoalsReducer from './monthlyGoalsSlice';
+import taskReducer from './taskSlice';
 import savedTasksReducer from './savedTasksSlice';
 
 const persistConfig = {
@@ -16,10 +16,10 @@ const persistConfig = {
 // storage.removeItem('persist:root');
 
 const rootReducer = combineReducers({
+  user: userReducer,
   goals: goalsReducer,
   monthlyGoals: monthlyGoalsReducer,
   tasks: taskReducer,
-  loadState: loadStateReducer,
   savedTasks: savedTasksReducer
 });
 

@@ -1,25 +1,30 @@
 import { useRef, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from '../api/axios';
 import './RegisterForm.css';
+import { setUserId, setUser } from '../app/userSlice';
+import { fetchTasks } from '../app/taskSlice';
 
-/**
- * TODO: Make sure URL matches API
- */
-const LOGIN_URL = '/login';
+const LOGIN_URL = '/api/auth';
 
 const RegisterForm = () => {
+  const dispatch = useDispatch();
+
   const userRef = useRef();
   const errRef = useRef();
 
-  const [user, setUser] = useState('');
+  const [username, setUsername] = useState('');
   const [userFocus, setUserFocus] = useState(false);
 
-  const [pwd, setPwd] = useState('');
+  const [password, setPassword] = useState('');
   const [pwdFocus, setPwdFocus] = useState(false);
 
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
+
+  const loggedin_user = useSelector((state) => state.user.user?.username);
+  const loggedin_userId = useSelector((state) => state.user.userId);
 
   // set focus to user input when component loads
   useEffect(() => {
@@ -28,7 +33,7 @@ const RegisterForm = () => {
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, pwd]);
+  }, [username, password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,9 +43,11 @@ const RegisterForm = () => {
       );
       const response = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ username: user, password: pwd }),
+        JSON.stringify({ username, password }),
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           withCredentials: true
         }
       );
@@ -50,9 +57,21 @@ const RegisterForm = () => {
        */
       console.log(JSON.stringify(response));
 
+      // Store the JWT in local storage
+      localStorage.setItem('jwt', response.data.token);
+
+      const userId = response.data.userId;
+      const user = response.data.user;
+
+      dispatch(setUserId(userId));
+      dispatch(setUser(user));
+
+      // Fetch tasks for the logged-in user
+      await dispatch(fetchTasks(userId));
+
       setSuccess(true);
-      setUser('');
-      setPwd('');
+      setUsername('');
+      setPassword('');
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
@@ -65,9 +84,15 @@ const RegisterForm = () => {
 
   return (
     <div id='register-form'>
+      <section>
+        <p>Username: {loggedin_user}</p>
+        <p>User ID: {loggedin_userId}</p>
+      </section>
       {success ? (
         <section>
           <h1>Success!</h1>
+          <p>Username: {loggedin_user}</p>
+          <p>User ID: {loggedin_userId}</p>
         </section>
       ) : (
         <section>
@@ -86,7 +111,7 @@ const RegisterForm = () => {
               type='text'
               id='username'
               ref={userRef}
-              onChange={(e) => setUser(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               required
               onFocus={() => setUserFocus(true)}
               onBlur={() => setUserFocus(false)}
@@ -96,13 +121,15 @@ const RegisterForm = () => {
             <input
               type='password'
               id='password'
-              onChange={(e) => setPwd(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
               onFocus={() => setPwdFocus(true)}
               onBlur={() => setPwdFocus(false)}
             />
 
-            <button disabled={!user || !pwd ? true : false}>Sign Up</button>
+            <button disabled={!username || !password ? true : false}>
+              Sign In
+            </button>
           </form>
 
           <p>

@@ -18,19 +18,22 @@ import { TaskContext, GoalsContext, DateContext } from '../../contexts/context';
 
 import './Dashboard.css';
 
+import { selectUserId, selectUser } from '../../app/userSlice';
 import {
   fetchTasks,
   selectAllTasks,
   selectTasksByDate,
   selectAllTasksByMonth,
   reset
-} from '../../app/taskSlice.js';
-import { selectAllGoals } from '../../app/goalsSlice.js';
-import { selectAllGoals as selectAllMonthlyGoals } from '../../app/monthlyGoalsSlice.js';
+} from '../../app/taskSlice';
+import { selectAllGoals } from '../../app/goalsSlice';
+import { selectAllGoals as selectAllMonthlyGoals } from '../../app/monthlyGoalsSlice';
 import { sumTotal } from '../../utils/functions';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const userId = useSelector(selectUserId);
+  const user = useSelector(selectUser);
 
   const [goalsTotal, setGoalsTotal] = useState(0);
   const [monthlyGoalsTotal, setMonthlyGoalsTotal] = useState(0);
@@ -51,8 +54,10 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchTasks());
-  }, [dispatch]);
+    if (userId) {
+      dispatch(fetchTasks(userId)); // Dispatch the fetchTasks asyncThunk with the user ID
+    }
+  }, [dispatch, userId]);
 
   useEffect(() => {
     setGoalsTotal(sumTotal(goals));
@@ -84,16 +89,33 @@ const Dashboard = () => {
 
   const monthlyTotalEarnings = sumTotal(monthlyTasks);
 
+  const handleLoadTasks = () => {
+    if (userId) {
+      dispatch(fetchTasks(userId));
+      console.log(`Tasks: ${JSON.stringify(tasks)}`);
+    }
+  };
+
   return (
     <DateContext.Provider value={{ selectedDate, todaysDate }}>
       <TaskContext.Provider value={{ tasks, dailyTasks }}>
         <GoalsContext.Provider value={{ goals }}>
           <div className='dashboard'>
+            <h2>User: {user?.username}</h2>
+            <h2>Email: {user?.email}</h2>
+            <h2>User ID: {userId}</h2>
+            <h1>Tasks:</h1>
+            <ul>
+              {tasks.map((task) => (
+                <li>{JSON.stringify(task.title)}</li>
+              ))}
+            </ul>
             <div className='container'>
               <DateDisplay date={todaysDate} />
               <TimeDisplay date={todaysDate} />
               <button onClick={handleReset}>Reset State</button>
             </div>
+            <button onClick={handleLoadTasks}>Load Tasks</button>
             <Row className='row'>
               <TimerBox earningsChange={earningsChange} />
               {/* <SaveLoadButtons />

@@ -51,7 +51,7 @@ const TaskBox = () => {
       />
       <List
         items={dailyTasks}
-        removeItem={removeTask}
+        removeAction={removeTask}
         displayKeys={displayKeys}
       />
     </div>

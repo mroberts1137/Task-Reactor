@@ -38,6 +38,6 @@ const monthlyGoalsSlice = createSlice({
   }
 });
 
-export const monthlyGoalsReducer = monthlyGoalsSlice.reducer;
+export default monthlyGoalsSlice.reducer;
 export const { addGoal, removeGoal, setGoals } = monthlyGoalsSlice.actions;
 export const selectAllGoals = (state) => state.monthlyGoals.monthlyGoalsArray;

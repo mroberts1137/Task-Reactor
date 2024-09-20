@@ -1,36 +1,15 @@
-import {
-  createSlice,
-  createSelector,
-  createAsyncThunk
-} from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { v4 as uuid } from 'uuid';
-import axios from 'axios';
 
-const mongodbUrl = 'mongodb://127.0.0.1:27017/';
+import { fetchTasks, addTaskAsync, removeTaskAsync } from './tasksThunks';
+
+export { fetchTasks, addTaskAsync, removeTaskAsync };
 
 const initialState = {
   taskArray: [],
-  status: null,
+  status: 'idle',
   error: null
 };
-
-export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
-  const response = await axios.get(mongodbUrl + 'tasks');
-  return response.data;
-});
-
-export const addTaskAsync = createAsyncThunk('tasks/addTask', async (task) => {
-  const response = await axios.post(mongodbUrl + 'tasks', task);
-  return response.data;
-});
-
-export const removeTaskAsync = createAsyncThunk(
-  'tasks/removeTask',
-  async (id) => {
-    const response = await axios.delete(mongodbUrl + 'tasks/' + id);
-    return response.data;
-  }
-);
 
 const taskSlice = createSlice({
   name: 'tasks',
@@ -92,15 +71,14 @@ const taskSlice = createSlice({
   }
 });
 
-export const taskReducer = taskSlice.reducer;
+export default taskSlice.reducer;
 export const { addTask, removeTask, setTasks, reset } = taskSlice.actions;
-
-export const selectAllTasks = (state) => state.tasks;
+export const selectAllTasks = (state) => state.tasks.taskArray;
 
 export const selectTasksByDate = createSelector(
-  [(state) => state.tasks, (state, date) => date],
+  [(state) => state.tasks.taskArray, (state, date) => date],
   (tasks, date) => {
-    return tasks.taskArray.filter((item) => {
+    return tasks.filter((item) => {
       const taskDate = new Date(item.startTime);
       return (
         taskDate instanceof Date &&
@@ -114,9 +92,9 @@ export const selectTasksByDate = createSelector(
 );
 
 export const selectAllTasksByMonth = createSelector(
-  [(state) => state.tasks, (state, date) => date],
+  [(state) => state.tasks.taskArray, (state, date) => date],
   (tasks, date) => {
-    return tasks.taskArray.filter((item) => {
+    return tasks.filter((item) => {
       const taskDate = new Date(item.startTime);
       return (
         taskDate instanceof Date &&
@@ -129,29 +107,3 @@ export const selectAllTasksByMonth = createSelector(
     });
   }
 );
-
-// import axios from 'axios';
-// import { MongoClient } from 'mongodb';
-
-// const url = 'mongodb+srv://username:password@cluster-name-shard-00-00-example.com:27017/';
-// const client = new MongoClient(url);
-// const db = client.db('mydatabase');
-// const tasksCollection = db.collection('tasks');
-
-// // Create an async thunk to fetch tasks from the database
-// export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
-//   const response = await tasksCollection.find().toArray();
-//   return response;
-// });
-
-// // Create an async thunk to add a task to the database
-// export const addTaskAsync = createAsyncThunk('tasks/addTask', async (task) => {
-//   const response = await tasksCollection.insertOne(task);
-//   return response;
-// });
-
-// // Create an async thunk to remove a task from the database
-// export const removeTaskAsync = createAsyncThunk('tasks/removeTask', async (id) => {
-//   const response = await tasksCollection.deleteOne({ _id: new ObjectId(id) });
-//   return response;
-// });
