@@ -2,15 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'reactstrap';
 
-import GoalsBox from '../goalsbox/GoalsBox.js';
-import MonthlyGoalsBox from '../goalsbox/MonthlyGoalsBox.js';
-import TasksBox from '../taskbox/TasksBox.js';
-import TimerBox from '../timerbox/TimerBox.js';
-import ProgressBox from '../progressbox/ProgressBox.js';
-import MonthlyProgressBox from '../progressbox/MonthlyProgressBox.js';
+import GoalsBox from '../goalsbox/GoalsBox';
+import MonthlyGoalsBox from '../goalsbox/MonthlyGoalsBox';
+import TasksBox from '../taskbox/TasksBox';
+import TimerBox from '../timerbox/TimerBox';
+import ProgressBox from '../progressbox/ProgressBox';
+import MonthlyProgressBox from '../progressbox/MonthlyProgressBox';
 import CalendarBox from '../calendarbox/CalendarBox';
-import SaveLoadButtons from '../SaveLoadButtons.js';
-import SaveLoad from '../SaveLoad.js';
+import SaveLoadButtons from '../SaveLoadButtons';
+import SaveLoad from '../SaveLoad';
 import DateDisplay from '../DateDisplay';
 import TimeDisplay from '../TimeDisplay';
 

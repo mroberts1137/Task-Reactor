@@ -1,7 +1,7 @@
 /* ProgressBox.css */
 
 .progress-container {
-  width: 75%;
+  width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -12,14 +12,14 @@
   height: 40px;
   position: relative;
   background-color: lightgray;
-  border-radius: 10px;
+  border-radius: 2px;
+  border: solid 1px gray;
   overflow: hidden;
 }
 
 .goal-line {
   position: absolute;
   height: 100%;
-  background-color: lightgray;
   border-right: 1px solid black;
   border-left: 1px solid black;
   display: flex;
@@ -29,17 +29,22 @@
 
 .goal-line span {
   font-weight: bold;
+  font-size: 0.6rem;
 }
 
 .progress {
   position: absolute;
   left: 0;
   height: 100%;
-  background-color: rgba(0, 50, 255, 0.5);
+  background-color: rgb(107, 135, 245);
 }
 
 .exceeded {
-  background-color: rgb(121, 163, 240);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.green {
+  background-color: rgb(92, 226, 62);
 }
 
 .info-col {
