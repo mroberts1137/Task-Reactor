@@ -31,19 +31,12 @@ router.post(
           .json({ errors: [{ msg: 'Invalid credentials' }] });
       }
 
+      // jwt payload. Used to identify user by routes requiring auth
       const payload = { id: user.id };
 
-      // jwt.sign(
-      //   payload,
-      //   process.env.JWT_SECRET,
-      //   { expiresIn: 36000 },
-      //   (err, token) => {
-      //     if (err) throw err;
-      //     res.json({ token, user, userId: user.id });
-      //   }
-      // );
-
-      // Using Cookies to store JWT:
+      // This is currently using HttpOnly Cookies & local session storage:
+      // remove res.cookie to switch to only use local session storage
+      // don't send token in response to switch to only use cookies
 
       jwt.sign(
         payload,
@@ -52,7 +45,7 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.cookie('token', token, { httpOnly: true, secure: true });
-          res.json({ token, user, userId: user.id });
+          res.json({ token, user });
         }
       );
     } catch (err) {

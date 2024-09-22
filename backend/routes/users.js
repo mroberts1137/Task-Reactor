@@ -1,6 +1,5 @@
 const express = require('express');
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validation = require('../middleware/validation');
 const auth = require('../middleware/auth');
@@ -88,15 +87,21 @@ router.post(
       user = new User({ username, email, password });
       await user.save();
 
+      // jwt payload. Used to identify user by routes requiring auth
       const payload = { id: user.id };
+
+      // This is currently using HttpOnly Cookies & local session storage:
+      // remove res.cookie to switch to only use local session storage
+      // don't send token in response to switch to only use cookies
 
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
-        { expiresIn: 3600 },
+        { expiresIn: 36000 },
         (err, token) => {
           if (err) throw err;
-          res.json({ token });
+          res.cookie('token', token, { httpOnly: true, secure: true });
+          res.json({ token, user });
         }
       );
     } catch (err) {

@@ -14,7 +14,7 @@ const TaskSchema = new mongoose.Schema({
     required: true
   },
   duration: {
-    type: Number, // Changed from Date to Number for simplicity
+    type: Number,
     required: true
   },
   rate: {

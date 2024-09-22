@@ -3,7 +3,22 @@ const Task = require('../models/Task');
 const auth = require('../middleware/auth');
 const router = express.Router({ mergeParams: true });
 
-// Create a new task
+// @route   GET api/users/:user_id/tasks
+// @desc    Get all tasks for a user
+// @access  Private
+router.get('/', auth, async (req, res) => {
+  try {
+    const tasks = await Task.find({ user: req.user.id });
+    res.json(tasks);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   POST api/users/:user_id/tasks
+// @desc    Create a task for a user
+// @access  Private
 router.post('/', auth, async (req, res) => {
   try {
     const { title, startTime, endTime, duration, rate, value } = req.body;
@@ -24,18 +39,9 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// Get all tasks for a user
-router.get('/', auth, async (req, res) => {
-  try {
-    const tasks = await Task.find({ user: req.user.id });
-    res.json(tasks);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
-
-// Get a single task by ID
+// @route   GET api/users/:user_id/tasks/:task_id
+// @desc    Get task by id for a user
+// @access  Private
 router.get('/:task_id', auth, async (req, res) => {
   try {
     const task = await Task.findById(req.params.task_id);
@@ -49,7 +55,9 @@ router.get('/:task_id', auth, async (req, res) => {
   }
 });
 
-// Update a task
+// @route   PUT api/users/:user_id/tasks/:task_id
+// @desc    Update a task for a user
+// @access  Private
 router.put('/:task_id', auth, async (req, res) => {
   const { title, startTime, endTime, duration, rate, value } = req.body;
   const taskFields = { title, startTime, endTime, duration, rate, value };
@@ -71,7 +79,9 @@ router.put('/:task_id', auth, async (req, res) => {
   }
 });
 
-// Delete a task
+// @route   DELETE api/users/:user_id/tasks/:task_id
+// @desc    Delete a task for a user
+// @access  Private
 router.delete('/:task_id', auth, async (req, res) => {
   try {
     const task = await Task.findById(req.params.task_id);

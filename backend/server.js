@@ -19,16 +19,16 @@ const app = express();
 
 connectDB();
 
+const dev_origin = 'http://localhost:3000';
+
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: [dev_origin],
   credentials: true,
   optionsSuccessStatus: 200 // For legacy browser support
 };
 
 // Apply CORS middleware to all routes
 app.use(cors(corsOptions));
-
-// app.use(cors()); // Use the cors middleware
 
 app.use(logger('dev'));
 app.use(express.json());
