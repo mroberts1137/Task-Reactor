@@ -1,3 +1,3 @@
 # Task Reactor
 
-Track your earnings live against a list of goals
+Log hours worked and track progress against daily and monthly goals.
