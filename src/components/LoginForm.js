@@ -45,26 +45,21 @@ const RegisterForm = () => {
         LOGIN_URL,
         JSON.stringify({ username, password }),
         {
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         }
       );
 
-      /**
-       * TODO: Add login
-       */
       console.log(JSON.stringify(response));
 
       // Store the JWT in local storage
       localStorage.setItem('jwt', response.data.token);
 
-      const userId = response.data.userId;
       const user = response.data.user;
+      const userId = response.data.user.id;
 
-      dispatch(setUserId(userId));
       dispatch(setUser(user));
+      dispatch(setUserId(userId));
 
       // Fetch tasks for the logged-in user
       await dispatch(fetchTasks(userId));
