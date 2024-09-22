@@ -2,7 +2,6 @@ import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { v4 as uuid } from 'uuid';
 
 import { fetchTasks, addTaskAsync, removeTaskAsync } from './tasksThunks';
-
 export { fetchTasks, addTaskAsync, removeTaskAsync };
 
 const initialState = {
@@ -33,6 +32,7 @@ const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // fetchTasks
       .addCase(fetchTasks.pending, (state) => {
         state.status = 'loading';
       })
@@ -44,6 +44,7 @@ const taskSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      //addTaskAsync
       .addCase(addTaskAsync.pending, (state) => {
         state.status = 'loading';
       })
@@ -55,6 +56,7 @@ const taskSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      // removeTaskAsync
       .addCase(removeTaskAsync.pending, (state) => {
         state.status = 'loading';
       })

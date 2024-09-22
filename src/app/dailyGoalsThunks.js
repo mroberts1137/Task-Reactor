@@ -3,18 +3,21 @@ import axios from '../api/axios';
 
 const jwt = localStorage.getItem('jwt');
 
-const TASKS_URL = '/api/users/{userId}/tasks';
+const DAILY_GOALS_URL = '/api/users/{userId}/daily_goals';
 
-// @route   GET api/users/:user_id/tasks
-// @desc    Get all tasks for a user
+// @route   GET api/users/:user_id/daily_goals
+// @desc    Get all daily goals for a user
 // @access  Private
-export const fetchTasks = createAsyncThunk(
-  'tasks/fetchTasks',
+export const fetchDailyGoals = createAsyncThunk(
+  'tasks/fetchDailyGoals',
   async (userId) => {
-    const response = await axios.get(TASKS_URL.replace('{userId}', userId), {
-      headers: { Authorization: `Bearer ${jwt}` },
-      withCredentials: true
-    });
+    const response = await axios.get(
+      DAILY_GOALS_URL.replace('{userId}', userId),
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+        withCredentials: true
+      }
+    );
     return response.data;
   }
 );
@@ -26,7 +29,7 @@ export const addTaskAsync = createAsyncThunk(
   'tasks/addTaskAsync',
   async (userId, task) => {
     const response = await axios.post(
-      TASKS_URL.replace('{userId}', userId),
+      DAILY_GOALS_URL.replace('{userId}', userId),
       {
         headers: { Authorization: `Bearer ${jwt}` },
         withCredentials: true
@@ -44,7 +47,7 @@ export const getTaskById = createAsyncThunk(
   'tasks/getTaskById',
   async (userId, id) => {
     const response = await axios.post(
-      TASKS_URL.replace('{userId}', userId) + `/${id}`,
+      DAILY_GOALS_URL.replace('{userId}', userId) + `/${id}`,
       {
         headers: { Authorization: `Bearer ${jwt}` },
         withCredentials: true
@@ -61,7 +64,7 @@ export const updateTaskById = createAsyncThunk(
   'tasks/updateTaskById',
   async (userId, id, updatedTask) => {
     const response = await axios.put(
-      TASKS_URL.replace('{userId}', userId) + `/${id}`,
+      DAILY_GOALS_URL.replace('{userId}', userId) + `/${id}`,
       {
         headers: { Authorization: `Bearer ${jwt}` },
         withCredentials: true
@@ -79,7 +82,7 @@ export const removeTaskAsync = createAsyncThunk(
   'tasks/removeTaskAsync',
   async (userId, id) => {
     const response = await axios.delete(
-      TASKS_URL.replace('{userId}', userId) + `/${id}`,
+      DAILY_GOALS_URL.replace('{userId}', userId) + `/${id}`,
       {
         headers: { Authorization: `Bearer ${jwt}` },
         withCredentials: true
