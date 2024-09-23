@@ -1,13 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
+import { TASKS_URL } from '../api/api_urls';
 
 const jwt = localStorage.getItem('jwt');
 const config = {
   headers: { Authorization: `Bearer ${jwt}` },
   withCredentials: true
 };
-
-const TASKS_URL = '/api/users/{userId}/tasks';
 
 // @route   GET api/users/:user_id/tasks
 // @desc    Get all tasks for a user
@@ -26,8 +25,8 @@ export const fetchTasks = createAsyncThunk(
 // @route   POST api/users/:user_id/tasks
 // @desc    Create a task for a user
 // @access  Private
-export const addTaskAsync = createAsyncThunk(
-  'tasks/addTaskAsync',
+export const addTask = createAsyncThunk(
+  'tasks/addTask',
   async (user_id, task) => {
     const response = await axios.post(
       TASKS_URL.replace('{userId}', user_id),
@@ -70,8 +69,8 @@ export const updateTaskById = createAsyncThunk(
 // @route   DELETE api/users/:user_id/tasks/:task_id
 // @desc    Delete a task for a user
 // @access  Private
-export const removeTaskAsync = createAsyncThunk(
-  'tasks/removeTaskAsync',
+export const removeTaskById = createAsyncThunk(
+  'tasks/removeTaskById',
   async (user_id, task_id) => {
     const response = await axios.delete(
       TASKS_URL.replace('{userId}', user_id) + `/${task_id}`,

@@ -1,13 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
+import { DAILY_GOALS_URL } from '../api/api_urls';
 
 const jwt = localStorage.getItem('jwt');
 const config = {
   headers: { Authorization: `Bearer ${jwt}` },
   withCredentials: true
 };
-
-const DAILY_GOALS_URL = '/api/users/{userId}/daily_goals';
 
 // @route   GET api/users/:user_id/daily_goals
 // @desc    Get all daily goals for a user

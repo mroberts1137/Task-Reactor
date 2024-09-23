@@ -1,13 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
+import { MONTHLY_GOALS_URL } from '../api/api_urls';
 
 const jwt = localStorage.getItem('jwt');
 const config = {
   headers: { Authorization: `Bearer ${jwt}` },
   withCredentials: true
 };
-
-const MONTHLY_GOALS_URL = '/api/users/{userId}/monthly_goals';
 
 // @route   GET api/users/:user_id/monthly_goals
 // @desc    Get all monthly goals for a user

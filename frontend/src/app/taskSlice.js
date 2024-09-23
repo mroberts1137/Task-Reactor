@@ -1,8 +1,13 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
-import { v4 as uuid } from 'uuid';
 
-import { fetchTasks, addTaskAsync, removeTaskAsync } from './tasksThunks';
-export { fetchTasks, addTaskAsync, removeTaskAsync };
+import {
+  fetchTasks,
+  addTask,
+  getTaskById,
+  updateTaskById,
+  removeTaskById
+} from './tasksThunks';
+export { fetchTasks, addTask, getTaskById, updateTaskById, removeTaskById };
 
 const initialState = {
   taskArray: [],
@@ -14,25 +19,27 @@ const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    addTask: (state, action) => {
-      state.taskArray.push({
-        id: uuid(),
-        ...action.payload
-      });
-    },
-    removeTask: (state, action) => {
-      state.taskArray = state.taskArray.filter(
-        (task) => task.id !== action.payload.id
-      );
-    },
-    setTasks: (state, action) => {
-      state = action.payload;
-    },
+    // addTask: (state, action) => {
+    //   state.taskArray.push({
+    //     id: uuid(),
+    //     ...action.payload
+    //   });
+    // },
+    // removeTask: (state, action) => {
+    //   state.taskArray = state.taskArray.filter(
+    //     (task) => task.id !== action.payload.id
+    //   );
+    // },
+    // setTasks: (state, action) => {
+    //   state = action.payload;
+    // },
     reset: () => initialState
   },
   extraReducers: (builder) => {
     builder
-      // fetchTasks
+      /* 
+        fetchTasks
+      */
       .addCase(fetchTasks.pending, (state) => {
         state.status = 'loading';
       })
@@ -44,29 +51,65 @@ const taskSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
-      //addTaskAsync
-      .addCase(addTaskAsync.pending, (state) => {
+      /* 
+        addTask
+      */
+      .addCase(addTask.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(addTaskAsync.fulfilled, (state, action) => {
+      .addCase(addTask.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.taskArray.push(action.payload);
       })
-      .addCase(addTaskAsync.rejected, (state, action) => {
+      .addCase(addTask.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
-      // removeTaskAsync
-      .addCase(removeTaskAsync.pending, (state) => {
+      /*
+        getTaskById
+      */
+      .addCase(getTaskById.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(removeTaskAsync.fulfilled, (state, action) => {
+      .addCase(getTaskById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.taskArray.push(action.payload);
+      })
+      .addCase(getTaskById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      /*
+        updateTaskById
+      */
+      .addCase(updateTaskById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateTaskById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        const updatedTaskIdx = state.taskArray.findIndex(
+          (item) => item.id == action.payload.id
+        );
+        if (updatedTaskIdx !== -1)
+          state.taskArray[updatedTaskIdx] = action.payload.id;
+      })
+      .addCase(updateTaskById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      /* 
+        removeTaskById
+      */
+      .addCase(removeTaskById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(removeTaskById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.taskArray = state.taskArray.filter(
-          (task) => task.id !== action.payload.id
+          (item) => item.id !== action.payload.id
         );
       })
-      .addCase(removeTaskAsync.rejected, (state, action) => {
+      .addCase(removeTaskById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });
@@ -74,38 +117,46 @@ const taskSlice = createSlice({
 });
 
 export default taskSlice.reducer;
-export const { addTask, removeTask, setTasks, reset } = taskSlice.actions;
+// export const { addTask, removeTask, setTasks, reset } = taskSlice.actions;
+
+// Selectors
+
+const filterTasksByDate = (tasks, date) => {
+  if (!date instanceof Date || isNaN(date)) return;
+
+  return tasks.filter((task) => {
+    [];
+    const taskDate = new Date(task.startTime);
+    return (
+      taskDate instanceof Date &&
+      !isNaN(taskDate) &&
+      taskDate.getFullYear() === date.getFullYear() &&
+      taskDate.getMonth() === date.getMonth() &&
+      taskDate.getDate() === date.getDate()
+    );
+  });
+};
+
+const filterTasksByMonth = (tasks, date) => {
+  if (!date instanceof Date || isNaN(date)) return;
+
+  return tasks.filter((item) => {
+    const taskDate = new Date(item.startTime);
+    return (
+      taskDate instanceof Date &&
+      !isNaN(taskDate) &&
+      taskDate.getFullYear() === date.getFullYear() &&
+      taskDate.getMonth() === date.getMonth()
+    );
+  });
+};
+
 export const selectAllTasks = (state) => state.tasks.taskArray;
-
 export const selectTasksByDate = createSelector(
-  [(state) => state.tasks.taskArray, (state, date) => date],
-  (tasks, date) => {
-    return tasks.filter((item) => {
-      const taskDate = new Date(item.startTime);
-      return (
-        taskDate instanceof Date &&
-        !isNaN(taskDate) &&
-        taskDate.getFullYear() === date.getFullYear() &&
-        taskDate.getMonth() === date.getMonth() &&
-        taskDate.getDate() === date.getDate()
-      );
-    });
-  }
+  [selectAllTasks, (state, date) => date],
+  filterTasksByDate
 );
-
 export const selectAllTasksByMonth = createSelector(
-  [(state) => state.tasks.taskArray, (state, date) => date],
-  (tasks, date) => {
-    return tasks.filter((item) => {
-      const taskDate = new Date(item.startTime);
-      return (
-        taskDate instanceof Date &&
-        !isNaN(taskDate) &&
-        date instanceof Date &&
-        !isNaN(date) &&
-        taskDate.getFullYear() === date.getFullYear() &&
-        taskDate.getMonth() === date.getMonth()
-      );
-    });
-  }
+  [selectAllTasks, (state, date) => date],
+  filterTasksByMonth
 );

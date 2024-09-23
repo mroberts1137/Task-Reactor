@@ -5,6 +5,8 @@ import axios from '../api/axios';
 import './RegisterForm.css';
 import { setUserId, setUser } from '../app/userSlice';
 import { fetchTasks } from '../app/taskSlice';
+import { fetchDailyGoals } from '../app/dailyGoalsSlice';
+import { fetchMonthlyGoals } from '../app/monthlyGoalsSlice';
 
 const LOGIN_URL = '/api/auth';
 
@@ -62,7 +64,9 @@ const RegisterForm = () => {
       dispatch(setUserId(userId));
 
       // Fetch tasks for the logged-in user
-      await dispatch(fetchTasks(userId));
+      dispatch(fetchTasks(userId));
+      dispatch(fetchDailyGoals(userId));
+      dispatch(fetchMonthlyGoals(userId));
 
       setSuccess(true);
       setUsername('');
@@ -79,15 +83,9 @@ const RegisterForm = () => {
 
   return (
     <div id='register-form'>
-      <section>
-        <p>Username: {loggedin_user}</p>
-        <p>User ID: {loggedin_userId}</p>
-      </section>
       {success ? (
         <section>
           <h1>Success!</h1>
-          <p>Username: {loggedin_user}</p>
-          <p>User ID: {loggedin_userId}</p>
         </section>
       ) : (
         <section>

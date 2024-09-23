@@ -4,7 +4,7 @@ import './ProgressBox.css';
 import { selectAllGoals } from '../../app/dailyGoalsSlice';
 
 const Progress = ({ totalEarnings, goalsTotal }) => {
-  const goals = useSelector(selectAllGoals) || [];
+  const goals = useSelector(selectAllGoals);
   const [progress, setProgress] = useState(0);
   const [goalLines, setGoalLines] = useState([]);
   const [isComplete, setIsComplete] = useState(false);
@@ -15,7 +15,7 @@ const Progress = ({ totalEarnings, goalsTotal }) => {
     setProgress(calculatedProgress);
 
     let previousOffset = 0;
-    const goalLinesValues = goals.map((goal) => {
+    const goalLinesValues = goals?.map((goal) => {
       const goalValue = parseFloat(goal.value);
       const goalPercentage = (goalValue / maxProgress) * 100;
       const offset = previousOffset;
@@ -31,7 +31,7 @@ const Progress = ({ totalEarnings, goalsTotal }) => {
 
     if (totalEarnings > goalsTotal) setIsComplete(true);
     else setIsComplete(false);
-  }, [totalEarnings, goalsTotal]);
+  }, [totalEarnings, goalsTotal, goals]);
 
   return (
     <div className='container'>

@@ -9,6 +9,14 @@ import {
   removeMonthlyGoalById
 } from './monthlyGoalsThunks';
 
+export {
+  fetchMonthlyGoals,
+  addMonthlyGoal,
+  getMonthlyGoalById,
+  updateMonthlyGoalById,
+  removeMonthlyGoalById
+};
+
 const initialState = {
   monthlyGoalsArray: [
     { id: uuid(), title: 'Rent', value: 500 },
@@ -48,7 +56,9 @@ const monthlyGoalsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // fetchMonthlyGoals
+      /* 
+        fetchMonthlyGoals
+      */
       .addCase(fetchMonthlyGoals.pending, (state) => {
         state.status = 'loading';
       })
@@ -59,10 +69,73 @@ const monthlyGoalsSlice = createSlice({
       .addCase(fetchMonthlyGoals.rejected, (state, action) => {
         state.status = 'failure';
         state.error = action.error.message;
+      })
+      /* 
+        addMonthlyGoal
+      */
+      .addCase(addMonthlyGoal.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addMonthlyGoal.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.monthlyGoalsArray.push(action.payload);
+      })
+      .addCase(addMonthlyGoal.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      /*
+        getMonthlyGoalById
+      */
+      .addCase(getMonthlyGoalById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getMonthlyGoalById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.monthlyGoalsArray.push(action.payload);
+      })
+      .addCase(getMonthlyGoalById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      /*
+        updateMonthlyGoalById
+      */
+      .addCase(updateMonthlyGoalById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateMonthlyGoalById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        const updatedMonthlyGoalIdx = state.monthlyGoalsArray.findIndex(
+          (item) => item.id == action.payload.id
+        );
+        if (updatedMonthlyGoalIdx !== -1)
+          state.monthlyGoalsArray[updatedMonthlyGoalIdx] = action.payload.id;
+      })
+      .addCase(updateMonthlyGoalById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      /* 
+        removeMonthlyGoalById
+      */
+      .addCase(removeMonthlyGoalById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(removeMonthlyGoalById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.monthlyGoalsArray = state.monthlyGoalsArray.filter(
+          (item) => item.id !== action.payload.id
+        );
+      })
+      .addCase(removeMonthlyGoalById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       });
   }
 });
 
 export default monthlyGoalsSlice.reducer;
 export const { addGoal, removeGoal, setGoals } = monthlyGoalsSlice.actions;
+
 export const selectAllGoals = (state) => state.monthlyGoals.monthlyGoalsArray;
