@@ -3,9 +3,9 @@ import { combineReducers } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './userSlice';
-import goalsReducer from './goalsSlice';
-import monthlyGoalsReducer from './monthlyGoalsSlice';
 import taskReducer from './taskSlice';
+import dailyGoalsReducer from './dailyGoalsSlice';
+import monthlyGoalsReducer from './monthlyGoalsSlice';
 import savedTasksReducer from './savedTasksSlice';
 
 const persistConfig = {
@@ -17,7 +17,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
-  goals: goalsReducer,
+  dailyGoals: dailyGoalsReducer,
   monthlyGoals: monthlyGoalsReducer,
   tasks: taskReducer,
   savedTasks: savedTasksReducer

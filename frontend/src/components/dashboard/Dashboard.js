@@ -26,7 +26,7 @@ import {
   selectAllTasksByMonth,
   reset
 } from '../../app/taskSlice';
-import { selectAllGoals } from '../../app/goalsSlice';
+import { selectAllGoals } from '../../app/dailyGoalsSlice';
 import { selectAllGoals as selectAllMonthlyGoals } from '../../app/monthlyGoalsSlice';
 import { sumTotal } from '../../utils/functions';
 

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { selectAllGoals, removeGoal, addGoal } from '../../app/goalsSlice';
+import { selectAllGoals, removeGoal, addGoal } from '../../app/dailyGoalsSlice';
 
 import AddItem from '../list/AddItem';
 import List from '../list/List';

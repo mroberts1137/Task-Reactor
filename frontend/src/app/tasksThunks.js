@@ -2,6 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
 
 const jwt = localStorage.getItem('jwt');
+const config = {
+  headers: { Authorization: `Bearer ${jwt}` },
+  withCredentials: true
+};
 
 const TASKS_URL = '/api/users/{userId}/tasks';
 
@@ -10,11 +14,11 @@ const TASKS_URL = '/api/users/{userId}/tasks';
 // @access  Private
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
-  async (userId) => {
-    const response = await axios.get(TASKS_URL.replace('{userId}', userId), {
-      headers: { Authorization: `Bearer ${jwt}` },
-      withCredentials: true
-    });
+  async (user_id) => {
+    const response = await axios.get(
+      TASKS_URL.replace('{userId}', user_id),
+      config
+    );
     return response.data;
   }
 );
@@ -24,13 +28,10 @@ export const fetchTasks = createAsyncThunk(
 // @access  Private
 export const addTaskAsync = createAsyncThunk(
   'tasks/addTaskAsync',
-  async (userId, task) => {
+  async (user_id, task) => {
     const response = await axios.post(
-      TASKS_URL.replace('{userId}', userId),
-      {
-        headers: { Authorization: `Bearer ${jwt}` },
-        withCredentials: true
-      },
+      TASKS_URL.replace('{userId}', user_id),
+      config,
       task
     );
     return response.data;
@@ -42,13 +43,10 @@ export const addTaskAsync = createAsyncThunk(
 // @access  Private
 export const getTaskById = createAsyncThunk(
   'tasks/getTaskById',
-  async (userId, id) => {
-    const response = await axios.post(
-      TASKS_URL.replace('{userId}', userId) + `/${id}`,
-      {
-        headers: { Authorization: `Bearer ${jwt}` },
-        withCredentials: true
-      }
+  async (user_id, task_id) => {
+    const response = await axios.get(
+      TASKS_URL.replace('{userId}', user_id) + `/${task_id}`,
+      config
     );
     return response.data;
   }
@@ -59,13 +57,10 @@ export const getTaskById = createAsyncThunk(
 // @access  Private
 export const updateTaskById = createAsyncThunk(
   'tasks/updateTaskById',
-  async (userId, id, updatedTask) => {
+  async (user_id, task_id, updatedTask) => {
     const response = await axios.put(
-      TASKS_URL.replace('{userId}', userId) + `/${id}`,
-      {
-        headers: { Authorization: `Bearer ${jwt}` },
-        withCredentials: true
-      },
+      TASKS_URL.replace('{userId}', user_id) + `/${task_id}`,
+      config,
       updatedTask
     );
     return response.data;
@@ -77,13 +72,10 @@ export const updateTaskById = createAsyncThunk(
 // @access  Private
 export const removeTaskAsync = createAsyncThunk(
   'tasks/removeTaskAsync',
-  async (userId, id) => {
+  async (user_id, task_id) => {
     const response = await axios.delete(
-      TASKS_URL.replace('{userId}', userId) + `/${id}`,
-      {
-        headers: { Authorization: `Bearer ${jwt}` },
-        withCredentials: true
-      }
+      TASKS_URL.replace('{userId}', user_id) + `/${task_id}`,
+      config
     );
     return response.data;
   }

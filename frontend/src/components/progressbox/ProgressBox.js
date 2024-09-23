@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import './ProgressBox.css';
-import { selectAllGoals } from '../../app/goalsSlice';
+import { selectAllGoals } from '../../app/dailyGoalsSlice';
 
 const Progress = ({ totalEarnings, goalsTotal }) => {
-  const goals = useSelector(selectAllGoals);
+  const goals = useSelector(selectAllGoals) || [];
   const [progress, setProgress] = useState(0);
   const [goalLines, setGoalLines] = useState([]);
   const [isComplete, setIsComplete] = useState(false);
@@ -31,7 +31,7 @@ const Progress = ({ totalEarnings, goalsTotal }) => {
 
     if (totalEarnings > goalsTotal) setIsComplete(true);
     else setIsComplete(false);
-  }, [totalEarnings, goalsTotal, goals]);
+  }, [totalEarnings, goalsTotal]);
 
   return (
     <div className='container'>

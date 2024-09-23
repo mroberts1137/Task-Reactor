@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
-import { month } from '../../utils/functions';
 
 const ListItem = ({ item, removeAction, displayKeys }) => {
   const dispatch = useDispatch();

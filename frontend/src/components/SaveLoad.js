@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveAs } from 'file-saver';
-import { setGoals } from '../app/goalsSlice';
+import { setGoals } from '../app/dailyGoalsSlice';
 import { setTasks } from '../app/taskSlice';
 
 const SaveLoad = () => {
   const dispatch = useDispatch();
-  const goals = useSelector((state) => state.goals);
+  const goals = useSelector((state) => state.dailyGoals);
   const tasks = useSelector((state) => state.tasks);
   const [file, setFile] = useState(null);
 
@@ -34,7 +34,7 @@ const SaveLoad = () => {
   const handleFileRead = (event) => {
     const content = event.target.result;
     const state = JSON.parse(content);
-    dispatch(setGoals(state.goals));
+    dispatch(setGoals(state.dailyGoals));
     dispatch(setTasks(state.tasks));
   };
 

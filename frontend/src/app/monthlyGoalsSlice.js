@@ -1,6 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { v4 as uuid } from 'uuid';
 
+import {
+  fetchMonthlyGoals,
+  addMonthlyGoal,
+  getMonthlyGoalById,
+  updateMonthlyGoalById,
+  removeMonthlyGoalById
+} from './monthlyGoalsThunks';
+
 const initialState = {
   monthlyGoalsArray: [
     { id: uuid(), title: 'Rent', value: 500 },
@@ -13,7 +21,9 @@ const initialState = {
     { id: uuid(), title: 'Gas', value: 96 },
     { id: uuid(), title: 'Restaurant/Other', value: 232 },
     { id: uuid(), title: 'Shopping', value: 97 }
-  ]
+  ],
+  status: 'idle',
+  error: null
 };
 
 const monthlyGoalsSlice = createSlice({
@@ -35,6 +45,21 @@ const monthlyGoalsSlice = createSlice({
     setGoals: (state, action) => {
       state = action.payload;
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      // fetchMonthlyGoals
+      .addCase(fetchMonthlyGoals.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchMonthlyGoals.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.monthlyGoalsArray = action.payload;
+      })
+      .addCase(fetchMonthlyGoals.rejected, (state, action) => {
+        state.status = 'failure';
+        state.error = action.error.message;
+      });
   }
 });
 
