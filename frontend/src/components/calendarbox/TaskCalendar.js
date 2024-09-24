@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext } from 'react';
 import Calendar from 'react-calendar';
 import { useSelector } from 'react-redux';
-import { selectAllTasks, selectAllTasksByMonth } from '../../app/taskSlice';
+import { selectAllTasks, selectAllTasksByMonth } from '../../app/tasksSlice';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import './TaskCalendar.css';

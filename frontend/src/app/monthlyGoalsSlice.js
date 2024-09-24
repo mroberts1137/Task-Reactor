@@ -38,18 +38,6 @@ const monthlyGoalsSlice = createSlice({
   name: 'monthlyGoals',
   initialState,
   reducers: {
-    addGoal: (state, action) => {
-      state.monthlyGoalsArray.push({
-        id: uuid(),
-        title: action.payload.title,
-        value: action.payload.value
-      });
-    },
-    removeGoal: (state, action) => {
-      state.monthlyGoalsArray = state.monthlyGoalsArray.filter(
-        (goal) => goal.id !== action.payload.id
-      );
-    },
     setGoals: (state, action) => {
       state = action.payload;
     }
@@ -136,6 +124,6 @@ const monthlyGoalsSlice = createSlice({
 });
 
 export default monthlyGoalsSlice.reducer;
-export const { addGoal, removeGoal, setGoals } = monthlyGoalsSlice.actions;
+export const { setGoals } = monthlyGoalsSlice.actions;
 
 export const selectAllGoals = (state) => state.monthlyGoals.monthlyGoalsArray;

@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useDispatch } from 'react-redux';
+import { UserContext } from '../../contexts/context';
 
 const AddItem = ({ addAction }) => {
   const [title, setTitle] = useState('');
   const [value, setValue] = useState('');
   const dispatch = useDispatch();
+  const { user, userId } = useContext(UserContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,9 +20,14 @@ const AddItem = ({ addAction }) => {
       title,
       value
     };
-    dispatch(addAction(newGoal));
     setTitle('');
     setValue('');
+
+    if (!userId || !user) {
+      console.log('No user logged in');
+      return;
+    }
+    dispatch(addAction(userId, newGoal));
   };
 
   return (

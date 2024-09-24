@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectTasksByDate } from '../../app/taskSlice';
+import { selectTasksByDate } from '../../app/tasksSlice';
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());

@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTask } from '../../app/taskSlice';
+import { addTask } from '../../app/tasksSlice';
 import { saveTask } from '../../app/savedTasksSlice';
+import { UserContext } from '../../contexts/context';
 import TaskManager from './TaskManager';
 import TaskForm from './TaskForm';
 import SavedTasks from './SavedTasks';
@@ -16,6 +17,7 @@ const TimerBox = ({ earningsChange }) => {
   const [elapsedTime, setElapsedTime] = useState(undefined);
   const [earnings, setEarnings] = useState(0);
   const [selectedTask, setSelectedTask] = useState({ task: '', rate: 0 });
+  const { user, userId } = useContext(UserContext);
 
   const dispatch = useDispatch();
 
@@ -33,7 +35,8 @@ const TimerBox = ({ earningsChange }) => {
     if (clockRunning) {
       setEndTime(new Date());
       updateElapsedTime();
-      const task = {
+
+      const newTask = {
         title: selectedTask.task,
         startTime,
         endTime: new Date(),
@@ -41,8 +44,14 @@ const TimerBox = ({ earningsChange }) => {
         value: parseFloat(earnings),
         rate: parseFloat(selectedTask.rate)
       };
-      dispatch(addTask(task));
       reset();
+
+      if (!userId) {
+        console.log('No user logged in');
+        return;
+      }
+
+      dispatch(addTask({ user_id: userId, task: newTask }));
     } else {
       setStartTime(new Date());
     }

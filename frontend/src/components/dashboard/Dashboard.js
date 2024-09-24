@@ -14,7 +14,12 @@ import SaveLoad from '../SaveLoad';
 import DateDisplay from '../DateDisplay';
 import TimeDisplay from '../TimeDisplay';
 
-import { TaskContext, GoalsContext, DateContext } from '../../contexts/context';
+import {
+  UserContext,
+  TaskContext,
+  GoalsContext,
+  DateContext
+} from '../../contexts/context';
 
 import './Dashboard.css';
 
@@ -25,16 +30,18 @@ import {
   selectTasksByDate,
   selectAllTasksByMonth,
   reset
-} from '../../app/taskSlice';
+} from '../../app/tasksSlice';
 import { selectAllGoals } from '../../app/dailyGoalsSlice';
 import { selectAllGoals as selectAllMonthlyGoals } from '../../app/monthlyGoalsSlice';
 import { sumTotal } from '../../utils/functions';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const userId = useSelector(selectUserId);
-  const user = useSelector(selectUser);
+  const loggedin_userId = useSelector(selectUserId);
+  const loggedin_user = useSelector(selectUser);
 
+  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [goalsTotal, setGoalsTotal] = useState(0);
   const [monthlyGoalsTotal, setMonthlyGoalsTotal] = useState(0);
   const [tasksTotal, setTasksTotal] = useState(0);
@@ -43,7 +50,7 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const todaysDate = new Date();
 
-  const goals = useSelector(selectAllGoals);
+  const dailyGoals = useSelector(selectAllGoals);
   const monthlyGoals = useSelector(selectAllMonthlyGoals);
   const tasks = useSelector(selectAllTasks);
   const dailyTasks = useSelector((state) =>
@@ -54,14 +61,16 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    if (userId) {
-      dispatch(fetchTasks(userId)); // Dispatch the fetchTasks asyncThunk with the user ID
+    if (loggedin_userId) {
+      setUser(loggedin_user);
+      setUserId(loggedin_userId);
+      dispatch(fetchTasks(loggedin_userId));
     }
-  }, [dispatch, userId]);
+  }, [dispatch, loggedin_userId, loggedin_user]);
 
   useEffect(() => {
-    setGoalsTotal(sumTotal(goals));
-  }, [goals]);
+    setGoalsTotal(sumTotal(dailyGoals));
+  }, [dailyGoals]);
 
   useEffect(() => {
     setMonthlyGoalsTotal(sumTotal(monthlyGoals));
@@ -97,56 +106,58 @@ const Dashboard = () => {
   };
 
   return (
-    <DateContext.Provider value={{ selectedDate, todaysDate }}>
-      <TaskContext.Provider value={{ tasks, dailyTasks }}>
-        <GoalsContext.Provider value={{ goals }}>
-          <div className='dashboard'>
-            <h2>User: {user?.username}</h2>
-            <h2>Email: {user?.email}</h2>
-            <h2>User ID: {userId}</h2>
-            <h1>Tasks:</h1>
-            <ul>
-              {tasks.map((task) => (
-                <li>{JSON.stringify(task.title)}</li>
-              ))}
-            </ul>
-            <div className='container'>
-              <DateDisplay date={todaysDate} />
-              <TimeDisplay date={todaysDate} />
-              <button onClick={handleReset}>Reset State</button>
-            </div>
-            <button onClick={handleLoadTasks}>Load Tasks</button>
-            <Row className='row'>
-              <TimerBox earningsChange={earningsChange} />
-              {/* <SaveLoadButtons />
+    <UserContext.Provider value={{ user, userId }}>
+      <DateContext.Provider value={{ selectedDate, todaysDate }}>
+        <TaskContext.Provider value={{ tasks, dailyTasks }}>
+          <GoalsContext.Provider value={{ goals: dailyGoals }}>
+            <div className='dashboard'>
+              <h2>User: {user?.username}</h2>
+              <h2>Email: {user?.email}</h2>
+              <h2>User ID: {userId}</h2>
+              <h1>Tasks:</h1>
+              <ul>
+                {tasks.map((task) => (
+                  <li>{JSON.stringify(task?.title)}</li>
+                ))}
+              </ul>
+              <div className='container'>
+                <DateDisplay date={todaysDate} />
+                <TimeDisplay date={todaysDate} />
+                <button onClick={handleReset}>Reset State</button>
+              </div>
+              <button onClick={handleLoadTasks}>Load Tasks</button>
+              <Row className='row'>
+                <TimerBox earningsChange={earningsChange} />
+                {/* <SaveLoadButtons />
               <SaveLoad /> */}
-            </Row>
-            <Row className='row'>
-              <Col className='col'>
-                <ProgressBox
-                  goalsTotal={goalsTotal}
-                  totalEarnings={totalEarnings}
-                />
-                <MonthlyProgressBox
-                  goalsTotal={monthlyGoalsTotal}
-                  totalEarnings={monthlyTotalEarnings}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <CalendarBox handleSelectDate={handleSelectDate} />
-            </Row>
-            <Row className='row'>
-              <TasksBox />
-            </Row>
-            <Row>
-              <MonthlyGoalsBox total={monthlyGoalsTotal} />
-              <GoalsBox total={goalsTotal} />
-            </Row>
-          </div>
-        </GoalsContext.Provider>
-      </TaskContext.Provider>
-    </DateContext.Provider>
+              </Row>
+              <Row className='row'>
+                <Col className='col'>
+                  <ProgressBox
+                    goalsTotal={goalsTotal}
+                    totalEarnings={totalEarnings}
+                  />
+                  <MonthlyProgressBox
+                    goalsTotal={monthlyGoalsTotal}
+                    totalEarnings={monthlyTotalEarnings}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <CalendarBox handleSelectDate={handleSelectDate} />
+              </Row>
+              <Row className='row'>
+                <TasksBox />
+              </Row>
+              <Row>
+                <MonthlyGoalsBox total={monthlyGoalsTotal} />
+                <GoalsBox total={goalsTotal} />
+              </Row>
+            </div>
+          </GoalsContext.Provider>
+        </TaskContext.Provider>
+      </DateContext.Provider>
+    </UserContext.Provider>
   );
 };
 

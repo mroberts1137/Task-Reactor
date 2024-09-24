@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { removeTask } from '../../app/taskSlice';
+import { removeTaskById } from '../../app/tasksSlice';
 import DateDisplay from '../DateDisplay';
 import DropdownSelector from './DropdownSelector';
 import AddTask from '../list/AddTask';
@@ -51,7 +51,7 @@ const TaskBox = () => {
       />
       <List
         items={dailyTasks}
-        removeAction={removeTask}
+        removeAction={removeTaskById}
         displayKeys={displayKeys}
       />
     </div>

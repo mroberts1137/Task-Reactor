@@ -8,9 +8,10 @@ const CalendarBox = ({ handleSelectDate }) => {
 
   return (
     <div className='container'>
-      <p>
-        Selected Date: <DateDisplay date={selectedDate} />
-      </p>
+      <p>Selected Date: </p>
+      <DateDisplay date={selectedDate} />
+      <p>Today's Date: </p>
+      <DateDisplay date={todaysDate} />
       <TaskCalendar handleSelectDate={handleSelectDate} />
     </div>
   );

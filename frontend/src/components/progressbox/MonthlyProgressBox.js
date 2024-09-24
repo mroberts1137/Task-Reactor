@@ -15,7 +15,7 @@ const MonthlyProgress = ({ totalEarnings, goalsTotal }) => {
     setProgress(calculatedProgress);
 
     let previousOffset = 0;
-    const goalLinesValues = goals.map((goal) => {
+    const goalLinesValues = goals?.map((goal) => {
       const goalValue = parseFloat(goal.value);
       const goalPercentage = (goalValue / maxProgress) * 100;
       const offset = previousOffset;

@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
+import { UserContext } from '../../contexts/context';
 
 const ListItem = ({ item, removeAction, displayKeys }) => {
   const dispatch = useDispatch();
   const [animate, setAnimate] = useState(false);
+  const { user, userId } = useContext(UserContext);
 
   const slideIn = useSpring({
     opacity: animate ? 1 : 0,
@@ -14,13 +16,18 @@ const ListItem = ({ item, removeAction, displayKeys }) => {
 
   useEffect(() => setAnimate(true), []);
 
+  const handleDelete = () => {
+    if (!userId || !user) {
+      console.log('No user logged in');
+      return;
+    }
+    dispatch(removeAction(userId, item));
+  };
+
   return (
     <animated.tr className='list-item' style={slideIn}>
       <td>
-        <button
-          className='remove-item-btn'
-          onClick={() => dispatch(removeAction(item))}
-        >
+        <button className='remove-item-btn' onClick={handleDelete}>
           X
         </button>
       </td>

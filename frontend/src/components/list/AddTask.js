@@ -1,18 +1,25 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTask, addTaskAsync } from '../../app/taskSlice';
+import { addTask } from '../../app/tasksSlice';
+import { UserContext } from '../../contexts/context';
 
 const AddTask = () => {
   const [title, setTitle] = useState('');
   const [value, setValue] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [startTime, setStartTime] = useState(undefined);
-  const [endTime, setEndTime] = useState(undefined);
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
   const [rate, setRate] = useState(0);
   const dispatch = useDispatch();
+  const { user, userId } = useContext(UserContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!userId || !user) {
+      console.log('No user logged in');
+      return;
+    }
 
     // if (!title || !value || value <= 0 || !duration) {
     //   console.log('Invalid input');
@@ -27,8 +34,8 @@ const AddTask = () => {
       endTime: new Date(),
       rate: parseFloat(rate)
     };
-    dispatch(addTask(newTask));
-    dispatch(addTaskAsync(newTask));
+
+    dispatch(addTask({ user_id: userId, task: newTask }));
     setTitle('');
     setValue(0);
     setDuration(0);

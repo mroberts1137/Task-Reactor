@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import {
   selectAllGoals,
-  removeGoal,
-  addGoal
+  removeMonthlyGoalById,
+  addMonthlyGoal
 } from '../../app/monthlyGoalsSlice';
 
 import AddItem from '../list/AddItem';
@@ -22,8 +22,12 @@ const MonthlyGoalsBox = ({ total }) => {
         Monthly Goals: $<span id='goals-total'>{total}</span>
       </h3>
 
-      <AddItem addAction={addGoal} />
-      <List items={goals} removeAction={removeGoal} displayKeys={displayKeys} />
+      <AddItem addAction={addMonthlyGoal} />
+      <List
+        items={goals}
+        removeAction={removeMonthlyGoalById}
+        displayKeys={displayKeys}
+      />
     </div>
   );
 };

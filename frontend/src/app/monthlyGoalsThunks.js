@@ -14,11 +14,16 @@ const config = {
 export const fetchMonthlyGoals = createAsyncThunk(
   'monthlyGoals/fetchMonthlyGoals',
   async (user_id) => {
-    const response = await axios.get(
-      MONTHLY_GOALS_URL.replace('{userId}', user_id),
-      config
-    );
-    return response.data;
+    try {
+      const response = await axios.get(
+        MONTHLY_GOALS_URL.replace('{userId}', user_id),
+        config
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -27,13 +32,18 @@ export const fetchMonthlyGoals = createAsyncThunk(
 // @access  Private
 export const addMonthlyGoal = createAsyncThunk(
   'monthlyGoals/addMonthlyGoal',
-  async (user_id, goal) => {
-    const response = await axios.post(
-      MONTHLY_GOALS_URL.replace('{userId}', user_id),
-      config,
-      goal
-    );
-    return response.data;
+  async ({ user_id, goal }) => {
+    try {
+      const response = await axios.post(
+        MONTHLY_GOALS_URL.replace('{userId}', user_id),
+        config,
+        goal
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -42,12 +52,17 @@ export const addMonthlyGoal = createAsyncThunk(
 // @access  Private
 export const getMonthlyGoalById = createAsyncThunk(
   'monthlyGoals/getMonthlyGoalById',
-  async (user_id, monthly_goal_id) => {
-    const response = await axios.get(
-      MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
-      config
-    );
-    return response.data;
+  async ({ user_id, monthly_goal_id }) => {
+    try {
+      const response = await axios.get(
+        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
+        config
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -56,13 +71,18 @@ export const getMonthlyGoalById = createAsyncThunk(
 // @access  Private
 export const updateMonthlyGoalById = createAsyncThunk(
   'monthlyGoals/updateMonthlyGoalById',
-  async (user_id, monthly_goal_id, updatedGoal) => {
-    const response = await axios.put(
-      MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
-      config,
-      updatedGoal
-    );
-    return response.data;
+  async ({ user_id, monthly_goal_id, updatedGoal }) => {
+    try {
+      const response = await axios.put(
+        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
+        config,
+        updatedGoal
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -71,11 +91,16 @@ export const updateMonthlyGoalById = createAsyncThunk(
 // @access  Private
 export const removeMonthlyGoalById = createAsyncThunk(
   'monthlyGoals/removeMonthlyGoalById',
-  async (user_id, monthly_goal_id) => {
-    const response = await axios.delete(
-      MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
-      config
-    );
-    return response.data;
+  async ({ user_id, monthly_goal_id }) => {
+    try {
+      const response = await axios.delete(
+        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
+        config
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );

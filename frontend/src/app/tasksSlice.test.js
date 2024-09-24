@@ -2,8 +2,8 @@ import configureMockStore from 'redux-mock-store'; // Mock store
 import thunk from 'redux-thunk'; // Middleware for handling async actions
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { fetchTasks } from './taskSlice'; // Your async thunk
-import { TASKS_URL } from '../api/api_urls'; // URL for tasks
+import { fetchTasks } from './tasksTunks';
+import { TASKS_URL } from '../api/api_urls';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

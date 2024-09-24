@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from '../api/axios';
 import './RegisterForm.css';
 import { setUserId, setUser } from '../app/userSlice';
-import { fetchTasks } from '../app/taskSlice';
+import { fetchTasks } from '../app/tasksSlice';
 import { fetchDailyGoals } from '../app/dailyGoalsSlice';
 import { fetchMonthlyGoals } from '../app/monthlyGoalsSlice';
 
@@ -30,7 +30,7 @@ const RegisterForm = () => {
 
   // set focus to user input when component loads
   useEffect(() => {
-    userRef.current.focus();
+    userRef?.current.focus();
   }, []);
 
   useEffect(() => {
@@ -58,17 +58,19 @@ const RegisterForm = () => {
       localStorage.setItem('jwt', response.data.token);
 
       const user = response.data.user;
-      const userId = response.data.user.id;
+      const userId = response.data.user._id;
 
-      dispatch(setUser(user));
-      dispatch(setUserId(userId));
+      if (user && userId) {
+        dispatch(setUser(user));
+        dispatch(setUserId(userId));
 
-      // Fetch tasks for the logged-in user
-      dispatch(fetchTasks(userId));
-      dispatch(fetchDailyGoals(userId));
-      dispatch(fetchMonthlyGoals(userId));
+        // Fetch tasks for the logged-in user
+        dispatch(fetchTasks(userId));
+        dispatch(fetchDailyGoals(userId));
+        dispatch(fetchMonthlyGoals(userId));
+        setSuccess(true);
+      }
 
-      setSuccess(true);
       setUsername('');
       setPassword('');
     } catch (err) {

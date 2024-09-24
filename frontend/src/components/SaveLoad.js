@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveAs } from 'file-saver';
 import { setGoals } from '../app/dailyGoalsSlice';
-import { setTasks } from '../app/taskSlice';
+import { setTasks } from '../app/tasksSlice';
 
 const SaveLoad = () => {
   const dispatch = useDispatch();

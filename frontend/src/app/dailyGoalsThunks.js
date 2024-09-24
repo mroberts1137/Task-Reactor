@@ -14,11 +14,16 @@ const config = {
 export const fetchDailyGoals = createAsyncThunk(
   'dailyGoals/fetchDailyGoals',
   async (user_id) => {
-    const response = await axios.get(
-      DAILY_GOALS_URL.replace('{userId}', user_id),
-      config
-    );
-    return response.data;
+    try {
+      const response = await axios.get(
+        DAILY_GOALS_URL.replace('{userId}', user_id),
+        config
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -27,13 +32,18 @@ export const fetchDailyGoals = createAsyncThunk(
 // @access  Private
 export const addDailyGoal = createAsyncThunk(
   'dailyGoals/addDailyGoal',
-  async (user_id, goal) => {
-    const response = await axios.post(
-      DAILY_GOALS_URL.replace('{userId}', user_id),
-      config,
-      goal
-    );
-    return response.data;
+  async ({ user_id, goal }) => {
+    try {
+      const response = await axios.post(
+        DAILY_GOALS_URL.replace('{userId}', user_id),
+        config,
+        goal
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -42,12 +52,17 @@ export const addDailyGoal = createAsyncThunk(
 // @access  Private
 export const getDailyGoalById = createAsyncThunk(
   'dailyGoals/getDailyGoalById',
-  async (user_id, daily_goal_id) => {
-    const response = await axios.get(
-      DAILY_GOALS_URL.replace('{userId}', user_id) + `/${daily_goal_id}`,
-      config
-    );
-    return response.data;
+  async ({ user_id, daily_goal_id }) => {
+    try {
+      const response = await axios.get(
+        DAILY_GOALS_URL.replace('{userId}', user_id) + `/${daily_goal_id}`,
+        config
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -56,13 +71,18 @@ export const getDailyGoalById = createAsyncThunk(
 // @access  Private
 export const updateDailyGoalById = createAsyncThunk(
   'dailyGoals/updateDailyGoalById',
-  async (user_id, daily_goal_id, updatedGoal) => {
-    const response = await axios.put(
-      DAILY_GOALS_URL.replace('{userId}', user_id) + `/${daily_goal_id}`,
-      config,
-      updatedGoal
-    );
-    return response.data;
+  async ({ user_id, daily_goal_id, updatedGoal }) => {
+    try {
+      const response = await axios.put(
+        DAILY_GOALS_URL.replace('{userId}', user_id) + `/${daily_goal_id}`,
+        config,
+        updatedGoal
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );
 
@@ -71,11 +91,16 @@ export const updateDailyGoalById = createAsyncThunk(
 // @access  Private
 export const removeDailyGoalById = createAsyncThunk(
   'dailyGoals/removeDailyGoalById',
-  async (user_id, daily_goal_id) => {
-    const response = await axios.delete(
-      DAILY_GOALS_URL.replace('{userId}', user_id) + `/${daily_goal_id}`,
-      config
-    );
-    return response.data;
+  async ({ user_id, daily_goal_id }) => {
+    try {
+      const response = await axios.delete(
+        DAILY_GOALS_URL.replace('{userId}', user_id) + `/${daily_goal_id}`,
+        config
+      );
+      return response.data;
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      throw err;
+    }
   }
 );

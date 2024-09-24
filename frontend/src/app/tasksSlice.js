@@ -15,24 +15,13 @@ const initialState = {
   error: null
 };
 
-const taskSlice = createSlice({
+const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    // addTask: (state, action) => {
-    //   state.taskArray.push({
-    //     id: uuid(),
-    //     ...action.payload
-    //   });
-    // },
-    // removeTask: (state, action) => {
-    //   state.taskArray = state.taskArray.filter(
-    //     (task) => task.id !== action.payload.id
-    //   );
-    // },
-    // setTasks: (state, action) => {
-    //   state = action.payload;
-    // },
+    setTasks: (state, action) => {
+      state = action.payload;
+    },
     reset: () => initialState
   },
   extraReducers: (builder) => {
@@ -116,17 +105,16 @@ const taskSlice = createSlice({
   }
 });
 
-export default taskSlice.reducer;
-// export const { addTask, removeTask, setTasks, reset } = taskSlice.actions;
+export default tasksSlice.reducer;
+export const { setTasks, reset } = tasksSlice.actions;
 
 // Selectors
 
 const filterTasksByDate = (tasks, date) => {
   if (!date instanceof Date || isNaN(date)) return;
 
-  return tasks.filter((task) => {
-    [];
-    const taskDate = new Date(task.startTime);
+  return tasks.filter((item) => {
+    const taskDate = new Date(item?.startTime);
     return (
       taskDate instanceof Date &&
       !isNaN(taskDate) &&
@@ -141,7 +129,7 @@ const filterTasksByMonth = (tasks, date) => {
   if (!date instanceof Date || isNaN(date)) return;
 
   return tasks.filter((item) => {
-    const taskDate = new Date(item.startTime);
+    const taskDate = new Date(item?.startTime);
     return (
       taskDate instanceof Date &&
       !isNaN(taskDate) &&

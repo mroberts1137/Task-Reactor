@@ -32,7 +32,7 @@ router.post(
       }
 
       // jwt payload. Used to identify user by routes requiring auth
-      const payload = { id: user.id };
+      const payload = { id: user._id };
 
       // This is currently using HttpOnly Cookies & local session storage:
       // remove res.cookie to switch to only use local session storage

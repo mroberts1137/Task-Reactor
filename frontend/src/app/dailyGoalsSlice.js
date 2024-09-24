@@ -26,18 +26,6 @@ const dailyGoalsSlice = createSlice({
   name: 'dailyGoals',
   initialState,
   reducers: {
-    addGoal: (state, action) => {
-      state.dailyGoalsArray.push({
-        id: uuid(),
-        title: action.payload.title,
-        value: action.payload.value
-      });
-    },
-    removeGoal: (state, action) => {
-      state.dailyGoalsArray = state.dailyGoalsArray.filter(
-        (goal) => goal.id !== action.payload.id
-      );
-    },
     setGoals: (state, action) => {
       state = action.payload;
     }
@@ -124,6 +112,6 @@ const dailyGoalsSlice = createSlice({
 });
 
 export default dailyGoalsSlice.reducer;
-export const { addGoal, removeGoal, setGoals } = dailyGoalsSlice.actions;
+export const { setGoals } = dailyGoalsSlice.actions;
 
 export const selectAllGoals = (state) => state.dailyGoals.dailyGoalsArray;
