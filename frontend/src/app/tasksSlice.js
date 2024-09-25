@@ -9,7 +9,7 @@ import {
 } from './tasksThunks';
 export { fetchTasks, addTask, getTaskById, updateTaskById, removeTaskById };
 
-const initialState = {
+export const initialState = {
   taskArray: [],
   status: 'idle',
   error: null
