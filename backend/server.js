@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const logger = require('morgan');
-const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
@@ -34,7 +33,6 @@ app.use(cors(corsOptions));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 /**
  * Routes

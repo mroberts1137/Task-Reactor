@@ -21,7 +21,7 @@ interface UserIdTaskIdTaskPayload {
 
 const jwt = localStorage.getItem('jwt');
 const config = {
-  // headers: { Authorization: jwt ? `Bearer ${jwt}` : '' },
+  headers: { Authorization: `Bearer ${jwt}` },
   withCredentials: true
 };
 
