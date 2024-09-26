@@ -37,12 +37,12 @@ const TimerBox = ({ earningsChange }) => {
       updateElapsedTime();
 
       const newTask = {
-        title: selectedTask.task,
-        startTime,
+        title: selectedTask.task || 'N/A',
+        startTime: startTime || new Date(),
         endTime: new Date(),
-        duration: parseFloat(elapsedTime),
-        value: parseFloat(earnings),
-        rate: parseFloat(selectedTask.rate)
+        duration: parseFloat(elapsedTime) || 0,
+        value: parseFloat(earnings) || 0,
+        rate: parseFloat(selectedTask.rate) || 0
       };
       reset();
 
