@@ -13,7 +13,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { RootState } from '../app/store';
 import { TasksState } from '../app/tasksSlice';
-import { Task } from '../types/tasks';
+import { Task } from '../types/types';
 
 jest.mock('../api/axios', () => ({
   get: jest.fn(),

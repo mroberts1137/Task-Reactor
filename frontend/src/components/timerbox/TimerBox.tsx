@@ -2,24 +2,39 @@ import { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { addTask } from '../../app/tasksSlice';
 import { saveTask } from '../../app/savedTasksSlice';
-import { UserContext } from '../../contexts/context';
+import { UserContext, UserContextType } from '../../contexts/context';
 import TaskManager from './TaskManager';
 import TaskForm from './TaskForm';
 import SavedTasks from './SavedTasks';
 import './TimerBox.css';
-
 import useInterval from '../../hooks/useInterval';
 
-const TimerBox = ({ earningsChange }) => {
-  const [clockRunning, setClockRunning] = useState(false);
-  const [startTime, setStartTime] = useState(undefined);
-  const [endTime, setEndTime] = useState(undefined);
-  const [elapsedTime, setElapsedTime] = useState(undefined);
-  const [earnings, setEarnings] = useState(0);
-  const [selectedTask, setSelectedTask] = useState({ task: '', rate: 0 });
-  const { user, userId } = useContext(UserContext);
+import { Task } from '../../types/types';
+import { AppDispatch } from '../../app/store';
 
-  const dispatch = useDispatch();
+interface SelectedTask {
+  title: string;
+  rate: number;
+}
+
+interface TimerBoxProps {
+  earningsChange: (earnings: number) => void;
+}
+
+const TimerBox: React.FC<TimerBoxProps> = ({ earningsChange }) => {
+  const [clockRunning, setClockRunning] = useState<boolean>(false);
+  const [startTime, setStartTime] = useState<Date | undefined>(undefined);
+  const [endTime, setEndTime] = useState<Date | undefined>(undefined);
+  const [elapsedTime, setElapsedTime] = useState<number | undefined>(undefined);
+  const [earnings, setEarnings] = useState<number>(0);
+  const [selectedTask, setSelectedTask] = useState<SelectedTask>({
+    title: '',
+    rate: 0
+  });
+
+  const { user, user_id }: UserContextType = useContext(UserContext);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useInterval(updateElapsedTime, clockRunning ? 1000 : null);
 
@@ -27,7 +42,7 @@ const TimerBox = ({ earningsChange }) => {
     earningsChange(earnings);
   }, [earnings, earningsChange]);
 
-  const handleTaskSelect = (task) => {
+  const handleTaskSelect = (task: SelectedTask) => {
     setSelectedTask(task);
   };
 
@@ -37,21 +52,21 @@ const TimerBox = ({ earningsChange }) => {
       updateElapsedTime();
 
       const newTask = {
-        title: selectedTask.task || 'N/A',
+        title: selectedTask.title || 'N/A',
         startTime: startTime || new Date(),
         endTime: new Date(),
-        duration: parseFloat(elapsedTime) || 0,
-        value: parseFloat(earnings) || 0,
-        rate: parseFloat(selectedTask.rate) || 0
+        duration: parseFloat(elapsedTime?.toString() || '0'),
+        value: parseFloat(earnings.toString()) || 0,
+        rate: parseFloat(selectedTask.rate.toString()) || 0
       };
       reset();
 
-      if (!userId) {
+      if (!user_id) {
         console.log('No user logged in');
         return;
       }
 
-      dispatch(addTask({ user_id: userId, task: newTask }));
+      dispatch(addTask({ user_id, task: newTask }));
     } else {
       setStartTime(new Date());
     }
@@ -59,13 +74,17 @@ const TimerBox = ({ earningsChange }) => {
   };
 
   function updateElapsedTime() {
-    let currentTime = new Date();
-    setElapsedTime(currentTime - startTime);
-    setEarnings(
-      Math.floor(
-        ((currentTime - startTime) / (1000 * 60 * 60)) * selectedTask.rate * 100
-      ) / 100
-    );
+    if (startTime) {
+      let currentTime = new Date();
+      setElapsedTime(currentTime.getTime() - startTime.getTime());
+      setEarnings(
+        Math.floor(
+          ((currentTime.getTime() - startTime.getTime()) / (1000 * 60 * 60)) *
+            selectedTask.rate *
+            100
+        ) / 100
+      );
+    }
   }
 
   function reset() {
@@ -86,15 +105,6 @@ const TimerBox = ({ earningsChange }) => {
           <></>
         )}
       </h3>
-
-      {/* <TaskManager>
-        {(task, setTask, rate, setRate) => (
-          <div>
-            <TaskForm />
-            <SavedTasks />
-          </div>
-        )}
-      </TaskManager> */}
 
       <TaskForm selectedTask={selectedTask} setTaskSelect={handleTaskSelect} />
       <SavedTasks onTaskSelect={handleTaskSelect} />
@@ -141,7 +151,7 @@ const TimerBox = ({ earningsChange }) => {
               ) : (
                 <td>-</td>
               )}
-              {elapsedTime ? (
+              {elapsedTime !== undefined ? (
                 <td>
                   {Math.floor(elapsedTime / (1000 * 60 * 60))}:
                   {(Math.floor(elapsedTime / (1000 * 60)) % 60)

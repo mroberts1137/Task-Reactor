@@ -11,7 +11,7 @@ import {
   updateTaskById,
   removeTaskById
 } from '../app/tasksThunks';
-import { Task } from '../types/tasks';
+import { Task } from '../types/types';
 
 jest.mock('../api/axios', () => ({
   get: jest.fn(),

@@ -21,7 +21,7 @@ const ListItem = ({ item, removeAction, displayKeys }) => {
       console.log('No user logged in');
       return;
     }
-    dispatch(removeAction(userId, item));
+    dispatch(removeAction(userId, item._id));
   };
 
   return (

@@ -7,7 +7,7 @@ import {
   removeTaskById
 } from './tasksThunks';
 import { RootState } from './store';
-import { Task } from '../types/tasks';
+import { Task } from '../types/types';
 
 export { fetchTasks, addTask, getTaskById, updateTaskById, removeTaskById };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'reactstrap';
 
@@ -13,6 +13,9 @@ import SaveLoadButtons from '../SaveLoadButtons';
 import SaveLoad from '../SaveLoad';
 import DateDisplay from '../DateDisplay';
 import TimeDisplay from '../TimeDisplay';
+
+import { User, Task } from '../../types/types';
+import { AppDispatch } from '../../app/store';
 
 import {
   UserContext,
@@ -35,28 +38,28 @@ import { selectAllGoals } from '../../app/dailyGoalsSlice';
 import { selectAllGoals as selectAllMonthlyGoals } from '../../app/monthlyGoalsSlice';
 import { sumTotal } from '../../utils/functions';
 
-const Dashboard = () => {
-  const dispatch = useDispatch();
-  const loggedin_userId = useSelector(selectUserId);
+const Dashboard: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const loggedin_userId: string = useSelector(selectUserId);
   const loggedin_user = useSelector(selectUser);
 
-  const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [goalsTotal, setGoalsTotal] = useState(0);
-  const [monthlyGoalsTotal, setMonthlyGoalsTotal] = useState(0);
-  const [tasksTotal, setTasksTotal] = useState(0);
-  const [earnings, setEarnings] = useState(0);
-  const [totalEarnings, setTotalEarnings] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [user, setUser] = useState<User | null>(null);
+  const [user_id, setUserId] = useState<string | null>(null);
+  const [goalsTotal, setGoalsTotal] = useState<number>(0);
+  const [monthlyGoalsTotal, setMonthlyGoalsTotal] = useState<number>(0);
+  const [tasksTotal, setTasksTotal] = useState<number>(0);
+  const [earnings, setEarnings] = useState<number>(0);
+  const [totalEarnings, setTotalEarnings] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const todaysDate = new Date();
 
   const dailyGoals = useSelector(selectAllGoals);
   const monthlyGoals = useSelector(selectAllMonthlyGoals);
   const tasks = useSelector(selectAllTasks);
-  const dailyTasks = useSelector((state) =>
+  const dailyTasks = useSelector((state: any) =>
     selectTasksByDate(state, selectedDate)
   );
-  const monthlyTasks = useSelector((state) =>
+  const monthlyTasks = useSelector((state: any) =>
     selectAllTasksByMonth(state, selectedDate)
   );
 
@@ -64,7 +67,7 @@ const Dashboard = () => {
     if (loggedin_userId) {
       setUser(loggedin_user);
       setUserId(loggedin_userId);
-      dispatch(fetchTasks(loggedin_userId));
+      dispatch(fetchTasks({ user_id: loggedin_userId }));
     }
   }, [dispatch, loggedin_userId, loggedin_user]);
 
@@ -88,36 +91,36 @@ const Dashboard = () => {
     dispatch(reset());
   };
 
-  const handleSelectDate = (date) => {
+  const handleSelectDate = (date: Date) => {
     setSelectedDate(date);
   };
 
-  const earningsChange = useCallback((val) => {
+  const earningsChange = useCallback((val: number) => {
     setEarnings(val);
   }, []);
 
   const monthlyTotalEarnings = sumTotal(monthlyTasks);
 
   const handleLoadTasks = () => {
-    if (userId) {
-      dispatch(fetchTasks(userId));
+    if (user_id) {
+      dispatch(fetchTasks({ user_id }));
       console.log(`Tasks: ${JSON.stringify(tasks)}`);
     }
   };
 
   return (
-    <UserContext.Provider value={{ user, userId }}>
+    <UserContext.Provider value={{ user, user_id }}>
       <DateContext.Provider value={{ selectedDate, todaysDate }}>
         <TaskContext.Provider value={{ tasks, dailyTasks }}>
           <GoalsContext.Provider value={{ goals: dailyGoals }}>
             <div className='dashboard'>
               <h2>User: {user?.username}</h2>
               <h2>Email: {user?.email}</h2>
-              <h2>User ID: {userId}</h2>
+              <h2>User ID: {user_id}</h2>
               <h1>Tasks:</h1>
               <ul>
-                {tasks.map((task) => (
-                  <li>{JSON.stringify(task?.title)}</li>
+                {tasks.map((task: Task, index: number) => (
+                  <li key={index}>{JSON.stringify(task?.title)}</li>
                 ))}
               </ul>
               <div className='container'>

@@ -1,19 +1,22 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
 import { TASKS_URL } from '../api/api_urls';
-import { Task } from '../types/tasks';
+import { Task } from '../types/types';
 
-interface UserIdTaskPayload {
+export interface UserIdPayload {
+  user_id: string;
+}
+export interface UserIdTaskPayload {
   user_id: string;
   task: Task;
 }
 
-interface UserIdTaskIdPayload {
+export interface UserIdTaskIdPayload {
   user_id: string;
   task_id: string;
 }
 
-interface UserIdTaskIdTaskPayload {
+export interface UserIdTaskIdTaskPayload {
   user_id: string;
   task_id: string;
   updatedTask: Task;
@@ -28,21 +31,23 @@ const config = {
 // @route   GET api/users/:user_id/tasks
 // @desc    Get all tasks for a user
 // @access  Private
-export const fetchTasks = createAsyncThunk(
-  'tasks/fetchTasks',
-  async (user_id: string) => {
-    try {
-      const response = await axios.get(
-        TASKS_URL.replace('{userId}', user_id),
-        config
-      );
-      return response.data;
-    } catch (err) {
-      console.error(`Error: ${err}`);
-      throw err;
-    }
+export const fetchTasks = createAsyncThunk<
+  Task[], // Return type of the thunk
+  UserIdPayload, // Argument type for the thunk
+  { rejectValue: string } // Optionally, you can specify the type for rejected value
+>('tasks/fetchTasks', async ({ user_id }, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(
+      TASKS_URL.replace('{userId}', user_id),
+      config
+    );
+    const responseOK = response && response.statusText === 'OK';
+    if (!responseOK) throw new Error('Failed to fetch tasks');
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.message); // Handle errors
   }
-);
+});
 
 // @route   POST api/users/:user_id/tasks
 // @desc    Create a task for a user
