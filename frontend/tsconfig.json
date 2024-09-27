@@ -12,6 +12,7 @@
     "src/**/*.ts",
     "tests/**/*.ts",
     "src/api/axios.js",
-    "src/components/timerbox/TimerBox.tsx"
+    "src/components/timerbox/TimerBox.tsx",
+    "src/components/timerbox/TaskForm.tsx"
   ]
 }
