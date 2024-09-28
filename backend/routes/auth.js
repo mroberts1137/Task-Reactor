@@ -45,7 +45,7 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.cookie('token', token, { httpOnly: true, secure: true });
-          res.json({ token, user });
+          res.json({ user });
         }
       );
     } catch (err) {

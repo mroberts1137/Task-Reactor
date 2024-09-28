@@ -19,7 +19,6 @@ interface TimerBoxProps {
 const TimerBox: React.FC<TimerBoxProps> = ({ earningsChange }) => {
   const [clockRunning, setClockRunning] = useState<boolean>(false);
   const [task, setTask] = useState<Task>(resetTask());
-
   const { user_id }: UserContextType = useContext(UserContext);
 
   const dispatch = useDispatch<AppDispatch>();

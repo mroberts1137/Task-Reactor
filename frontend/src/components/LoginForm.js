@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from '../api/axios';
+
 import './RegisterForm.css';
 import { setUserId, setUser } from '../app/userSlice';
 import { fetchTasks } from '../app/tasksSlice';
@@ -24,9 +25,6 @@ const RegisterForm = () => {
 
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
-
-  const loggedin_user = useSelector((state) => state.user.user?.username);
-  const loggedin_userId = useSelector((state) => state.user.userId);
 
   // set focus to user input when component loads
   useEffect(() => {
@@ -52,10 +50,10 @@ const RegisterForm = () => {
         }
       );
 
-      console.log(JSON.stringify(response));
+      // console.log(JSON.stringify(response));
 
       // Store the JWT in local storage
-      localStorage.setItem('jwt', response.data.token);
+      // localStorage.setItem('jwt', response.data.token);
 
       const user = response.data.user;
       const userId = response.data.user._id;
@@ -69,10 +67,9 @@ const RegisterForm = () => {
         dispatch(fetchDailyGoals(userId));
         dispatch(fetchMonthlyGoals(userId));
         setSuccess(true);
+        setUsername('');
+        setPassword('');
       }
-
-      setUsername('');
-      setPassword('');
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');

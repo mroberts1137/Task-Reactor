@@ -75,20 +75,21 @@ router.post(
   validation.validateRegister,
   validation.checkValidationErrors,
   async (req, res) => {
+    console.log(req.body);
     try {
-      const { username, email, password } = req.body;
-      let user = await User.findOne({ email });
+      const { username, password } = req.body;
+      let user = await User.findOne({ username });
       if (user) {
         return res
-          .status(400)
-          .json({ errors: [{ msg: 'User already exists' }] });
+          .status(409)
+          .json({ errors: [{ msg: 'Username already taken' }] });
       }
 
-      user = new User({ username, email, password });
+      user = new User({ username, password });
       await user.save();
 
       // jwt payload. Used to identify user by routes requiring auth
-      const payload = { id: user.id };
+      const payload = { id: user._id };
 
       // This is currently using HttpOnly Cookies & local session storage:
       // remove res.cookie to switch to only use local session storage
@@ -101,7 +102,7 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.cookie('token', token, { httpOnly: true, secure: true });
-          res.json({ token, user });
+          res.json({ user });
         }
       );
     } catch (err) {

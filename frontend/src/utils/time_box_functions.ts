@@ -4,7 +4,8 @@ export const calculateEarnings = (
   elapsedTime: number,
   rate: number
 ): number => {
-  return Math.floor(((elapsedTime / (1000 * 60 * 60)) * rate * 100) / 100);
+  const hours = elapsedTime / (1000 * 60 * 60);
+  return Math.floor(hours * rate * 100) / 100;
 };
 
 export const calculateElapsedTime = (startTime?: Date): number => {
@@ -40,7 +41,7 @@ export const resetTask = (): Task => ({
   title: '',
   startTime: undefined,
   endTime: undefined,
-  duration: undefined,
+  duration: 0,
   rate: 0,
   value: 0
 });
