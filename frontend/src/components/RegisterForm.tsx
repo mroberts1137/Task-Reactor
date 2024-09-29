@@ -7,10 +7,10 @@ import {
   faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from '../api/axios';
 
 import { setUserId, setUser } from '../app/userSlice';
 import './RegisterForm.css';
+import { auth } from '../auth/auth';
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -66,25 +66,17 @@ const RegisterForm = () => {
     }
 
     try {
-      console.log(
-        `Submitting credentials to ${axios.defaults.baseURL + REGISTER_URL}`
-      );
-      const response = await axios.post(
-        REGISTER_URL,
-        JSON.stringify({ username, password }),
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      );
+      const { user, user_id } = await auth(REGISTER_URL, {
+        username,
+        password
+      });
 
-      const user = response.data.user;
-      const userId = response.data.user._id;
-
-      if (user && userId) {
+      if (user && user_id) {
+        // Set user in state
         dispatch(setUser(user));
-        dispatch(setUserId(userId));
+        dispatch(setUserId(user_id));
 
+        // Reset Form
         setSuccess(true);
         setUsername('');
         setPassword('');

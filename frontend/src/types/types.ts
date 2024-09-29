@@ -1,5 +1,15 @@
-export interface Task {
-  id?: string;
+export interface User {
+  user_id: string;
+  username?: string;
+  email?: string;
+}
+
+export interface Item {
+  _id?: string;
+}
+
+export interface Task extends Item {
+  _id?: string;
   title?: string;
   startTime?: Date;
   endTime?: Date;
@@ -9,14 +19,8 @@ export interface Task {
   [key: string]: any;
 }
 
-export interface User {
-  user_id: string;
-  username?: string;
-  email?: string;
-}
-
-export interface Goal {
-  id?: string;
+export interface Goal extends Item {
+  _id?: string;
   title: string;
   value: string;
 }

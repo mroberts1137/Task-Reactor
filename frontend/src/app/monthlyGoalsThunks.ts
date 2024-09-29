@@ -2,6 +2,13 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
 import { MONTHLY_GOALS_URL } from '../api/api_urls';
 
+import {
+  UserIdPayload,
+  UserIdItemPayload,
+  UserIdItemIdPayload,
+  UserIdItemIdItemPayload
+} from '../types/payloads';
+
 const jwt = localStorage.getItem('jwt');
 const config = {
   headers: { Authorization: `Bearer ${jwt}` },
@@ -13,7 +20,7 @@ const config = {
 // @access  Private
 export const fetchMonthlyGoals = createAsyncThunk(
   'monthlyGoals/fetchMonthlyGoals',
-  async (user_id) => {
+  async ({ user_id }: UserIdPayload) => {
     try {
       const response = await axios.get(
         MONTHLY_GOALS_URL.replace('{userId}', user_id),
@@ -32,12 +39,12 @@ export const fetchMonthlyGoals = createAsyncThunk(
 // @access  Private
 export const addMonthlyGoal = createAsyncThunk(
   'monthlyGoals/addMonthlyGoal',
-  async ({ user_id, goal }) => {
+  async ({ user_id, item }: UserIdItemPayload) => {
     try {
       const response = await axios.post(
         MONTHLY_GOALS_URL.replace('{userId}', user_id),
         config,
-        goal
+        item
       );
       return response.data;
     } catch (err) {
@@ -52,10 +59,10 @@ export const addMonthlyGoal = createAsyncThunk(
 // @access  Private
 export const getMonthlyGoalById = createAsyncThunk(
   'monthlyGoals/getMonthlyGoalById',
-  async ({ user_id, monthly_goal_id }) => {
+  async ({ user_id, item_id }: UserIdItemIdPayload) => {
     try {
       const response = await axios.get(
-        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
+        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
         config
       );
       return response.data;
@@ -71,12 +78,12 @@ export const getMonthlyGoalById = createAsyncThunk(
 // @access  Private
 export const updateMonthlyGoalById = createAsyncThunk(
   'monthlyGoals/updateMonthlyGoalById',
-  async ({ user_id, monthly_goal_id, updatedGoal }) => {
+  async ({ user_id, item_id, updatedItem }: UserIdItemIdItemPayload) => {
     try {
       const response = await axios.put(
-        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
+        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
         config,
-        updatedGoal
+        updatedItem
       );
       return response.data;
     } catch (err) {
@@ -91,10 +98,10 @@ export const updateMonthlyGoalById = createAsyncThunk(
 // @access  Private
 export const removeMonthlyGoalById = createAsyncThunk(
   'monthlyGoals/removeMonthlyGoalById',
-  async ({ user_id, monthly_goal_id }) => {
+  async ({ user_id, item_id }: UserIdItemIdPayload) => {
     try {
       const response = await axios.delete(
-        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${monthly_goal_id}`,
+        MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
         config
       );
       return response.data;

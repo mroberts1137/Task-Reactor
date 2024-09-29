@@ -2,25 +2,12 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
 import { TASKS_URL } from '../api/api_urls';
 import { Task } from '../types/types';
-
-export interface UserIdPayload {
-  user_id: string;
-}
-export interface UserIdTaskPayload {
-  user_id: string;
-  task: Task;
-}
-
-export interface UserIdTaskIdPayload {
-  user_id: string;
-  task_id: string;
-}
-
-export interface UserIdTaskIdTaskPayload {
-  user_id: string;
-  task_id: string;
-  updatedTask: Task;
-}
+import {
+  UserIdPayload,
+  UserIdItemPayload,
+  UserIdItemIdPayload,
+  UserIdItemIdItemPayload
+} from '../types/payloads';
 
 const jwt = localStorage.getItem('jwt');
 const config = {
@@ -45,7 +32,7 @@ export const fetchTasks = createAsyncThunk<
     if (!responseOK) throw new Error('Failed to fetch tasks');
     return response.data;
   } catch (error) {
-    return rejectWithValue(error.message); // Handle errors
+    return rejectWithValue(error.message);
   }
 });
 
@@ -54,11 +41,11 @@ export const fetchTasks = createAsyncThunk<
 // @access  Private
 export const addTask = createAsyncThunk(
   'tasks/addTask',
-  async ({ user_id, task }: UserIdTaskPayload) => {
+  async ({ user_id, item }: UserIdItemPayload) => {
     try {
       const response = await axios.post(
         TASKS_URL.replace('{userId}', user_id),
-        task,
+        item,
         config
       );
       return response.data;
@@ -74,10 +61,10 @@ export const addTask = createAsyncThunk(
 // @access  Private
 export const getTaskById = createAsyncThunk(
   'tasks/getTaskById',
-  async ({ user_id, task_id }: UserIdTaskIdPayload) => {
+  async ({ user_id, item_id }: UserIdItemIdPayload) => {
     try {
       const response = await axios.get(
-        `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
+        `${TASKS_URL.replace('{userId}', user_id)}/${item_id}`,
         config
       );
       return response.data;
@@ -93,10 +80,14 @@ export const getTaskById = createAsyncThunk(
 // @access  Private
 export const updateTaskById = createAsyncThunk(
   'tasks/updateTaskById',
-  async ({ user_id, task_id, updatedTask }: UserIdTaskIdTaskPayload) => {
+  async ({
+    user_id,
+    item_id,
+    updatedItem: updatedTask
+  }: UserIdItemIdItemPayload) => {
     try {
       const response = await axios.put(
-        `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
+        `${TASKS_URL.replace('{userId}', user_id)}/${item_id}`,
         updatedTask,
         config
       );
@@ -108,15 +99,22 @@ export const updateTaskById = createAsyncThunk(
   }
 );
 
+export interface TaskResponse {
+  // Define the structure of the response data
+  id: string;
+  title: string;
+  // Add other fields as necessary
+}
+
 // @route   DELETE api/users/:user_id/tasks/:task_id
 // @desc    Delete a task for a user
 // @access  Private
-export const removeTaskById = createAsyncThunk(
+export const removeTaskById = createAsyncThunk<Response, UserIdItemIdPayload>(
   'tasks/removeTaskById',
-  async ({ user_id, task_id }: UserIdTaskIdPayload) => {
+  async ({ user_id, item_id }: UserIdItemIdPayload) => {
     try {
       const response = await axios.delete(
-        `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
+        `${TASKS_URL.replace('{userId}', user_id)}/${item_id}`,
         config
       );
       return response.data;

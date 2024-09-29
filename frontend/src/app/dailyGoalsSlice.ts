@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuid } from 'uuid';
 import {
   fetchDailyGoals,
@@ -7,6 +7,8 @@ import {
   updateDailyGoalById,
   removeDailyGoalById
 } from './dailyGoalsThunks';
+import { RootState } from './store';
+import { Goal } from '../types/types';
 
 export {
   fetchDailyGoals,
@@ -16,8 +18,14 @@ export {
   removeDailyGoalById
 };
 
-const initialState = {
-  dailyGoalsArray: [{ id: uuid(), title: 'Daily Minimum', value: 86 }],
+export interface GoalsState {
+  dailyGoalsArray: Goal[];
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+}
+
+const initialState: GoalsState = {
+  dailyGoalsArray: [{ _id: uuid(), title: 'Daily Minimum', value: '86' }],
   status: 'idle',
   error: null
 };
@@ -38,12 +46,15 @@ const dailyGoalsSlice = createSlice({
       .addCase(fetchDailyGoals.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fetchDailyGoals.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.dailyGoalsArray = action.payload;
-      })
+      .addCase(
+        fetchDailyGoals.fulfilled,
+        (state, action: PayloadAction<Goal[]>) => {
+          state.status = 'succeeded';
+          state.dailyGoalsArray = action.payload;
+        }
+      )
       .addCase(fetchDailyGoals.rejected, (state, action) => {
-        state.status = 'failure';
+        state.status = 'failed';
         state.error = action.error.message;
       })
       /* 
@@ -52,7 +63,7 @@ const dailyGoalsSlice = createSlice({
       .addCase(addDailyGoal.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(addDailyGoal.fulfilled, (state, action) => {
+      .addCase(addDailyGoal.fulfilled, (state, action: PayloadAction<Goal>) => {
         state.status = 'succeeded';
         state.dailyGoalsArray.push(action.payload);
       })
@@ -66,10 +77,13 @@ const dailyGoalsSlice = createSlice({
       .addCase(getDailyGoalById.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(getDailyGoalById.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.dailyGoalsArray.push(action.payload);
-      })
+      .addCase(
+        getDailyGoalById.fulfilled,
+        (state, action: PayloadAction<Goal>) => {
+          state.status = 'succeeded';
+          state.dailyGoalsArray.push(action.payload);
+        }
+      )
       .addCase(getDailyGoalById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
@@ -80,14 +94,17 @@ const dailyGoalsSlice = createSlice({
       .addCase(updateDailyGoalById.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(updateDailyGoalById.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        const updatedDailyGoalIdx = state.dailyGoalsArray.findIndex(
-          (item) => item.id == action.payload.id
-        );
-        if (updatedDailyGoalIdx !== -1)
-          state.dailyGoalsArray[updatedDailyGoalIdx] = action.payload.id;
-      })
+      .addCase(
+        updateDailyGoalById.fulfilled,
+        (state, action: PayloadAction<Goal>) => {
+          state.status = 'succeeded';
+          const updatedDailyGoalIdx = state.dailyGoalsArray.findIndex(
+            (item) => item._id == action.payload._id
+          );
+          if (updatedDailyGoalIdx !== -1)
+            state.dailyGoalsArray[updatedDailyGoalIdx] = action.payload;
+        }
+      )
       .addCase(updateDailyGoalById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
@@ -98,12 +115,15 @@ const dailyGoalsSlice = createSlice({
       .addCase(removeDailyGoalById.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(removeDailyGoalById.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.dailyGoalsArray = state.dailyGoalsArray.filter(
-          (item) => item.id !== action.payload.id
-        );
-      })
+      .addCase(
+        removeDailyGoalById.fulfilled,
+        (state, action: PayloadAction<Goal>) => {
+          state.status = 'succeeded';
+          state.dailyGoalsArray = state.dailyGoalsArray.filter(
+            (item) => item._id !== action.payload._id
+          );
+        }
+      )
       .addCase(removeDailyGoalById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
@@ -114,4 +134,5 @@ const dailyGoalsSlice = createSlice({
 export default dailyGoalsSlice.reducer;
 export const { setGoals } = dailyGoalsSlice.actions;
 
-export const selectAllGoals = (state) => state.dailyGoals.dailyGoalsArray;
+export const selectAllGoals = (state: RootState) =>
+  state.dailyGoals.dailyGoalsArray;

@@ -14,7 +14,7 @@ import SaveLoad from '../SaveLoad';
 import DateDisplay from '../DateDisplay';
 import TimeDisplay from '../TimeDisplay';
 
-import { User, Task } from '../../types/types';
+import { User, Task, Goal } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 
 import {
@@ -41,7 +41,7 @@ import { sumTotal } from '../../utils/functions';
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const loggedin_userId: string = useSelector(selectUserId);
-  const loggedin_user = useSelector(selectUser);
+  const loggedin_user = useSelector(selectUser) as User;
 
   const [user, setUser] = useState<User | null>(null);
   const [user_id, setUserId] = useState<string | null>(null);
@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const todaysDate = new Date();
 
-  const dailyGoals = useSelector(selectAllGoals);
+  const dailyGoals = useSelector(selectAllGoals) as Goal[];
   const monthlyGoals = useSelector(selectAllMonthlyGoals);
   const tasks = useSelector(selectAllTasks);
   const dailyTasks = useSelector((state: any) =>
@@ -64,7 +64,7 @@ const Dashboard: React.FC = () => {
   );
 
   useEffect(() => {
-    if (loggedin_userId) {
+    if (loggedin_userId && loggedin_user) {
       setUser(loggedin_user);
       setUserId(loggedin_userId);
       dispatch(fetchTasks({ user_id: loggedin_userId }));
@@ -120,7 +120,9 @@ const Dashboard: React.FC = () => {
               <h1>Tasks:</h1>
               <ul>
                 {tasks.map((task: Task, index: number) => (
-                  <li key={index}>{JSON.stringify(task?.title)}</li>
+                  <li key={index}>
+                    {JSON.stringify(task?.title)}' '{task?._id}
+                  </li>
                 ))}
               </ul>
               <div className='container'>

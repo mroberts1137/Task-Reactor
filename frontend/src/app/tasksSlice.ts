@@ -87,7 +87,7 @@ const tasksSlice = createSlice({
         (state, action: PayloadAction<Task>) => {
           state.status = 'succeeded';
           const updatedTaskIdx = state.taskArray.findIndex(
-            (item) => item.id === action.payload.id
+            (item) => item._id === action.payload._id
           );
           if (updatedTaskIdx !== -1)
             state.taskArray[updatedTaskIdx] = action.payload;
@@ -105,10 +105,10 @@ const tasksSlice = createSlice({
       })
       .addCase(
         removeTaskById.fulfilled,
-        (state, action: PayloadAction<{ id: string }>) => {
+        (state, action: PayloadAction<Task>) => {
           state.status = 'succeeded';
           state.taskArray = state.taskArray.filter(
-            (item) => item.id !== action.payload.id
+            (item) => item._id !== action.payload._id
           );
         }
       )

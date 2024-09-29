@@ -1,18 +1,39 @@
 import { useState, useContext } from 'react';
+import { useDispatch } from 'react-redux';
 import { removeTaskById } from '../../app/tasksSlice';
 import DateDisplay from '../DateDisplay';
 import DropdownSelector from './DropdownSelector';
 import AddTask from '../list/AddTask';
 import List from '../list/List';
-import { TaskContext, DateContext } from '../../contexts/context';
+import { TaskContext, DateContext, UserContext } from '../../contexts/context';
 import { sumTotal } from '../../utils/functions';
+import { Task } from '../../types/types';
+import { AppDispatch } from '../../app/store';
+import { UserIdItemIdPayload } from '../../types/payloads';
 
-const TaskBox = () => {
+interface DisplayKey {
+  name: string;
+  type: 'String' | 'Date' | 'Duration' | 'Currency';
+  show: boolean;
+}
+
+interface ShowKeys {
+  title: boolean;
+  startTime: boolean;
+  endTime: boolean;
+  duration: boolean;
+  rate: boolean;
+  value: boolean;
+}
+
+const TaskBox: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { selectedDate } = useContext(DateContext);
   const { dailyTasks } = useContext(TaskContext);
   const total = sumTotal(dailyTasks);
+  const { user_id } = useContext(UserContext);
 
-  const [showKeys, setShowKeys] = useState({
+  const [showKeys, setShowKeys] = useState<ShowKeys>({
     title: true,
     startTime: true,
     endTime: true,
@@ -21,7 +42,7 @@ const TaskBox = () => {
     value: true
   });
 
-  const displayKeys = {
+  const displayKeys: Record<keyof Omit<Task, '_id'>, DisplayKey> = {
     title: { name: 'Task', type: 'String', show: showKeys.title },
     startTime: { name: 'Start Time', type: 'Date', show: showKeys.startTime },
     endTime: { name: 'End Time', type: 'Date', show: showKeys.endTime },
@@ -30,11 +51,15 @@ const TaskBox = () => {
     value: { name: 'Value', type: 'Currency', show: showKeys.value }
   };
 
-  const toggleShowKey = (key) => {
+  const toggleShowKey = (key: keyof ShowKeys) => {
     setShowKeys((prevShowKeys) => ({
       ...prevShowKeys,
       [key]: !prevShowKeys[key]
     }));
+  };
+
+  const handleDelete = (payload) => {
+    dispatch(removeTaskById(payload));
   };
 
   return (
@@ -51,7 +76,7 @@ const TaskBox = () => {
       />
       <List
         items={dailyTasks}
-        removeAction={removeTaskById}
+        removeAction={handleDelete}
         displayKeys={displayKeys}
       />
     </div>

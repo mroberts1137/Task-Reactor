@@ -124,7 +124,7 @@ describe('getTaskById', () => {
   it('should dispatch getTaskById.pending and getTaskById.fulfilled on success', async () => {
     axios.get.mockResolvedValueOnce(mockData);
 
-    await store.dispatch(getTaskById({ user_id, task_id }));
+    await store.dispatch(getTaskById({ user_id, item_id: task_id }));
 
     const actions = store.getActions();
     expect(actions[0].type).toBe('tasks/getTaskById/pending');
@@ -139,7 +139,7 @@ describe('getTaskById', () => {
   it('should dispatch getTaskById.pending and getTaskById.rejected on failure', async () => {
     axios.get.mockRejectedValueOnce(new Error(errorMessage));
 
-    await store.dispatch(getTaskById({ user_id, task_id }));
+    await store.dispatch(getTaskById({ user_id, item_id: task_id }));
 
     const actions = store.getActions();
     expect(actions[0].type).toBe('tasks/getTaskById/pending');
@@ -164,7 +164,11 @@ describe('updateTaskById', () => {
     axios.put.mockResolvedValueOnce({ data: mockUpdatedTask });
 
     await store.dispatch(
-      updateTaskById({ user_id, task_id, updatedTask: mockUpdatedTask })
+      updateTaskById({
+        user_id,
+        item_id: task_id,
+        updatedItem: mockUpdatedTask
+      })
     );
 
     const actions = store.getActions();
@@ -182,7 +186,11 @@ describe('updateTaskById', () => {
     axios.put.mockRejectedValueOnce(new Error(errorMessage));
 
     await store.dispatch(
-      updateTaskById({ user_id, task_id, updatedTask: mockUpdatedTask })
+      updateTaskById({
+        user_id,
+        item_id: task_id,
+        updatedItem: mockUpdatedTask
+      })
     );
 
     const actions = store.getActions();
@@ -206,7 +214,7 @@ describe('removeTaskById', () => {
   it('should dispatch removeTaskById.pending and removeTaskById.fulfilled on success', async () => {
     axios.delete.mockResolvedValueOnce({ data: {} });
 
-    await store.dispatch(removeTaskById({ user_id, task_id }));
+    await store.dispatch(removeTaskById({ user_id, item_id: task_id }));
 
     const actions = store.getActions();
     expect(actions[0].type).toBe('tasks/removeTaskById/pending');
@@ -220,7 +228,7 @@ describe('removeTaskById', () => {
   it('should dispatch removeTaskById.pending and removeTaskById.rejected on failure', async () => {
     axios.delete.mockRejectedValueOnce(new Error(errorMessage));
 
-    await store.dispatch(removeTaskById({ user_id, task_id }));
+    await store.dispatch(removeTaskById({ user_id, item_id: task_id }));
 
     const actions = store.getActions();
     expect(actions[0].type).toBe('tasks/removeTaskById/pending');

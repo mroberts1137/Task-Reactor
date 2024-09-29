@@ -35,7 +35,7 @@ const AddTask = () => {
       rate: parseFloat(rate) || 0
     };
 
-    dispatch(addTask({ user_id, task: newTask }));
+    dispatch(addTask({ user_id, item: newTask }));
     setTitle('');
     setValue(0);
     setDuration(0);

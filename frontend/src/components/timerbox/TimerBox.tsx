@@ -44,7 +44,7 @@ const TimerBox: React.FC<TimerBoxProps> = ({ earningsChange }) => {
       reset();
 
       if (user_id) {
-        dispatch(addTask({ user_id, task: updatedTask }));
+        dispatch(addTask({ user_id, item: updatedTask }));
       } else {
         console.log('No user logged in');
       }

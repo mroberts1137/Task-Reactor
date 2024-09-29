@@ -1,13 +1,13 @@
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import axios from '../api/axios';
 
 import './RegisterForm.css';
 import { setUserId, setUser } from '../app/userSlice';
 import { fetchTasks } from '../app/tasksSlice';
 import { fetchDailyGoals } from '../app/dailyGoalsSlice';
 import { fetchMonthlyGoals } from '../app/monthlyGoalsSlice';
+import { auth } from '../auth/auth';
 
 const LOGIN_URL = '/api/auth';
 
@@ -38,34 +38,25 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(
-        `Submitting credentials to ${axios.defaults.baseURL + LOGIN_URL}`
-      );
-      const response = await axios.post(
-        LOGIN_URL,
-        JSON.stringify({ username, password }),
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      );
-
-      // console.log(JSON.stringify(response));
+      const { user, user_id } = await auth(LOGIN_URL, {
+        username,
+        password
+      });
 
       // Store the JWT in local storage
       // localStorage.setItem('jwt', response.data.token);
 
-      const user = response.data.user;
-      const userId = response.data.user._id;
-
-      if (user && userId) {
+      if (user && user_id) {
+        // Set user in state
         dispatch(setUser(user));
-        dispatch(setUserId(userId));
+        dispatch(setUserId(user_id));
 
         // Fetch tasks for the logged-in user
-        dispatch(fetchTasks(userId));
-        dispatch(fetchDailyGoals(userId));
-        dispatch(fetchMonthlyGoals(userId));
+        dispatch(fetchTasks(user_id));
+        dispatch(fetchDailyGoals(user_id));
+        dispatch(fetchMonthlyGoals(user_id));
+
+        // Reset Form
         setSuccess(true);
         setUsername('');
         setPassword('');

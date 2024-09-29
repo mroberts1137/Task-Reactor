@@ -22,6 +22,11 @@ export const formatTime = (time?: Date): string => {
     .padStart(2, '0')}:${time.getSeconds().toString().padStart(2, '0')}`;
 };
 
+export const formatHourMin = (time?: Date): string => {
+  if (!time) return '-';
+  return `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`;
+};
+
 export const formatDuration = (duration?: number): string => {
   if (!duration) return '-';
   return `${Math.floor(duration / (1000 * 60 * 60))}:${(
