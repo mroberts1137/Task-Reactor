@@ -1,5 +1,4 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
-
 import {
   fetchTasks,
   addTask,
@@ -7,9 +6,10 @@ import {
   updateTaskById,
   removeTaskById
 } from './tasksThunks';
+
 export { fetchTasks, addTask, getTaskById, updateTaskById, removeTaskById };
 
-const initialState = {
+export const initialState = {
   taskArray: [],
   status: 'idle',
   error: null
@@ -20,7 +20,7 @@ const tasksSlice = createSlice({
   initialState,
   reducers: {
     setTasks: (state, action) => {
-      state = action.payload;
+      state.taskArray = action.payload;
     },
     reset: () => initialState
   },
@@ -38,7 +38,7 @@ const tasksSlice = createSlice({
       })
       .addCase(fetchTasks.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || null;
       })
       /* 
         addTask
@@ -52,7 +52,7 @@ const tasksSlice = createSlice({
       })
       .addCase(addTask.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || null;
       })
       /*
         getTaskById
@@ -66,7 +66,7 @@ const tasksSlice = createSlice({
       })
       .addCase(getTaskById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || null;
       })
       /*
         updateTaskById
@@ -77,14 +77,14 @@ const tasksSlice = createSlice({
       .addCase(updateTaskById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         const updatedTaskIdx = state.taskArray.findIndex(
-          (item) => item.id == action.payload.id
+          (item) => item._id === action.payload._id
         );
         if (updatedTaskIdx !== -1)
-          state.taskArray[updatedTaskIdx] = action.payload.id;
+          state.taskArray[updatedTaskIdx] = action.payload;
       })
       .addCase(updateTaskById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || null;
       })
       /* 
         removeTaskById
@@ -95,29 +95,29 @@ const tasksSlice = createSlice({
       .addCase(removeTaskById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.taskArray = state.taskArray.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item._id !== action.payload._id
         );
       })
       .addCase(removeTaskById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || null;
       });
   }
 });
 
+// Export slice reducer and actions
 export default tasksSlice.reducer;
 export const { setTasks, reset } = tasksSlice.actions;
 
 // Selectors
-
 const filterTasksByDate = (tasks, date) => {
-  if (!date instanceof Date || isNaN(date)) return;
+  if (!(date instanceof Date) || isNaN(date.getTime())) return [];
 
   return tasks.filter((item) => {
     const taskDate = new Date(item?.startTime);
     return (
       taskDate instanceof Date &&
-      !isNaN(taskDate) &&
+      !isNaN(taskDate.getTime()) &&
       taskDate.getFullYear() === date.getFullYear() &&
       taskDate.getMonth() === date.getMonth() &&
       taskDate.getDate() === date.getDate()
@@ -126,13 +126,13 @@ const filterTasksByDate = (tasks, date) => {
 };
 
 const filterTasksByMonth = (tasks, date) => {
-  if (!date instanceof Date || isNaN(date)) return;
+  if (!(date instanceof Date) || isNaN(date.getTime())) return [];
 
   return tasks.filter((item) => {
     const taskDate = new Date(item?.startTime);
     return (
       taskDate instanceof Date &&
-      !isNaN(taskDate) &&
+      !isNaN(taskDate.getTime()) &&
       taskDate.getFullYear() === date.getFullYear() &&
       taskDate.getMonth() === date.getMonth()
     );
@@ -141,10 +141,10 @@ const filterTasksByMonth = (tasks, date) => {
 
 export const selectAllTasks = (state) => state.tasks.taskArray;
 export const selectTasksByDate = createSelector(
-  [selectAllTasks, (state, date) => date],
+  [selectAllTasks, (_state, date) => date],
   filterTasksByDate
 );
 export const selectAllTasksByMonth = createSelector(
-  [selectAllTasks, (state, date) => date],
+  [selectAllTasks, (_state, date) => date],
   filterTasksByMonth
 );

@@ -11,12 +11,12 @@ const AddTask = () => {
   const [endTime, setEndTime] = useState(new Date());
   const [rate, setRate] = useState(0);
   const dispatch = useDispatch();
-  const { user, userId } = useContext(UserContext);
+  const { user, user_id } = useContext(UserContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!userId || !user) {
+    if (!user_id || !user) {
       console.log('No user logged in');
       return;
     }
@@ -27,15 +27,15 @@ const AddTask = () => {
     // }
 
     const newTask = {
-      title,
-      value: parseFloat(value),
-      duration: parseFloat(duration),
-      startTime: new Date(),
-      endTime: new Date(),
-      rate: parseFloat(rate)
+      title: title || '',
+      value: parseFloat(value) || 0,
+      duration: parseFloat(duration) || 0,
+      startTime: startTime || new Date(),
+      endTime: endTime || new Date(),
+      rate: parseFloat(rate) || 0
     };
 
-    dispatch(addTask({ user_id: userId, task: newTask }));
+    dispatch(addTask({ user_id, item: newTask }));
     setTitle('');
     setValue(0);
     setDuration(0);

@@ -1,6 +1,7 @@
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import { persistReducer, persistStore } from 'redux-persist';
+import thunk from 'redux-thunk';
 import storage from 'redux-persist/lib/storage';
 
 import userReducer from './userSlice';
@@ -24,10 +25,14 @@ const rootReducer = combineReducers({
   savedTasks: savedTasksReducer
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 export const store = configureStore({
-  reducer: persistedReducer
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware()
 });
 
-export const persistor = persistStore(store);
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+// Create typed hooks
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

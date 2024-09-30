@@ -1,15 +1,33 @@
 import { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { UserContext } from '../../contexts/context';
 import { useSpring, animated } from 'react-spring';
+import { UserContext } from '../../contexts/context';
+import { AppDispatch } from '../../app/store';
+import { UserIdItemIdPayload, RemoveTaskAction } from '../../types/payloads';
+import { Item } from '../../types/types';
+import { Action, AsyncThunk } from '@reduxjs/toolkit';
 import {
   formatHourMin,
   formatDuration,
   formatCurrency
 } from '../../utils/time_box_functions';
 
-const ListItem = ({ item, removeAction, displayKeys }) => {
-  const dispatch = useDispatch();
+interface DisplayKey {
+  type: 'Currency' | 'String' | 'Duration' | 'Date';
+}
+
+interface ListItemProps {
+  item: Item;
+  removeAction: any;
+  displayKeys: Record<string, DisplayKey>;
+}
+
+const ListItem: React.FC<ListItemProps> = ({
+  item,
+  removeAction,
+  displayKeys
+}) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [animate, setAnimate] = useState(false);
   const { user, user_id } = useContext(UserContext);
 

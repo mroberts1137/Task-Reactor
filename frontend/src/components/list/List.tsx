@@ -1,7 +1,26 @@
+import React from 'react';
 import ListItem from './ListItem';
 import './List.css';
+import { Item } from '../../types/types';
 
-const List = ({ items, removeAction, displayKeys }) => {
+interface DisplayKey {
+  name: string;
+  show: boolean;
+  type: 'Currency' | 'String' | 'Duration' | 'Date';
+}
+
+interface UserIdItemIdPayload {
+  user_id: string;
+  item_id: string;
+}
+
+interface ListProps {
+  items: Item[];
+  removeAction: any;
+  displayKeys: Record<string, DisplayKey>;
+}
+
+const List: React.FC<ListProps> = ({ items, removeAction, displayKeys }) => {
   // Remove keys that are not meant to be displayed
   Object.keys(displayKeys).forEach((key) => {
     if (!displayKeys[key].show) delete displayKeys[key];

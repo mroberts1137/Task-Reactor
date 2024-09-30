@@ -19,16 +19,16 @@ export {
 
 const initialState = {
   monthlyGoalsArray: [
-    { id: uuid(), title: 'Rent', value: 500 },
-    { id: uuid(), title: 'Car Loan', value: 124 },
-    { id: uuid(), title: 'Car Insurance', value: 93 },
-    { id: uuid(), title: 'Credit Card', value: 122 },
-    { id: uuid(), title: 'Nucamp', value: 160 },
-    { id: uuid(), title: 'Phone', value: 37 },
-    { id: uuid(), title: 'Groceries', value: 413 },
-    { id: uuid(), title: 'Gas', value: 96 },
-    { id: uuid(), title: 'Restaurant/Other', value: 232 },
-    { id: uuid(), title: 'Shopping', value: 97 }
+    { _id: uuid(), title: 'Rent', value: '500' },
+    { _id: uuid(), title: 'Car Loan', value: '124' },
+    { _id: uuid(), title: 'Car Insurance', value: '93' },
+    { _id: uuid(), title: 'Credit Card', value: '122' },
+    { _id: uuid(), title: 'Nucamp', value: '160' },
+    { _id: uuid(), title: 'Phone', value: '37' },
+    { _id: uuid(), title: 'Groceries', value: '413' },
+    { _id: uuid(), title: 'Gas', value: '96' },
+    { _id: uuid(), title: 'Restaurant/Other', value: '232' },
+    { _id: uuid(), title: 'Shopping', value: '97' }
   ],
   status: 'idle',
   error: null
@@ -55,7 +55,7 @@ const monthlyGoalsSlice = createSlice({
         state.monthlyGoalsArray = action.payload;
       })
       .addCase(fetchMonthlyGoals.rejected, (state, action) => {
-        state.status = 'failure';
+        state.status = 'failed';
         state.error = action.error.message;
       })
       /* 
@@ -95,10 +95,10 @@ const monthlyGoalsSlice = createSlice({
       .addCase(updateMonthlyGoalById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         const updatedMonthlyGoalIdx = state.monthlyGoalsArray.findIndex(
-          (item) => item.id == action.payload.id
+          (item) => item._id == action.payload._id
         );
         if (updatedMonthlyGoalIdx !== -1)
-          state.monthlyGoalsArray[updatedMonthlyGoalIdx] = action.payload.id;
+          state.monthlyGoalsArray[updatedMonthlyGoalIdx] = action.payload;
       })
       .addCase(updateMonthlyGoalById.rejected, (state, action) => {
         state.status = 'failed';
@@ -113,7 +113,7 @@ const monthlyGoalsSlice = createSlice({
       .addCase(removeMonthlyGoalById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.monthlyGoalsArray = state.monthlyGoalsArray.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item._id !== action.payload._id
         );
       })
       .addCase(removeMonthlyGoalById.rejected, (state, action) => {
