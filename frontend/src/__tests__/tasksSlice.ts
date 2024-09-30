@@ -20,13 +20,16 @@ jest.mock('../api/axios', () => ({
   delete: jest.fn()
 }));
 
+/**
+ * tasksSlice
+ */
 describe('tasksSlice', () => {
   it('should handle initial state', () => {
     expect(tasksReducer(undefined, { type: 'unknown' })).toEqual(initialState);
   });
 
   it('should handle setTasks', () => {
-    const tasks: Task[] = [{ id: '1', task: 'Task 1' }];
+    const tasks: Task[] = [{ _id: '1', task: 'Task 1' }];
     const action = setTasks(tasks);
     const state = tasksReducer(initialState, action);
 
@@ -48,7 +51,10 @@ describe('tasksSlice', () => {
   });
 });
 
-describe('tasksSlice fetchTask', () => {
+/**
+ * fetchTasks
+ */
+describe('tasksSlice fetchTasks', () => {
   it('should handle fetchTasks.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
     const action = { type: fetchTasks.pending.type };
@@ -59,8 +65,8 @@ describe('tasksSlice fetchTask', () => {
 
   it('should handle fetchTasks.fulfilled', () => {
     const mockTasks: Task[] = [
-      { id: '1', task: 'Task 1' },
-      { id: '2', task: 'Task 2' }
+      { _id: '1', task: 'Task 1' },
+      { _id: '2', task: 'Task 2' }
     ];
     const state: TasksState = {
       ...initialState,
@@ -91,6 +97,9 @@ describe('tasksSlice fetchTask', () => {
   });
 });
 
+/**
+ * addTask
+ */
 describe('taskSlice addTask', () => {
   it('should handle addTask.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
@@ -101,7 +110,7 @@ describe('taskSlice addTask', () => {
   });
 
   it('should handle addTask.fulfilled', () => {
-    const mockTask: Task = { id: '1', task: 'New Task' };
+    const mockTask: Task = { _id: '1', task: 'New Task' };
     const state: TasksState = {
       ...initialState,
       status: 'loading',
@@ -128,6 +137,9 @@ describe('taskSlice addTask', () => {
   });
 });
 
+/**
+ * updateTaskById
+ */
 describe('taskSlice updateTaskById', () => {
   it('should handle updateTaskById.pending', () => {
     const state: TasksState = {
@@ -143,7 +155,7 @@ describe('taskSlice updateTaskById', () => {
   });
 
   it('should handle updateTaskById.fulfilled', () => {
-    const task: Task = { id: '1', task: 'Task 1' };
+    const task: Task = { _id: '1', task: 'Task 1' };
     const state: TasksState = {
       ...initialState,
       taskArray: [task],
@@ -174,6 +186,9 @@ describe('taskSlice updateTaskById', () => {
   });
 });
 
+/**
+ * getTaskById
+ */
 describe('taskSlice getTaskById', () => {
   it('should handle getTaskById.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
@@ -184,7 +199,7 @@ describe('taskSlice getTaskById', () => {
   });
 
   it('should handle getTaskById.fulfilled', () => {
-    const mockTask: Task = { id: '1', task: 'Task 1' };
+    const mockTask: Task = { _id: '1', task: 'Task 1' };
     const state: TasksState = {
       ...initialState,
       status: 'loading',
@@ -214,6 +229,9 @@ describe('taskSlice getTaskById', () => {
   });
 });
 
+/**
+ * removeTaskById
+ */
 describe('taskSlice removeTaskById', () => {
   it('should handle removeTaskById.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
@@ -224,8 +242,8 @@ describe('taskSlice removeTaskById', () => {
   });
 
   it('should handle removeTaskById.fulfilled', () => {
-    const task1: Task = { id: '1', task: 'Task 1' };
-    const task2: Task = { id: '2', task: 'Task 2' };
+    const task1: Task = { _id: '1', task: 'Task 1' };
+    const task2: Task = { _id: '2', task: 'Task 2' };
     const state: TasksState = {
       ...initialState,
       taskArray: [task1, task2],
