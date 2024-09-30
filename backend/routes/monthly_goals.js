@@ -80,12 +80,14 @@ router.put('/:monthly_goal_id', auth, async (req, res) => {
 // @access  Private
 router.delete('/:monthly_goal_id', auth, async (req, res) => {
   try {
-    const monthlyGoal = await MonthlyGoal.findById(req.params.monthly_goal_id);
+    let monthlyGoal = await MonthlyGoal.findById(req.params.monthly_goal_id);
     if (!monthlyGoal || monthlyGoal.user.toString() !== req.user.id) {
       return res.status(404).json({ msg: 'Monthly goal not found' });
     }
-    await MonthlyGoal.findByIdAndRemove(req.params.monthly_goal_id);
-    res.json({ msg: 'Monthly goal removed' });
+    monthlyGoal = await MonthlyGoal.findByIdAndDelete(
+      req.params.monthly_goal_id
+    );
+    res.json(monthlyGoal);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

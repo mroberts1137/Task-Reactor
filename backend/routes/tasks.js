@@ -84,11 +84,11 @@ router.put('/:task_id', auth, async (req, res) => {
 // @access  Private
 router.delete('/:task_id', auth, async (req, res) => {
   try {
-    const task = await Task.findById(req.params.task_id);
+    let task = await Task.findById(req.params.task_id);
     if (!task || task.user.toString() !== req.user.id) {
       return res.status(404).json({ msg: 'Task not found' });
     }
-    await Task.findByIdAndRemove(req.params.task_id);
+    task = await Task.findByIdAndDelete(req.params.task_id);
     res.json(task);
   } catch (err) {
     console.error(err.message);

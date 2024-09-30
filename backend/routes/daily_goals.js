@@ -80,12 +80,12 @@ router.put('/:daily_goal_id', auth, async (req, res) => {
 // @access  Private
 router.delete('/:daily_goal_id', auth, async (req, res) => {
   try {
-    const dailyGoal = await DailyGoal.findById(req.params.daily_goal_id);
+    let dailyGoal = await DailyGoal.findById(req.params.daily_goal_id);
     if (!dailyGoal || dailyGoal.user.toString() !== req.user.id) {
       return res.status(404).json({ msg: 'Daily goal not found' });
     }
-    await DailyGoal.findByIdAndRemove(req.params.daily_goal_id);
-    res.json({ msg: 'Daily goal removed' });
+    dailyGoal = await DailyGoal.findByIdAndDelete(req.params.daily_goal_id);
+    res.json(dailyGoal);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

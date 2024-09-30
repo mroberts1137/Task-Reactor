@@ -1,6 +1,7 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
+import thunk from 'redux-thunk';
 import storage from 'redux-persist/lib/storage';
 
 import userReducer from './userSlice';
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
 });
 
 export const store = configureStore({
-  reducer: rootReducer
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware()
 });
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
