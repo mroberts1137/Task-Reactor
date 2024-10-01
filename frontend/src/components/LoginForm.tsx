@@ -8,14 +8,16 @@ import { fetchTasks } from '../app/tasksSlice';
 import { fetchDailyGoals } from '../app/dailyGoalsSlice';
 import { fetchMonthlyGoals } from '../app/monthlyGoalsSlice';
 import { auth } from '../auth/auth';
+import { Task, Goal, User } from '../types/types';
+import { AppDispatch } from '../app/store';
 
 const LOGIN_URL = '/api/auth';
 
 const RegisterForm = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const userRef = useRef();
-  const errRef = useRef();
+  const userRef = useRef<HTMLInputElement>(null);
+  const errRef = useRef<HTMLParagraphElement>(null);
 
   const [username, setUsername] = useState('');
   const [userFocus, setUserFocus] = useState(false);
@@ -35,7 +37,7 @@ const RegisterForm = () => {
     setErrMsg('');
   }, [username, password]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { user, user_id } = await auth(LOGIN_URL, {
@@ -52,9 +54,9 @@ const RegisterForm = () => {
         dispatch(setUserId(user_id));
 
         // Fetch tasks for the logged-in user
-        dispatch(fetchTasks(user_id));
-        dispatch(fetchDailyGoals(user_id));
-        dispatch(fetchMonthlyGoals(user_id));
+        dispatch(fetchTasks({ user_id }));
+        dispatch(fetchDailyGoals({ user_id }));
+        dispatch(fetchMonthlyGoals({ user_id }));
 
         // Reset Form
         setSuccess(true);
