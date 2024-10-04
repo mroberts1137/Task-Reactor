@@ -13,7 +13,7 @@ const TaskBox = () => {
   const dispatch = useDispatch();
   const { selectedDate } = useContext(DateContext);
   const { dailyTasks } = useContext(TaskContext);
-  const total = sumTotal(dailyTasks);
+  const total = sumTotal(dailyTasks.map((item) => item.netIncome));
 
   const [showKeys, setShowKeys] = useState({
     title: true,

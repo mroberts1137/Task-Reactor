@@ -23,7 +23,8 @@ const TaskTable: React.FC<TaskTableProps> = ({ task, clockRunning }) => {
             <th>Start Time:</th>
             <th>End Time:</th>
             <th>Elapsed Time:</th>
-            <th>Earnings:</th>
+            <th>Gross Earnings:</th>
+            <th>Net Earnings:</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +34,8 @@ const TaskTable: React.FC<TaskTableProps> = ({ task, clockRunning }) => {
               {formatTime(endTime)}
             </td>
             <td>{formatDuration(task.duration)}</td>
-            <td>{formatCurrency(task.value)}</td>
+            <td>{formatCurrency(task.grossIncome)}</td>
+            <td>{formatCurrency(task.netIncome)}</td>
           </tr>
         </tbody>
       </table>

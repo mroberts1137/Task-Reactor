@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectSavedTasks } from '../../app/savedTasksSlice';
+import { Task } from '../../types/types';
 
 const SavedTasks = ({ onTaskSelect }) => {
-  const savedTasks = useSelector(selectSavedTasks);
+  const savedTasks: Task[] = useSelector(selectSavedTasks);
 
   return (
     <div>

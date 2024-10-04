@@ -26,8 +26,8 @@ const TimerBox: React.FC<TimerBoxProps> = ({ earningsChange }) => {
   useInterval(() => setTask(updateTask(task)), clockRunning ? 1000 : null);
 
   useEffect(() => {
-    earningsChange(task?.value || 0);
-  }, [task?.value, earningsChange]);
+    earningsChange(task?.netIncome || 0);
+  }, [task?.netIncome, earningsChange]);
 
   const handleTaskSelect = (selectedTask: Task) => {
     setTask((prevTask) => ({ ...prevTask, ...selectedTask }));

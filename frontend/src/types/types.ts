@@ -14,8 +14,10 @@ export interface Task extends Item {
   startTime?: Date;
   endTime?: Date;
   duration?: number;
-  rate?: number;
-  value?: number;
+  hourly_rate?: number;
+  tax_rate?: number;
+  gross_income?: number;
+  netIncome?: number;
   [key: string]: any;
 }
 

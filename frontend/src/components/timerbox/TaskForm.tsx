@@ -11,7 +11,8 @@ interface TaskFormProps {
 
 const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
   const title = selectedTask?.title || '';
-  const rate = selectedTask?.rate || 0;
+  const hourlyRate = selectedTask?.hourlyRate || 0;
+  const taxRate = selectedTask?.taxRate || 0;
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -24,15 +25,25 @@ const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
     // Update task state with the new value from the input
     setTaskSelect({
       ...selectedTask,
-      [name]: name === 'rate' ? parseFloat(value) || 0 : value
+      [name]:
+        name === 'hourlyRate' || name === 'taxRate'
+          ? parseFloat(value) || 0
+          : value
     });
   };
 
   // Handle saving the task with default or sanitized values
   const handleSaveTask = () => {
     const sanitizedTask = title.trim() || 'Untitled Task';
-    const sanitizedRate = rate || 0;
-    dispatch(saveTask({ title: sanitizedTask, rate: sanitizedRate }));
+    const sanitizedRate = hourlyRate || 0;
+    const sanitizedTax = taxRate || 0;
+    dispatch(
+      saveTask({
+        title: sanitizedTask,
+        hourlyRate: sanitizedRate,
+        taxRate: sanitizedTax
+      })
+    );
   };
 
   // Handle input change for task rate
@@ -53,13 +64,23 @@ const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
         />
       </label>
       <label>
-        Rate:
+        Hourly Rate:
         <input
           type='number'
-          name='rate'
-          value={rate}
+          name='hourlyRate'
+          value={hourlyRate}
           onChange={handleTaskChange}
-          placeholder='Enter rate'
+          placeholder='Enter hourly rate'
+        />
+      </label>
+      <label>
+        Tax Rate:
+        <input
+          type='number'
+          name='taxRate'
+          value={taxRate}
+          onChange={handleTaskChange}
+          placeholder='Enter tax rate'
         />
       </label>
       <button onClick={handleSaveTask}>Save Task</button>

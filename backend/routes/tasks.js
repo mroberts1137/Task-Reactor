@@ -21,16 +21,15 @@ router.get('/', auth, async (req, res) => {
 // @access  Private
 router.post('/', auth, async (req, res) => {
   try {
-    const { title, startTime, endTime, duration, rate, value } = req.body;
-    const task = new Task({
-      title,
-      startTime,
-      endTime,
-      duration,
-      rate,
-      value,
-      user: req.user.id
-    });
+    const { _id, ...taskData } = req.body;
+
+    if (_id) {
+      return res
+        .status(400)
+        .json({ msg: 'Cannot create task with existing ID' });
+    }
+
+    const task = new Task({ ...taskData, user: req.user.id });
     await task.save();
     res.status(201).json(task);
   } catch (err) {
@@ -59,8 +58,7 @@ router.get('/:task_id', auth, async (req, res) => {
 // @desc    Update a task for a user
 // @access  Private
 router.put('/:task_id', auth, async (req, res) => {
-  const { title, startTime, endTime, duration, rate, value } = req.body;
-  const taskFields = { title, startTime, endTime, duration, rate, value };
+  const { _id, ...taskFields } = req.body;
 
   try {
     let task = await Task.findById(req.params.task_id);

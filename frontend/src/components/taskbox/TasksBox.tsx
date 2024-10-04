@@ -10,6 +10,7 @@ import { sumTotal } from '../../utils/functions';
 import { Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 import { UserIdItemIdPayload } from '../../types/payloads';
+import { formatCurrency } from '../../utils/time_box_functions';
 
 interface DisplayKey {
   name: string;
@@ -22,15 +23,17 @@ interface ShowKeys {
   startTime: boolean;
   endTime: boolean;
   duration: boolean;
-  rate: boolean;
-  value: boolean;
+  hourlyRate: boolean;
+  taxRate: boolean;
+  grossIncome: boolean;
+  netIncome: boolean;
 }
 
 const TaskBox: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { selectedDate } = useContext(DateContext);
   const { dailyTasks } = useContext(TaskContext);
-  const total = sumTotal(dailyTasks);
+  const total = sumTotal(dailyTasks.map((item) => item.netIncome));
   const { user_id } = useContext(UserContext);
 
   const [showKeys, setShowKeys] = useState<ShowKeys>({
@@ -38,8 +41,10 @@ const TaskBox: React.FC = () => {
     startTime: true,
     endTime: true,
     duration: true,
-    rate: true,
-    value: true
+    hourlyRate: true,
+    taxRate: true,
+    grossIncome: true,
+    netIncome: true
   });
 
   const displayKeys: Record<keyof Omit<Task, '_id'>, DisplayKey> = {
@@ -47,8 +52,14 @@ const TaskBox: React.FC = () => {
     startTime: { name: 'Start Time', type: 'Date', show: showKeys.startTime },
     endTime: { name: 'End Time', type: 'Date', show: showKeys.endTime },
     duration: { name: 'Duration', type: 'Duration', show: showKeys.duration },
-    rate: { name: 'Rate', type: 'Currency', show: showKeys.rate },
-    value: { name: 'Value', type: 'Currency', show: showKeys.value }
+    hourlyRate: { name: 'Rate', type: 'Currency', show: showKeys.hourlyRate },
+    taxRate: { name: 'Tax', type: 'String', show: showKeys.taxRate },
+    grossIncome: {
+      name: 'Value',
+      type: 'Currency',
+      show: showKeys.grossIncome
+    },
+    netIncome: { name: 'Value', type: 'Currency', show: showKeys.netIncome }
   };
 
   const toggleShowKey = (key: keyof ShowKeys) => {
@@ -66,7 +77,7 @@ const TaskBox: React.FC = () => {
     <div className='container'>
       <DateDisplay date={selectedDate} />
       <h3>
-        Completed Tasks: $<span id='goals-total'>{total.toFixed(2)}</span>
+        Completed Tasks: <span id='goals-total'>{formatCurrency(total)}</span>
       </h3>
       <AddTask />
       <DropdownSelector

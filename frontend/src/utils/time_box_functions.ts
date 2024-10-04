@@ -2,10 +2,14 @@ import { Task } from '../types/types';
 
 export const calculateEarnings = (
   elapsedTime: number,
-  rate: number
-): number => {
+  hourlyRate: number,
+  taxRate: number
+): { grossIncome: number; netIncome: number } => {
   const hours = elapsedTime / (1000 * 60 * 60);
-  return Math.floor(hours * rate * 100) / 100;
+  const grossIncome = Math.floor(hours * hourlyRate * 100) / 100;
+  const taxDeduction = grossIncome * taxRate;
+  const netIncome = grossIncome - taxDeduction;
+  return { grossIncome, netIncome };
 };
 
 export const calculateElapsedTime = (startTime?: Date): number => {
@@ -29,11 +33,10 @@ export const formatHourMin = (time?: Date): string => {
 
 export const formatDuration = (duration?: number): string => {
   if (!duration) return '-';
-  return `${Math.floor(duration / (1000 * 60 * 60))}:${(
-    Math.floor(duration / (1000 * 60)) % 60
-  )
-    .toString()
-    .padStart(2, '0')}:${(Math.floor(duration / 1000) % 60)
+  const hours = Math.floor(duration / (1000 * 60 * 60));
+  const minutes = Math.floor((duration / (1000 * 60)) % 60);
+  const seconds = Math.floor((duration / 1000) % 60);
+  return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds
     .toString()
     .padStart(2, '0')}`;
 };
@@ -47,15 +50,24 @@ export const resetTask = (): Task => ({
   startTime: undefined,
   endTime: undefined,
   duration: 0,
-  rate: 0,
-  value: 0
+  hourlyRate: 0,
+  taxRate: 0.1,
+  grossIncome: 0,
+  netIncome: 0
 });
 
-export const updateTask = (task: Task) => {
+export const updateTask = (task: Task): Task => {
   if (task?.startTime) {
     const duration = calculateElapsedTime(task.startTime);
-    const value = calculateEarnings(duration, task.rate);
-    return { ...task, duration, value } as Task;
+    const { grossIncome, netIncome } = calculateEarnings(
+      duration,
+      task.hourlyRate,
+      task.taxRate
+    );
+    // console.log(
+    //   `Title: ${task.title}, Duration: ${task.duration}, Hourly Rate: ${task.hourlyRate}, Tax Rate: ${task.taxRate}, Gross: ${task.grossIncome}, Net: ${task.netIncome}`
+    // );
+    return { ...task, duration, grossIncome, netIncome } as Task;
   }
   return task;
 };

@@ -69,15 +69,19 @@ const Dashboard = () => {
   }, [dispatch, loggedin_userId, loggedin_user]);
 
   useEffect(() => {
-    setGoalsTotal(sumTotal(dailyGoals));
+    setGoalsTotal(sumTotal(dailyGoals.map((item) => parseFloat(item.value))));
   }, [dailyGoals]);
 
   useEffect(() => {
-    setMonthlyGoalsTotal(sumTotal(monthlyGoals));
+    setMonthlyGoalsTotal(
+      sumTotal(monthlyGoals.map((item) => parseFloat(item.value)))
+    );
   }, [monthlyGoals]);
 
   useEffect(() => {
-    setTasksTotal(sumTotal(dailyTasks));
+    setTasksTotal(
+      sumTotal(dailyTasks.map((item) => parseFloat(item.netIncome)))
+    );
   }, [dailyTasks]);
 
   useEffect(() => {
@@ -96,7 +100,9 @@ const Dashboard = () => {
     setEarnings(val);
   }, []);
 
-  const monthlyTotalEarnings = sumTotal(monthlyTasks);
+  const monthlyTotalEarnings = sumTotal(
+    monthlyTasks.map((item) => parseFloat(item.value))
+  );
 
   const handleLoadTasks = () => {
     if (user_id) {

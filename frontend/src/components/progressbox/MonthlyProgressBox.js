@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import './ProgressBox.css';
 import { selectAllGoals } from '../../app/monthlyGoalsSlice';
+import { formatCurrency } from '../../utils/time_box_functions';
 
 const MonthlyProgress = ({ totalEarnings, goalsTotal }) => {
   const goals = useSelector(selectAllGoals);
@@ -42,7 +43,7 @@ const MonthlyProgress = ({ totalEarnings, goalsTotal }) => {
         {/* Total Earnings */}
         <div className='info-col'>
           <h4>Total Monthly Earnings:</h4>
-          <h4>${totalEarnings.toFixed(2)}</h4>
+          <h4>{formatCurrency(totalEarnings)}</h4>
         </div>
 
         {/* Progress Bar Container */}

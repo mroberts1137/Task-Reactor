@@ -7,21 +7,24 @@ import moment from 'moment';
 import './TaskCalendar.css';
 import { DateContext } from '../../contexts/context';
 import { sumTotal } from '../../utils/functions';
+import { formatCurrency } from '../../utils/time_box_functions';
+
+import { Task } from '../../types/types';
 
 function TaskCalendar({ handleSelectDate }) {
   const { selectedDate } = useContext(DateContext);
 
-  const tasks = useSelector(selectAllTasks);
+  const tasks: Task[] = useSelector(selectAllTasks);
   // const tasksForMonth = useSelector((state) =>
   //   selectAllTasksByMonth(selectedDate)(state)
   // );
-  // const monthlyTotal = sumTotal(tasksForMonth);
+  // const monthlyTotal = sumTotal(tasksForMonth.map((item) => parseFloat(item.value)));
 
   const getTasksByDay = useMemo(() => {
     const taskMap = new Map();
 
-    if (tasks && tasks.taskArray) {
-      tasks.taskArray.forEach((task) => {
+    if (tasks) {
+      tasks.forEach((task) => {
         const taskDate = moment(task.startTime);
         if (taskDate.isValid()) {
           const key = taskDate.startOf('day').format();
@@ -35,7 +38,7 @@ function TaskCalendar({ handleSelectDate }) {
     return taskMap;
   }, [tasks]);
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date: Date) => {
     handleSelectDate(date);
   };
 
@@ -49,15 +52,15 @@ function TaskCalendar({ handleSelectDate }) {
         .startOf('day')
         .format();
       const tasksForDay = getTasksByDay.get(dateKey) || [];
-      const totalValue = tasksForDay.reduce(
-        (total, task) => total + task.value,
+      const totalNetIncome = tasksForDay.reduce(
+        (total: number, task: Task) => total + task.netIncome,
         0
       );
 
-      if (totalValue > 0) {
+      if (totalNetIncome > 0) {
         events.push({
           date: moment(startOfMonth).add(day, 'days').toDate(),
-          value: totalValue
+          netIncome: totalNetIncome
         });
       }
     }
@@ -71,16 +74,12 @@ function TaskCalendar({ handleSelectDate }) {
       moment(event.date).isSame(date, 'day')
     );
     return event ? (
-      <div className='content'>${event.value.toFixed(2)}</div>
+      <div className='content'>{formatCurrency(event.netIncome)}</div>
     ) : null;
   };
 
   return (
     <div>
-      {/* <h2>
-        Total for {selectedDate.toLocaleString('default', { month: 'long' })}:{' '}
-        {monthlyTotal}
-      </h2> */}
       <Calendar
         value={selectedDate}
         onClickDay={(date) => handleDateChange(date)}

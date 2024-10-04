@@ -17,11 +17,19 @@ const TaskSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  rate: {
+  hourlyRate: {
     type: Number,
     required: true
   },
-  value: {
+  taxRate: {
+    type: Number,
+    required: true
+  },
+  grossIncome: {
+    type: Number,
+    required: true
+  },
+  netIncome: {
     type: Number,
     required: true
   },
