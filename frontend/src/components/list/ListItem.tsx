@@ -47,10 +47,10 @@ const ListItem: React.FC<ListItemProps> = ({
     dispatch(removeAction({ user_id, item_id: item._id }));
   };
 
-  const itemType = (item, displayKey) => {
+  const itemType = (item: any, displayKey: DisplayKey) => {
     switch (displayKey.type) {
       case 'Currency':
-        return formatCurrency(parseFloat(item));
+        return formatCurrency(item);
       case 'String':
         return item;
       case 'Duration':

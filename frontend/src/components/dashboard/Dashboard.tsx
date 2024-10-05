@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row, Button } from 'reactstrap';
-
+// Components
 import GoalsBox from '../goalsbox/GoalsBox';
 import MonthlyGoalsBox from '../goalsbox/MonthlyGoalsBox';
 import TasksBox from '../taskbox/TasksBox';
@@ -9,23 +9,21 @@ import TimerBox from '../timerbox/TimerBox';
 import ProgressBox from '../progressbox/ProgressBox';
 import MonthlyProgressBox from '../progressbox/MonthlyProgressBox';
 import CalendarBox from '../calendarbox/CalendarBox';
-import SaveLoadButtons from '../SaveLoadButtons';
-import SaveLoad from '../SaveLoad';
 import DateDisplay from '../DateDisplay';
 import TimeDisplay from '../TimeDisplay';
-
+// Types
 import { User, Task, Goal } from '../../types/types';
-import { AppDispatch } from '../../app/store';
-
+import { AppDispatch, RootState } from '../../app/store';
+// Context
 import {
   UserContext,
   TaskContext,
   GoalsContext,
   DateContext
 } from '../../contexts/context';
-
+// CSS
 import './Dashboard.css';
-
+// Redux
 import { selectUserId, selectUser } from '../../app/userSlice';
 import {
   fetchTasks,
@@ -38,28 +36,36 @@ import { selectAllGoals } from '../../app/dailyGoalsSlice';
 import { selectAllGoals as selectAllMonthlyGoals } from '../../app/monthlyGoalsSlice';
 import { sumTotal } from '../../utils/functions';
 
+/**
+ * Dashboard
+ */
+
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const loggedin_userId: string = useSelector(selectUserId);
-  const loggedin_user = useSelector(selectUser) as User;
+  const loggedin_user: User = useSelector(selectUser);
 
+  // User
   const [user, setUser] = useState<User | null>(null);
   const [user_id, setUserId] = useState<string | null>(null);
-  const [goalsTotal, setGoalsTotal] = useState<number>(0);
-  const [monthlyGoalsTotal, setMonthlyGoalsTotal] = useState<number>(0);
-  const [tasksTotal, setTasksTotal] = useState<number>(0);
-  const [earnings, setEarnings] = useState<number>(0);
-  const [totalEarnings, setTotalEarnings] = useState<number>(0);
+  // Daily Earnings
+  const [dailyTasksEarnings, setDailyTasksEarnings] = useState<number>(0);
+  const [currentTaskEarnings, setCurrentTaskEarnings] = useState<number>(0);
+  const [totalDailyEarnings, setTotalDailyEarnings] = useState<number>(0);
+  // Date
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const todaysDate = new Date();
-
-  const dailyGoals = useSelector(selectAllGoals) as Goal[];
-  const monthlyGoals = useSelector(selectAllMonthlyGoals);
-  const tasks = useSelector(selectAllTasks);
-  const dailyTasks = useSelector((state: any) =>
+  //Goals
+  const dailyGoals: Goal[] = useSelector(selectAllGoals);
+  const monthlyGoals: Goal[] = useSelector(selectAllMonthlyGoals);
+  const [dailyGoalsTotal, setDailyGoalsTotal] = useState<number>(0);
+  const [monthlyGoalsTotal, setMonthlyGoalsTotal] = useState<number>(0);
+  // Tasks
+  const tasks: Task[] = useSelector(selectAllTasks);
+  const dailyTasks: Task[] = useSelector((state: RootState) =>
     selectTasksByDate(state, selectedDate)
   );
-  const monthlyTasks = useSelector((state: any) =>
+  const monthlyTasks: Task[] = useSelector((state: any) =>
     selectAllTasksByMonth(state, selectedDate)
   );
 
@@ -69,10 +75,12 @@ const Dashboard: React.FC = () => {
       setUserId(loggedin_userId);
       dispatch(fetchTasks({ user_id: loggedin_userId }));
     }
-  }, [dispatch, loggedin_userId, loggedin_user]);
+  }, [loggedin_userId, loggedin_user]);
 
   useEffect(() => {
-    setGoalsTotal(sumTotal(dailyGoals.map((item) => parseFloat(item.value))));
+    setDailyGoalsTotal(
+      sumTotal(dailyGoals.map((item) => parseFloat(item.value)))
+    );
   }, [dailyGoals]);
 
   useEffect(() => {
@@ -82,12 +90,12 @@ const Dashboard: React.FC = () => {
   }, [monthlyGoals]);
 
   useEffect(() => {
-    setTasksTotal(sumTotal(dailyTasks.map((item) => item.netIncome)));
+    setDailyTasksEarnings(sumTotal(dailyTasks.map((item) => item.netIncome)));
   }, [dailyTasks]);
 
   useEffect(() => {
-    setTotalEarnings(tasksTotal + earnings);
-  }, [tasksTotal, earnings]);
+    setTotalDailyEarnings(dailyTasksEarnings + currentTaskEarnings);
+  }, [dailyTasksEarnings, currentTaskEarnings]);
 
   const handleReset = () => {
     dispatch(reset());
@@ -98,7 +106,7 @@ const Dashboard: React.FC = () => {
   };
 
   const earningsChange = useCallback((val: number) => {
-    setEarnings(val);
+    setCurrentTaskEarnings(val);
   }, []);
 
   const monthlyTotalEarnings = sumTotal(
@@ -137,14 +145,12 @@ const Dashboard: React.FC = () => {
               <button onClick={handleLoadTasks}>Load Tasks</button>
               <Row className='row'>
                 <TimerBox earningsChange={earningsChange} />
-                {/* <SaveLoadButtons />
-              <SaveLoad /> */}
               </Row>
               <Row className='row'>
                 <Col className='col'>
                   <ProgressBox
-                    goalsTotal={goalsTotal}
-                    totalEarnings={totalEarnings}
+                    goalsTotal={dailyGoalsTotal}
+                    totalEarnings={totalDailyEarnings}
                   />
                   <MonthlyProgressBox
                     goalsTotal={monthlyGoalsTotal}
@@ -160,7 +166,7 @@ const Dashboard: React.FC = () => {
               </Row>
               <Row>
                 <MonthlyGoalsBox total={monthlyGoalsTotal} />
-                <GoalsBox total={goalsTotal} />
+                <GoalsBox total={dailyGoalsTotal} />
               </Row>
             </div>
           </GoalsContext.Provider>

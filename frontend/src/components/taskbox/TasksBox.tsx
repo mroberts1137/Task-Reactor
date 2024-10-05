@@ -55,11 +55,15 @@ const TaskBox: React.FC = () => {
     hourlyRate: { name: 'Rate', type: 'Currency', show: showKeys.hourlyRate },
     taxRate: { name: 'Tax', type: 'String', show: showKeys.taxRate },
     grossIncome: {
-      name: 'Value',
+      name: 'Goss Income',
       type: 'Currency',
       show: showKeys.grossIncome
     },
-    netIncome: { name: 'Value', type: 'Currency', show: showKeys.netIncome }
+    netIncome: {
+      name: 'Net Income',
+      type: 'Currency',
+      show: showKeys.netIncome
+    }
   };
 
   const toggleShowKey = (key: keyof ShowKeys) => {

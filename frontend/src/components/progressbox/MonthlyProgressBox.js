@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import './ProgressBox.css';
 import { selectAllGoals } from '../../app/monthlyGoalsSlice';
 import { formatCurrency } from '../../utils/time_box_functions';
+import { getGoalLines } from '../../utils/functions';
 
 const MonthlyProgress = ({ totalEarnings, goalsTotal }) => {
   const goals = useSelector(selectAllGoals);
@@ -14,21 +15,7 @@ const MonthlyProgress = ({ totalEarnings, goalsTotal }) => {
     const maxProgress = Math.max(goalsTotal, totalEarnings);
     const calculatedProgress = (totalEarnings / goalsTotal) * 100;
     setProgress(calculatedProgress);
-
-    let previousOffset = 0;
-    const goalLinesValues = goals?.map((goal) => {
-      const goalValue = parseFloat(goal.value);
-      const goalPercentage = (goalValue / maxProgress) * 100;
-      const offset = previousOffset;
-      previousOffset += goalPercentage;
-
-      return {
-        offset,
-        width: goalPercentage,
-        value: goalValue
-      };
-    });
-    setGoalLines(goalLinesValues);
+    setGoalLines(getGoalLines(goals, maxProgress));
 
     if (totalEarnings > goalsTotal) setIsComplete(true);
     else setIsComplete(false);
@@ -77,7 +64,7 @@ const MonthlyProgress = ({ totalEarnings, goalsTotal }) => {
         {/* Goals Total */}
         <div className='info-col'>
           <h4>Monthly Goals Total:</h4>
-          <h4>${goalsTotal.toFixed(2)}</h4>
+          <h4>{formatCurrency(goalsTotal)}</h4>
         </div>
       </div>
     </div>

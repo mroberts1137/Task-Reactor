@@ -64,9 +64,6 @@ export const updateTask = (task: Task): Task => {
       task.hourlyRate,
       task.taxRate
     );
-    // console.log(
-    //   `Title: ${task.title}, Duration: ${task.duration}, Hourly Rate: ${task.hourlyRate}, Tax Rate: ${task.taxRate}, Gross: ${task.grossIncome}, Net: ${task.netIncome}`
-    // );
     return { ...task, duration, grossIncome, netIncome } as Task;
   }
   return task;

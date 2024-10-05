@@ -21,10 +21,16 @@ router.get('/', auth, async (req, res) => {
 // @access  Private
 router.post('/', auth, async (req, res) => {
   try {
-    const { title, value } = req.body;
-    const dailyGoal = new DailyGoal({
-      title,
-      value,
+    const { _id, ...goalData } = req.body;
+
+    if (_id) {
+      return res
+        .status(400)
+        .json({ msg: 'Cannot create goal with existing ID' });
+    }
+
+    const dailyGoal = new MonthlyGoal({
+      ...goalData,
       user: req.user.id
     });
     await dailyGoal.save();
@@ -55,8 +61,7 @@ router.get('/:daily_goal_id', auth, async (req, res) => {
 // @desc    Update a daily goal for a user
 // @access  Private
 router.put('/:daily_goal_id', auth, async (req, res) => {
-  const { title, value } = req.body;
-  const dailyGoalFields = { title, value };
+  const { _id, ...goalData } = req.body;
 
   try {
     let dailyGoal = await DailyGoal.findById(req.params.daily_goal_id);
@@ -65,7 +70,7 @@ router.put('/:daily_goal_id', auth, async (req, res) => {
     }
     dailyGoal = await DailyGoal.findByIdAndUpdate(
       req.params.daily_goal_id,
-      { $set: dailyGoalFields },
+      { $set: goalData },
       { new: true }
     );
     res.json(dailyGoal);

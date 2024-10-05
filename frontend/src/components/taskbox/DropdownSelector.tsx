@@ -1,11 +1,9 @@
-import React from 'react';
-
 const DropdownSelector = ({ items, selectedItems, onToggle }) => {
   return (
     <div className='dropdown'>
       <p>Display Options</p>
       <div className='dropdown-menu'>
-        {items.map((item) => (
+        {items.map((item: string) => (
           <label key={item} className='dropdown-item'>
             <input
               type='checkbox'
