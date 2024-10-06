@@ -112,9 +112,7 @@ const RegisterForm = () => {
               onBlur={() => setPwdFocus(false)}
             />
 
-            <button disabled={!username || !password ? true : false}>
-              Sign In
-            </button>
+            <button disabled={!username || !password}>Sign In</button>
           </form>
 
           <p>

@@ -7,18 +7,19 @@ import { AppDispatch } from '../../app/store';
 interface TaskFormProps {
   selectedTask: Task;
   setTaskSelect: (task: Task) => void;
+  disabled: boolean;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
+const TaskForm: React.FC<TaskFormProps> = ({
+  selectedTask,
+  setTaskSelect,
+  disabled
+}) => {
   const title = selectedTask?.title || '';
   const hourlyRate = selectedTask?.hourlyRate || 0;
   const taxRate = selectedTask?.taxRate || 0;
 
   const dispatch = useDispatch<AppDispatch>();
-
-  // const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setTaskSelect({ ...selectedTask, [e.target.name]: e.target.value });
-  // };
 
   const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,12 +47,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
     );
   };
 
-  // Handle input change for task rate
-  // const handleRateChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const newRate = parseFloat(e.target.value) || 0; // Handle NaN with a default of 0
-  //   setTaskSelect({ title, rate: newRate });
-  // };
-
   return (
     <form>
       <label>
@@ -61,6 +56,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
           value={title}
           onChange={handleTaskChange}
           placeholder='Enter task title'
+          disabled={disabled}
         />
       </label>
       <label>
@@ -71,6 +67,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
           value={hourlyRate}
           onChange={handleTaskChange}
           placeholder='Enter hourly rate'
+          disabled={disabled}
         />
       </label>
       <label>
@@ -81,6 +78,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ selectedTask, setTaskSelect }) => {
           value={taxRate}
           onChange={handleTaskChange}
           placeholder='Enter tax rate'
+          disabled={disabled}
         />
       </label>
       <button onClick={handleSaveTask}>Save Task</button>

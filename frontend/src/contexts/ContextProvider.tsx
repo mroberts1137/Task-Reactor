@@ -20,8 +20,11 @@ import {
   selectTasksByDate,
   selectAllTasksByMonth
 } from '../app/tasksSlice';
-import { selectAllGoals } from '../app/dailyGoalsSlice';
-import { selectAllGoals as selectAllMonthlyGoals } from '../app/monthlyGoalsSlice';
+import { fetchDailyGoals, selectAllGoals } from '../app/dailyGoalsSlice';
+import {
+  fetchMonthlyGoals,
+  selectAllGoals as selectAllMonthlyGoals
+} from '../app/monthlyGoalsSlice';
 import { sumTotal } from '../utils/functions';
 
 const ContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -36,7 +39,11 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Fetch user tasks/goals when logging in
   useEffect(() => {
-    if (user && user_id) dispatch(fetchTasks({ user_id }));
+    if (user && user_id) {
+      dispatch(fetchTasks({ user_id }));
+      dispatch(fetchDailyGoals({ user_id }));
+      dispatch(fetchMonthlyGoals({ user_id }));
+    }
   }, [dispatch, user, user_id]);
 
   /**

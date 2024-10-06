@@ -70,12 +70,18 @@ const TimerBox: React.FC = () => {
         )}
       </h3>
 
-      <TaskForm selectedTask={task} setTaskSelect={handleTaskSelect} />
-      <SavedTasks onTaskSelect={handleTaskSelect} />
+      <TaskForm
+        selectedTask={task}
+        setTaskSelect={handleTaskSelect}
+        disabled={clockRunning}
+      />
+      <SavedTasks onTaskSelect={handleTaskSelect} disabled={clockRunning} />
 
       <div className='flex-row'>
+        {/** Start Button */}
         <button
-          className={clockRunning ? 'stop-btn' : 'start-btn'}
+          disabled={!clockRunning && !task.title}
+          className={`btn ${clockRunning ? 'stop-btn' : 'start-btn'}`}
           onClick={toggleClock}
         >
           {clockRunning ? 'Stop' : 'Start'}
