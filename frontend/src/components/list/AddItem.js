@@ -4,9 +4,9 @@ import { UserContext } from '../../contexts/context';
 
 const AddItem = ({ addAction }) => {
   const [title, setTitle] = useState('');
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(0);
   const dispatch = useDispatch();
-  const { user, userId } = useContext(UserContext);
+  const { user, user_id } = useContext(UserContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,13 +21,13 @@ const AddItem = ({ addAction }) => {
       value
     };
     setTitle('');
-    setValue('');
+    setValue(0);
 
-    if (!userId || !user) {
+    if (!user_id || !user) {
       console.log('No user logged in');
       return;
     }
-    dispatch(addAction(userId, newGoal));
+    dispatch(addAction({ user_id, item: newGoal }));
   };
 
   return (
@@ -44,7 +44,7 @@ const AddItem = ({ addAction }) => {
         <label htmlFor='value'>Value: </label>
         <input
           type='text'
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => setValue(parseFloat(e.target.value))}
           value={value}
           name='value'
           className='short-input'

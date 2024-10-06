@@ -3,9 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
 import { UserContext } from '../../contexts/context';
 import { AppDispatch } from '../../app/store';
-import { UserIdItemIdPayload, RemoveTaskAction } from '../../types/payloads';
 import { Item } from '../../types/types';
-import { Action, AsyncThunk } from '@reduxjs/toolkit';
 import {
   formatHourMin,
   formatDuration,

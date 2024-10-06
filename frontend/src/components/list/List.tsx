@@ -9,11 +9,6 @@ interface DisplayKey {
   type: 'Currency' | 'String' | 'Duration' | 'Date';
 }
 
-interface UserIdItemIdPayload {
-  user_id: string;
-  item_id: string;
-}
-
 interface ListProps {
   items: Item[];
   removeAction: any;

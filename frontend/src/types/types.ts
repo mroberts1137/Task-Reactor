@@ -16,7 +16,7 @@ export interface Task extends Item {
   duration?: number;
   hourly_rate?: number;
   tax_rate?: number;
-  gross_income?: number;
+  grossIncome?: number;
   netIncome?: number;
   [key: string]: any;
 }
@@ -24,5 +24,5 @@ export interface Task extends Item {
 export interface Goal extends Item {
   _id?: string;
   title: string;
-  value: string;
+  value: number;
 }

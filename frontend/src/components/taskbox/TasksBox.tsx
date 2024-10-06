@@ -1,15 +1,12 @@
 import { useState, useContext } from 'react';
-import { useDispatch } from 'react-redux';
 import { removeTaskById } from '../../app/tasksSlice';
 import DateDisplay from '../DateDisplay';
 import DropdownSelector from './DropdownSelector';
 import AddTask from '../list/AddTask';
 import List from '../list/List';
-import { TaskContext, DateContext, UserContext } from '../../contexts/context';
+import { TaskContext, DateContext } from '../../contexts/context';
 import { sumTotal } from '../../utils/functions';
 import { Task } from '../../types/types';
-import { AppDispatch } from '../../app/store';
-import { UserIdItemIdPayload } from '../../types/payloads';
 import { formatCurrency } from '../../utils/time_box_functions';
 
 interface DisplayKey {
@@ -30,11 +27,9 @@ interface ShowKeys {
 }
 
 const TaskBox: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const { selectedDate } = useContext(DateContext);
   const { dailyTasks } = useContext(TaskContext);
   const total = sumTotal(dailyTasks.map((item) => item.netIncome));
-  const { user_id } = useContext(UserContext);
 
   const [showKeys, setShowKeys] = useState<ShowKeys>({
     title: true,
@@ -73,10 +68,6 @@ const TaskBox: React.FC = () => {
     }));
   };
 
-  const handleDelete = (payload) => {
-    dispatch(removeTaskById(payload));
-  };
-
   return (
     <div className='container'>
       <DateDisplay date={selectedDate} />
@@ -91,7 +82,7 @@ const TaskBox: React.FC = () => {
       />
       <List
         items={dailyTasks}
-        removeAction={handleDelete}
+        removeAction={removeTaskById}
         displayKeys={displayKeys}
       />
     </div>

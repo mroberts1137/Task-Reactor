@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
 import { DAILY_GOALS_URL } from '../api/api_urls';
 
-import { Goal } from '../types/types';
 import {
   UserIdPayload,
   UserIdItemPayload,
@@ -44,8 +43,8 @@ export const addDailyGoal = createAsyncThunk(
     try {
       const response = await axios.post(
         DAILY_GOALS_URL.replace('{userId}', user_id),
-        config,
-        item
+        item,
+        config
       );
       return response.data;
     } catch (err) {
@@ -83,8 +82,8 @@ export const updateDailyGoalById = createAsyncThunk(
     try {
       const response = await axios.put(
         DAILY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
-        config,
-        updatedItem
+        updatedItem,
+        config
       );
       return response.data;
     } catch (err) {

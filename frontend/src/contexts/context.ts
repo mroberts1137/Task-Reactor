@@ -9,18 +9,47 @@ export interface UserContextType {
 export interface TaskContextType {
   tasks: Task[] | null;
   dailyTasks: Task[] | null;
+  monthlyTasks: Task[] | null;
+}
+
+export interface EarningsContextType {
+  dailyTasksEarnings: number;
+  dailyTotalEarnings: number;
+  monthlyTotalEarnings: number;
+  earningsChange: (val: number) => void;
 }
 
 export interface DateContextType {
-  selectedDate: Date;
   todaysDate: Date;
+  selectedDate: Date;
+  setSelectedDate: (date: Date) => void;
 }
 
-export interface GoalsContextType {
-  goals: Goal[];
+export interface DailyGoalsContextType {
+  dailyGoals: Goal[];
+  dailyTotalGoals: number;
 }
 
-export const UserContext = createContext<UserContextType | null>(null);
-export const TaskContext = createContext<TaskContextType | null>(null);
-export const GoalsContext = createContext<GoalsContextType | null>(null);
-export const DateContext = createContext<DateContextType | null>(null);
+export interface MonthlyGoalsContextType {
+  monthlyGoals: Goal[];
+  monthlyTotalGoals: number;
+}
+
+export const UserContext = createContext<UserContextType | undefined>(
+  undefined
+);
+export const TaskContext = createContext<TaskContextType | undefined>(
+  undefined
+);
+export const EarningsContext = createContext<EarningsContextType | undefined>(
+  undefined
+);
+export const DailyGoalsContext = createContext<
+  DailyGoalsContextType | undefined
+>(undefined);
+export const MonthlyGoalsContext = createContext<
+  MonthlyGoalsContextType | undefined
+>(undefined);
+export const DateContext = createContext<DateContextType | undefined>(
+  undefined
+);

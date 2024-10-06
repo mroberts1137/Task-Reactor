@@ -29,7 +29,7 @@ router.post('/', auth, async (req, res) => {
         .json({ msg: 'Cannot create goal with existing ID' });
     }
 
-    const dailyGoal = new MonthlyGoal({
+    const dailyGoal = new DailyGoal({
       ...goalData,
       user: req.user.id
     });

@@ -1,14 +1,11 @@
 import { useContext } from 'react';
-import {
-  removeMonthlyGoalById,
-  addMonthlyGoal
-} from '../../app/monthlyGoalsSlice';
+import { removeDailyGoalById, addDailyGoal } from '../../app/dailyGoalsSlice';
 
 import AddItem from '../list/AddItem';
 import List from '../list/List';
 
 import { Goal } from '../../types/types';
-import { MonthlyGoalsContext } from '../../contexts/context';
+import { DailyGoalsContext } from '../../contexts/context';
 import { formatCurrency } from '../../utils/time_box_functions';
 
 interface DisplayKey {
@@ -17,8 +14,8 @@ interface DisplayKey {
   type: 'Currency' | 'String' | 'Duration' | 'Date';
 }
 
-const MonthlyGoalsBox: React.FC = () => {
-  const { monthlyGoals, monthlyTotalGoals } = useContext(MonthlyGoalsContext);
+const GoalsBox: React.FC = () => {
+  const { dailyGoals, dailyTotalGoals } = useContext(DailyGoalsContext);
 
   const displayKeys: Record<keyof Omit<Goal, '_id'>, DisplayKey> = {
     title: { name: 'Goal', type: 'String', show: true },
@@ -28,18 +25,18 @@ const MonthlyGoalsBox: React.FC = () => {
   return (
     <div className='container'>
       <h3>
-        Monthly Goals:{' '}
-        <span id='goals-total'>{formatCurrency(monthlyTotalGoals)}</span>
+        Daily Goals:{' '}
+        <span id='goals-total'>{formatCurrency(dailyTotalGoals)}</span>
       </h3>
 
-      <AddItem addAction={addMonthlyGoal} />
+      <AddItem addAction={addDailyGoal} />
       <List
-        items={monthlyGoals}
-        removeAction={removeMonthlyGoalById}
+        items={dailyGoals}
+        removeAction={removeDailyGoalById}
         displayKeys={displayKeys}
       />
     </div>
   );
 };
 
-export default MonthlyGoalsBox;
+export default GoalsBox;

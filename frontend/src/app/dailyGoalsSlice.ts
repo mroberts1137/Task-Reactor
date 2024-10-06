@@ -25,7 +25,7 @@ export interface GoalsState {
 }
 
 const initialState: GoalsState = {
-  dailyGoalsArray: [{ _id: uuid(), title: 'Daily Minimum', value: '86' }],
+  dailyGoalsArray: [{ _id: uuid(), title: 'Daily Minimum', value: 86 }],
   status: 'idle',
   error: null
 };
@@ -99,7 +99,7 @@ const dailyGoalsSlice = createSlice({
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
           const updatedDailyGoalIdx = state.dailyGoalsArray.findIndex(
-            (item) => item._id == action.payload._id
+            (item) => item._id === action.payload._id
           );
           if (updatedDailyGoalIdx !== -1)
             state.dailyGoalsArray[updatedDailyGoalIdx] = action.payload;

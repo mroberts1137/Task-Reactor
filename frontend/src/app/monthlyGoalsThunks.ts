@@ -43,8 +43,8 @@ export const addMonthlyGoal = createAsyncThunk(
     try {
       const response = await axios.post(
         MONTHLY_GOALS_URL.replace('{userId}', user_id),
-        config,
-        item
+        item,
+        config
       );
       return response.data;
     } catch (err) {
@@ -82,8 +82,8 @@ export const updateMonthlyGoalById = createAsyncThunk(
     try {
       const response = await axios.put(
         MONTHLY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
-        config,
-        updatedItem
+        updatedItem,
+        config
       );
       return response.data;
     } catch (err) {

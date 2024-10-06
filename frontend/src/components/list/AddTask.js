@@ -5,11 +5,13 @@ import { UserContext } from '../../contexts/context';
 
 const AddTask = () => {
   const [title, setTitle] = useState('');
-  const [value, setValue] = useState(0);
+  const [netIncome, setNetIncome] = useState(0);
+  const [grossIncome, setGrossIncome] = useState(0);
   const [duration, setDuration] = useState(0);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
-  const [rate, setRate] = useState(0);
+  const [hourlyRate, setHourlyRate] = useState(0);
+  const [taxRate, setTaxRate] = useState(0);
   const dispatch = useDispatch();
   const { user, user_id } = useContext(UserContext);
 
@@ -28,18 +30,22 @@ const AddTask = () => {
 
     const newTask = {
       title: title || '',
-      value: parseFloat(value) || 0,
+      netIncome: parseFloat(netIncome) || 0,
+      grossIncome: parseFloat(grossIncome) || 0,
       duration: parseFloat(duration) || 0,
       startTime: startTime || new Date(),
       endTime: endTime || new Date(),
-      rate: parseFloat(rate) || 0
+      hourlyRate: parseFloat(hourlyRate) || 0,
+      taxRate: parseFloat(taxRate) || 0
     };
 
     dispatch(addTask({ user_id, item: newTask }));
     setTitle('');
-    setValue(0);
+    setNetIncome(0);
+    setGrossIncome(0);
     setDuration(0);
-    setRate(0);
+    setHourlyRate(0);
+    setTaxRate(0);
   };
 
   return (
@@ -53,18 +59,18 @@ const AddTask = () => {
           name='title'
           className='long-input'
         />
-        <label htmlFor='value'>Total Value: $</label>
+        <label htmlFor='value'>Net Income: $</label>
         <input
           type='text'
-          onChange={(e) => setValue(e.target.value)}
-          value={value}
+          onChange={(e) => setNetIncome(parseFloat(e.target.value))}
+          value={netIncome}
           name='value'
           className='short-input'
         />
         <label htmlFor='duration'>Duration: </label>
         <input
           type='text'
-          onChange={(e) => setDuration(e.target.value)}
+          onChange={(e) => setDuration(parseFloat(e.target.value))}
           value={duration}
           name='duration'
           className='long-input'
@@ -72,9 +78,25 @@ const AddTask = () => {
         <label htmlFor='rate'>Rate: $</label>
         <input
           type='text'
-          onChange={(e) => setRate(e.target.value)}
-          value={rate}
+          onChange={(e) => setHourlyRate(parseFloat(e.target.value))}
+          value={hourlyRate}
           name='rate'
+          className='short-input'
+        />
+        <label htmlFor='startTime'>Start Time: </label>
+        <input
+          type='text'
+          onChange={(e) => setStartTime(e.target.value)}
+          value={startTime}
+          name='startTime'
+          className='short-input'
+        />
+        <label htmlFor='endTime'>End Time: </label>
+        <input
+          type='text'
+          onChange={(e) => setEndTime(e.target.value)}
+          value={endTime}
+          name='endTime'
           className='short-input'
         />
         <button className='add-item-btn' type='submit'>

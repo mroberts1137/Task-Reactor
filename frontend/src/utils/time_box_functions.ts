@@ -41,8 +41,10 @@ export const formatDuration = (duration?: number): string => {
     .padStart(2, '0')}`;
 };
 
-export const formatCurrency = (value?: number): string => {
-  return `$${value?.toFixed(2)}`;
+export const formatCurrency = (value: number): string => {
+  if (!value) return '$0.00';
+  // if (isNaN(value)) value = parseFloat(value);
+  return `$${value.toFixed(2)}`;
 };
 
 export const resetTask = (): Task => ({

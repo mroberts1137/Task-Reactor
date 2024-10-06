@@ -1,25 +1,44 @@
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import './ProgressBox.css';
-import { selectAllGoals } from '../../app/dailyGoalsSlice';
+import { useState, useEffect, useContext } from 'react';
 import { formatCurrency } from '../../utils/time_box_functions';
-import { getGoalLines } from '../../utils/functions';
+import { DailyGoalsContext, EarningsContext } from '../../contexts/context';
+import './ProgressBox.css';
 
-const Progress = ({ totalEarnings, goalsTotal }) => {
-  const goals = useSelector(selectAllGoals);
+const DailyProgressBox = () => {
+  const { dailyTotalEarnings } = useContext(EarningsContext);
+  const { dailyGoals, dailyTotalGoals } = useContext(DailyGoalsContext);
+
   const [progress, setProgress] = useState(0);
   const [goalLines, setGoalLines] = useState([]);
   const [isComplete, setIsComplete] = useState(false);
 
-  useEffect(() => {
-    const maxProgress = Math.max(goalsTotal, totalEarnings);
-    const calculatedProgress = (totalEarnings / goalsTotal) * 100;
-    setProgress(calculatedProgress);
-    setGoalLines(getGoalLines(goals, maxProgress));
+  const getGoalLines = (goals, maxProgress) => {
+    let previousOffset = 0;
+    const goalLinesValues = goals?.map((goal) => {
+      const goalPercentage =
+        maxProgress > 0 ? (goal.value / maxProgress) * 100 : 0;
+      const offset = previousOffset;
+      previousOffset += goalPercentage;
 
-    if (totalEarnings > goalsTotal) setIsComplete(true);
+      return {
+        offset,
+        width: goalPercentage,
+        value: goal.value
+      };
+    });
+
+    return goalLinesValues;
+  };
+
+  useEffect(() => {
+    const maxProgress = Math.max(dailyTotalGoals, dailyTotalEarnings);
+    const calculatedProgress =
+      dailyTotalGoals > 0 ? (dailyTotalEarnings / dailyTotalGoals) * 100 : 0;
+    setProgress(calculatedProgress);
+    setGoalLines(getGoalLines(dailyGoals, maxProgress));
+
+    if (dailyTotalEarnings > dailyTotalGoals) setIsComplete(true);
     else setIsComplete(false);
-  }, [totalEarnings, goalsTotal, goals]);
+  }, [dailyTotalEarnings, dailyTotalGoals, dailyGoals]);
 
   return (
     <div className='container'>
@@ -30,7 +49,7 @@ const Progress = ({ totalEarnings, goalsTotal }) => {
         {/* Total Earnings */}
         <div className='info-col'>
           <h4>Total Earnings:</h4>
-          <h4>{formatCurrency(totalEarnings)}</h4>
+          <h4>{formatCurrency(dailyTotalEarnings)}</h4>
         </div>
 
         {/* Progress Bar Container */}
@@ -64,11 +83,11 @@ const Progress = ({ totalEarnings, goalsTotal }) => {
         {/* Goals Total */}
         <div className='info-col'>
           <h4>Goals Total:</h4>
-          <h4>{formatCurrency(goalsTotal)}</h4>
+          <h4>{formatCurrency(dailyTotalGoals)}</h4>
         </div>
       </div>
     </div>
   );
 };
 
-export default Progress;
+export default DailyProgressBox;

@@ -1,7 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { addTask } from '../../app/tasksSlice';
-import { UserContext, UserContextType } from '../../contexts/context';
+import {
+  EarningsContext,
+  UserContext,
+  UserContextType
+} from '../../contexts/context';
 
 import TaskTable from './TaskTable';
 import TaskForm from './TaskForm';
@@ -12,14 +16,11 @@ import { Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 import { resetTask, updateTask } from '../../utils/time_box_functions';
 
-interface TimerBoxProps {
-  earningsChange: (earnings: number) => void;
-}
-
-const TimerBox: React.FC<TimerBoxProps> = ({ earningsChange }) => {
+const TimerBox: React.FC = () => {
   const [clockRunning, setClockRunning] = useState<boolean>(false);
   const [task, setTask] = useState<Task>(resetTask());
   const { user_id }: UserContextType = useContext(UserContext);
+  const { earningsChange } = useContext(EarningsContext);
 
   const dispatch = useDispatch<AppDispatch>();
 

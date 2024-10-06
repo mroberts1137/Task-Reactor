@@ -1,24 +1,16 @@
-import { useState, useMemo, useContext } from 'react';
+import { useMemo, useContext } from 'react';
 import Calendar from 'react-calendar';
-import { useSelector } from 'react-redux';
-import { selectAllTasks, selectAllTasksByMonth } from '../../app/tasksSlice';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import './TaskCalendar.css';
-import { DateContext } from '../../contexts/context';
-import { sumTotal } from '../../utils/functions';
+import { DateContext, TaskContext } from '../../contexts/context';
 import { formatCurrency } from '../../utils/time_box_functions';
 
 import { Task } from '../../types/types';
 
-function TaskCalendar({ handleSelectDate }) {
-  const { selectedDate } = useContext(DateContext);
-
-  const tasks: Task[] = useSelector(selectAllTasks);
-  // const tasksForMonth = useSelector((state) =>
-  //   selectAllTasksByMonth(selectedDate)(state)
-  // );
-  // const monthlyTotal = sumTotal(tasksForMonth.map((item) => parseFloat(item.value)));
+function TaskCalendar() {
+  const { selectedDate, setSelectedDate } = useContext(DateContext);
+  const { tasks }: { tasks: Task[] } = useContext(TaskContext);
 
   const getTasksByDay = useMemo(() => {
     const taskMap = new Map();
@@ -39,7 +31,7 @@ function TaskCalendar({ handleSelectDate }) {
   }, [tasks]);
 
   const handleDateChange = (date: Date) => {
-    handleSelectDate(date);
+    setSelectedDate(date);
   };
 
   const renderEventsForMonth = () => {
