@@ -1,16 +1,20 @@
 import { useMemo, useContext } from 'react';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
-import './TaskCalendar.css';
-import { DateContext, TaskContext } from '../../contexts/context';
+import {
+  DateContext,
+  TaskContext,
+  DailyGoalsContext
+} from '../../contexts/context';
 import { formatCurrency } from '../../utils/time_box_functions';
-
 import { Task } from '../../types/types';
+import 'react-calendar/dist/Calendar.css';
+import './TaskCalendar.css';
 
 function TaskCalendar() {
   const { selectedDate, setSelectedDate } = useContext(DateContext);
   const { tasks }: { tasks: Task[] } = useContext(TaskContext);
+  const { dailyTotalGoals } = useContext(DailyGoalsContext);
 
   const getTasksByDay = useMemo(() => {
     const taskMap = new Map();
@@ -52,7 +56,8 @@ function TaskCalendar() {
       if (totalNetIncome > 0) {
         events.push({
           date: moment(startOfMonth).add(day, 'days').toDate(),
-          netIncome: totalNetIncome
+          netIncome: totalNetIncome,
+          goalsMet: totalNetIncome >= dailyTotalGoals
         });
       }
     }
@@ -66,7 +71,9 @@ function TaskCalendar() {
       moment(event.date).isSame(date, 'day')
     );
     return event ? (
-      <div className='content'>{formatCurrency(event.netIncome)}</div>
+      <p className={`content ${event.goalsMet ? 'goals-met' : ''}`}>
+        {formatCurrency(event.netIncome)}
+      </p>
     ) : null;
   };
 

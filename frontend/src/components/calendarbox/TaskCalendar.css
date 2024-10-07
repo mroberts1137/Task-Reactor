@@ -18,13 +18,12 @@
 }
 
 .react-calendar__tile--active {
-  background: #00acc1;
+  background: #7780ff;
   color: white;
 }
 
 .react-calendar__tile--now {
-  background: #e0f7fa;
-  border: 1px solid #00acc1;
+  background: #b6d8f4;
 }
 
 .react-calendar__tile:hover {
@@ -50,4 +49,12 @@
 
 button abbr {
   font-size: 18px;
+}
+
+.content {
+  font-size: 20px;
+}
+
+.goals-met {
+  background: #22dd55;
 }

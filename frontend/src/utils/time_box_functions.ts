@@ -7,7 +7,7 @@ export const calculateEarnings = (
 ): { grossIncome: number; netIncome: number } => {
   const hours = elapsedTime / (1000 * 60 * 60);
   const grossIncome = Math.floor(hours * hourlyRate * 100) / 100;
-  const taxDeduction = grossIncome * taxRate;
+  const taxDeduction = (grossIncome * taxRate) / 100;
   const netIncome = grossIncome - taxDeduction;
   return { grossIncome, netIncome };
 };
@@ -53,7 +53,7 @@ export const resetTask = (): Task => ({
   endTime: undefined,
   duration: 0,
   hourlyRate: 0,
-  taxRate: 0.1,
+  taxRate: 0,
   grossIncome: 0,
   netIncome: 0
 });

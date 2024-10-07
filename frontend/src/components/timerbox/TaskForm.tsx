@@ -49,39 +49,67 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   return (
     <form>
-      <label>
-        Task:
-        <input
-          name='title'
-          value={title}
-          onChange={handleTaskChange}
-          placeholder='Enter task title'
-          disabled={disabled}
-        />
-      </label>
-      <label>
-        Hourly Rate:
-        <input
-          type='number'
-          name='hourlyRate'
-          value={hourlyRate}
-          onChange={handleTaskChange}
-          placeholder='Enter hourly rate'
-          disabled={disabled}
-        />
-      </label>
-      <label>
-        Tax Rate:
-        <input
-          type='number'
-          name='taxRate'
-          value={taxRate}
-          onChange={handleTaskChange}
-          placeholder='Enter tax rate'
-          disabled={disabled}
-        />
-      </label>
-      <button onClick={handleSaveTask}>Save Task</button>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            marginInline: '1rem'
+          }}
+        >
+          <label>Task:</label>
+          <input
+            name='title'
+            value={title}
+            onChange={handleTaskChange}
+            placeholder='Enter task title'
+            disabled={disabled}
+          />
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            marginInline: '1rem'
+          }}
+        >
+          <label>Hourly Rate: $</label>
+          <input
+            type='number'
+            name='hourlyRate'
+            value={hourlyRate}
+            onChange={handleTaskChange}
+            placeholder='Enter hourly rate'
+            disabled={disabled}
+            style={{ width: '4rem' }}
+          />
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            marginInline: '1rem'
+          }}
+        >
+          <label>Tax Rate: %</label>
+          <input
+            type='number'
+            name='taxRate'
+            value={taxRate}
+            onChange={handleTaskChange}
+            placeholder='Enter tax rate'
+            disabled={disabled}
+            style={{ width: '2rem' }}
+          />
+        </div>
+        <button onClick={handleSaveTask}>Save Task</button>
+      </div>
     </form>
   );
 };
