@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import './RegisterForm.css';
 import { setUserId, setUser } from '../app/userSlice';
@@ -13,8 +13,9 @@ import { AppDispatch } from '../app/store';
 
 const LOGIN_URL = '/api/auth';
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const userRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -45,9 +46,6 @@ const RegisterForm = () => {
         password
       });
 
-      // Store the JWT in local storage
-      // localStorage.setItem('jwt', response.data.token);
-
       if (user && user_id) {
         // Set user in state
         dispatch(setUser(user));
@@ -58,10 +56,8 @@ const RegisterForm = () => {
         dispatch(fetchDailyGoals({ user_id }));
         dispatch(fetchMonthlyGoals({ user_id }));
 
-        // Reset Form
-        setSuccess(true);
-        setUsername('');
-        setPassword('');
+        // Navigate to dashboard
+        navigate('/dashboard');
       }
     } catch (err) {
       if (!err?.response) {
@@ -126,4 +122,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   faCheck,
   faTimes,
@@ -19,6 +19,7 @@ const REGISTER_URL = '/api/users/register';
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -81,6 +82,9 @@ const RegisterForm = () => {
         setUsername('');
         setPassword('');
         setMatchPassword('');
+
+        // Navigate to dashboard
+        navigate('/dashboard');
       }
     } catch (err: any) {
       if (!err?.response) {

@@ -40,6 +40,11 @@ const monthlyGoalsSlice = createSlice({
   reducers: {
     setGoals: (state, action) => {
       state = action.payload;
+    },
+    clearMonthlyGoals: (state, action) => {
+      state.monthlyGoalsArray = [];
+      state.status = 'idle';
+      state.error = null;
     }
   },
   extraReducers: (builder) => {
@@ -124,6 +129,6 @@ const monthlyGoalsSlice = createSlice({
 });
 
 export default monthlyGoalsSlice.reducer;
-export const { setGoals } = monthlyGoalsSlice.actions;
+export const { setGoals, clearMonthlyGoals } = monthlyGoalsSlice.actions;
 
 export const selectAllGoals = (state) => state.monthlyGoals.monthlyGoalsArray;

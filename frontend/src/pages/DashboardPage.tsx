@@ -1,7 +1,8 @@
+import React from 'react';
 import ContextProvider from '../contexts/ContextProvider';
 import Dashboard from '../components/dashboard/Dashboard';
 
-const HomePage = () => {
+const DashboardPage = () => {
   return (
     <ContextProvider>
       <Dashboard />
@@ -9,4 +10,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default DashboardPage;

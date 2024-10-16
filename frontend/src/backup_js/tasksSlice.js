@@ -22,6 +22,9 @@ const tasksSlice = createSlice({
     setTasks: (state, action) => {
       state.taskArray = action.payload;
     },
+    clearTasks: (state, action) => {
+      state = initialState;
+    },
     reset: () => initialState
   },
   extraReducers: (builder) => {
@@ -107,7 +110,7 @@ const tasksSlice = createSlice({
 
 // Export slice reducer and actions
 export default tasksSlice.reducer;
-export const { setTasks, reset } = tasksSlice.actions;
+export const { setTasks, reset, clearTasks } = tasksSlice.actions;
 
 // Selectors
 const filterTasksByDate = (tasks, date) => {
