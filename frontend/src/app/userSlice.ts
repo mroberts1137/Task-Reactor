@@ -25,24 +25,50 @@ const userSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(login.fulfilled, (state, action) => {
-      state.userId = action.payload.userId;
-      state.user = action.payload.user;
-      state.status = 'idle';
-      state.error = null;
-    });
-    builder.addCase(register.fulfilled, (state, action) => {
-      state.userId = action.payload.userId;
-      state.user = action.payload.user;
-      state.status = 'idle';
-      state.error = null;
-    });
-    builder.addCase(logout.fulfilled, (state) => {
-      state.userId = '';
-      state.user = null;
-      state.status = 'idle';
-      state.error = null;
-    });
+    builder
+      .addCase(login.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.userId = action.payload.userId;
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
+
+    builder
+      .addCase(register.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.userId = action.payload.userId;
+        state.user = action.payload.user;
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
+
+    builder
+      .addCase(logout.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.userId = '';
+        state.user = null;
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   }
 });
 

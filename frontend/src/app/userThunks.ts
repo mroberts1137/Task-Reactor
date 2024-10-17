@@ -50,7 +50,10 @@ export const register = createAsyncThunk(
 
 export const logout = createAsyncThunk('user/logout', async () => {
   try {
-    await axios.post(LOGOUT_URL);
+    await axios.post(LOGOUT_URL, {
+      withCredentials: true,
+      credentials: 'include'
+    });
   } catch (error) {
     console.error('Logout error:', error);
     throw error;

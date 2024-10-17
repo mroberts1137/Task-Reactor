@@ -65,12 +65,12 @@ const RegisterForm = () => {
     }
 
     try {
-      dispatch(
+      await dispatch(
         register({
           username,
           password
         })
-      );
+      ).unwrap();
 
       // Reset Form
       setSuccess(true);

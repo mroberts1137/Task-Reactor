@@ -29,9 +29,9 @@ const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Clear user data from Redux store
-    dispatch(logout());
+    await dispatch(logout()).unwrap();
     dispatch(clearTasks());
     dispatch(clearDailyGoals());
     dispatch(clearMonthlyGoals());
@@ -59,7 +59,7 @@ const Header = () => {
             </NavItem>
 
             <NavItem>
-              <NavLink className='nav-link' to='/Login'>
+              <NavLink className='nav-link' to='/login'>
                 Login
               </NavLink>
             </NavItem>
@@ -67,12 +67,14 @@ const Header = () => {
         )}
 
         {user && (
-          <Nav className='ms-auto nav-menu align-items-center' navbar>
-            <NavItem>
-              <NavLink className='nav-link' to='/Dashboard'>
-                Dashboard
-              </NavLink>
-            </NavItem>
+          <>
+            <Nav className='ms-auto nav-menu align-items-center' navbar>
+              <NavItem>
+                <NavLink className='nav-link' to='/dashboard'>
+                  Dashboard
+                </NavLink>
+              </NavItem>
+            </Nav>
 
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
@@ -89,7 +91,7 @@ const Header = () => {
                 <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-          </Nav>
+          </>
         )}
       </Collapse>
     </Navbar>

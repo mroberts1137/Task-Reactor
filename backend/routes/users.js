@@ -117,7 +117,12 @@ router.post(
 // @access  Private
 router.post('/logout', (req, res) => {
   // Clear the JWT token cookie
-  res.clearCookie('token', { httpOnly: true, secure: true });
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    domain: 'localhost'
+  });
 
   res.sendStatus(200);
 });

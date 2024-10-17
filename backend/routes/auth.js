@@ -34,17 +34,22 @@ router.post(
       // jwt payload. Used to identify user by routes requiring auth
       const payload = { id: user._id };
 
-      // This is currently using HttpOnly Cookies & local session storage:
-      // remove res.cookie to switch to only use local session storage
-      // don't send token in response to switch to only use cookies
+      // This is currently using HttpOnly Cookies:
+      // remove res.cookie and add token to res.json to switch to only use local session storage
 
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
-        { expiresIn: 36000 },
+        { expiresIn: 1000 * 86400 },
         (err, token) => {
           if (err) throw err;
-          res.cookie('token', token, { httpOnly: true, secure: true });
+          res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            expires: new Date(Date.now() + 1000 * 86400),
+            domain: 'localhost'
+          });
           res.json({ user });
         }
       );

@@ -20,10 +20,8 @@ const app = express();
 
 connectDB();
 
-const dev_origin = 'http://localhost:3000';
-
 const corsOptions = {
-  origin: [dev_origin],
+  origin: [process.env.DEV_ORIGIN],
   credentials: true,
   optionsSuccessStatus: 200 // For legacy browser support
 };

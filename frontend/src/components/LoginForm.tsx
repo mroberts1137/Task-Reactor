@@ -7,11 +7,7 @@ import { login } from '../app/userSlice';
 import { fetchTasks } from '../app/tasksSlice';
 import { fetchDailyGoals } from '../app/dailyGoalsSlice';
 import { fetchMonthlyGoals } from '../app/monthlyGoalsSlice';
-import { auth } from '../auth/auth';
-import { Task, Goal, User } from '../types/types';
 import { AppDispatch } from '../app/store';
-
-const LOGIN_URL = '/api/auth';
 
 const LoginForm = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -41,27 +37,19 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      dispatch(
+      await dispatch(
         login({
           username,
           password
         })
-      );
-
-      navigate('/dashboard');
-
-      // if (user && user_id) {
-      //   // Set user in state
-      //   // dispatch(setUser(user));
-      //   // dispatch(setUserId(user_id));
-
+      ).unwrap();
       //   // Fetch tasks for the logged-in user
       //   dispatch(fetchTasks({ user_id }));
       //   dispatch(fetchDailyGoals({ user_id }));
       //   dispatch(fetchMonthlyGoals({ user_id }));
 
-      //   // Navigate to dashboard
-      // }
+      // Navigate to dashboard
+      navigate('/dashboard');
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
