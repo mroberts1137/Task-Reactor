@@ -8,17 +8,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { setUserId, setUser } from '../app/userSlice';
 import './RegisterForm.css';
-import { auth } from '../auth/auth';
+import { register } from '../app/userSlice';
+import { AppDispatch } from '../app/store';
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-const REGISTER_URL = '/api/users/register';
-
 const RegisterForm = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const userRef = useRef<HTMLInputElement>(null);
@@ -67,25 +65,21 @@ const RegisterForm = () => {
     }
 
     try {
-      const { user, user_id } = await auth(REGISTER_URL, {
-        username,
-        password
-      });
+      dispatch(
+        register({
+          username,
+          password
+        })
+      );
 
-      if (user && user_id) {
-        // Set user in state
-        dispatch(setUser(user));
-        dispatch(setUserId(user_id));
+      // Reset Form
+      setSuccess(true);
+      setUsername('');
+      setPassword('');
+      setMatchPassword('');
 
-        // Reset Form
-        setSuccess(true);
-        setUsername('');
-        setPassword('');
-        setMatchPassword('');
-
-        // Navigate to dashboard
-        navigate('/dashboard');
-      }
+      // Navigate to dashboard
+      navigate('/dashboard');
     } catch (err: any) {
       if (!err?.response) {
         setErrMsg('No Server Response');

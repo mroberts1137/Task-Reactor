@@ -19,14 +19,14 @@ import { logout } from '../app/userSlice';
 import { clearTasks } from '../app/tasksSlice';
 import { clearDailyGoals } from '../app/dailyGoalsSlice';
 import { clearMonthlyGoals } from '../app/monthlyGoalsSlice';
-import { RootState } from '../app/store';
+import { AppDispatch, RootState } from '../app/store';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggle = () => setMenuOpen(!menuOpen);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
 
   const handleLogout = () => {
@@ -50,13 +50,30 @@ const Header = () => {
       <NavbarToggler onClick={toggle} className='toggler' />
 
       <Collapse isOpen={menuOpen} navbar>
-        <Nav className='ms-auto nav-menu align-items-center' navbar>
-          <NavItem>
-            <NavLink className='nav-link' to='/'>
-              Home
-            </NavLink>
-          </NavItem>
-          {user && (
+        {!user && (
+          <Nav className='ms-auto nav-menu align-items-center' navbar>
+            <NavItem>
+              <NavLink className='nav-link' to='/'>
+                Home
+              </NavLink>
+            </NavItem>
+
+            <NavItem>
+              <NavLink className='nav-link' to='/Login'>
+                Login
+              </NavLink>
+            </NavItem>
+          </Nav>
+        )}
+
+        {user && (
+          <Nav className='ms-auto nav-menu align-items-center' navbar>
+            <NavItem>
+              <NavLink className='nav-link' to='/Dashboard'>
+                Dashboard
+              </NavLink>
+            </NavItem>
+
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
                 {user.username}
@@ -72,8 +89,8 @@ const Header = () => {
                 <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-          )}
-        </Nav>
+          </Nav>
+        )}
       </Collapse>
     </Navbar>
   );

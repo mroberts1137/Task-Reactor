@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
 import './RegisterForm.css';
-import { setUserId, setUser } from '../app/userSlice';
+import { login } from '../app/userSlice';
 import { fetchTasks } from '../app/tasksSlice';
 import { fetchDailyGoals } from '../app/dailyGoalsSlice';
 import { fetchMonthlyGoals } from '../app/monthlyGoalsSlice';
@@ -41,24 +41,27 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { user, user_id } = await auth(LOGIN_URL, {
-        username,
-        password
-      });
+      dispatch(
+        login({
+          username,
+          password
+        })
+      );
 
-      if (user && user_id) {
-        // Set user in state
-        dispatch(setUser(user));
-        dispatch(setUserId(user_id));
+      navigate('/dashboard');
 
-        // Fetch tasks for the logged-in user
-        dispatch(fetchTasks({ user_id }));
-        dispatch(fetchDailyGoals({ user_id }));
-        dispatch(fetchMonthlyGoals({ user_id }));
+      // if (user && user_id) {
+      //   // Set user in state
+      //   // dispatch(setUser(user));
+      //   // dispatch(setUserId(user_id));
 
-        // Navigate to dashboard
-        navigate('/dashboard');
-      }
+      //   // Fetch tasks for the logged-in user
+      //   dispatch(fetchTasks({ user_id }));
+      //   dispatch(fetchDailyGoals({ user_id }));
+      //   dispatch(fetchMonthlyGoals({ user_id }));
+
+      //   // Navigate to dashboard
+      // }
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');

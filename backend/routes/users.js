@@ -112,4 +112,14 @@ router.post(
   }
 );
 
+// @route   POST api/users/logout
+// @desc    Log the user out
+// @access  Private
+router.post('/logout', (req, res) => {
+  // Clear the JWT token cookie
+  res.clearCookie('token', { httpOnly: true, secure: true });
+
+  res.sendStatus(200);
+});
+
 module.exports = router;

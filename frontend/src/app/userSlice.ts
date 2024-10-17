@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types/types'; // Assuming User type is defined here
 import { RootState } from './store';
+import { login, logout, register } from './userThunks';
+export { login, logout, register };
 
 // Define the state type
 interface UserState {
@@ -21,27 +23,31 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    // Set userId with proper typing for action.payload
-    setUserId(state, action: PayloadAction<string>) {
-      state.userId = action.payload;
-    },
-    // Set user with the User type for action.payload
-    setUser(state, action: PayloadAction<User | null>) {
-      state.user = action.payload;
-    },
-    // Logout action, resetting the state
-    logout(state) {
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.userId = action.payload.userId;
+      state.user = action.payload.user;
+      state.status = 'idle';
+      state.error = null;
+    });
+    builder.addCase(register.fulfilled, (state, action) => {
+      state.userId = action.payload.userId;
+      state.user = action.payload.user;
+      state.status = 'idle';
+      state.error = null;
+    });
+    builder.addCase(logout.fulfilled, (state) => {
       state.userId = '';
       state.user = null;
       state.status = 'idle';
       state.error = null;
-    }
+    });
   }
 });
 
 export default userSlice.reducer;
-export const { setUser, setUserId, logout } = userSlice.actions;
+// export const { setUser, setUserId } = userSlice.actions;
 
 // Selectors to retrieve userId and user from the Redux store
 export const selectUserId = (state: RootState) => state.user.userId;
