@@ -12,16 +12,12 @@
 }
 
 .dropdown-menu {
-  display: none;
-  position: absolute;
+  display: flex;
+  flex-direction: row;
   background-color: white;
   min-width: 160px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
-}
-
-.dropdown:hover .dropdown-menu {
-  display: block;
 }
 
 .dropdown-item {

@@ -12,10 +12,12 @@ export const calculateEarnings = (
   return { grossIncome, netIncome };
 };
 
-export const calculateElapsedTime = (startTime?: Date): number => {
-  if (!startTime) return 0;
-  const currentTime = new Date();
-  return currentTime.getTime() - startTime.getTime();
+export const calculateElapsedTime = (
+  startTime?: Date,
+  endTime?: Date
+): number => {
+  if (!startTime || !endTime) return 0;
+  return endTime.getTime() - startTime.getTime();
 };
 
 export const formatTime = (time?: Date): string => {
@@ -60,7 +62,8 @@ export const resetTask = (): Task => ({
 
 export const updateTask = (task: Task): Task => {
   if (task?.startTime) {
-    const duration = calculateElapsedTime(task.startTime);
+    const endTime = task?.endTime ?? new Date();
+    const duration = calculateElapsedTime(task.startTime, endTime);
     const { grossIncome, netIncome } = calculateEarnings(
       duration,
       task.hourlyRate,

@@ -1,3 +1,5 @@
+import './DropdownSelector.css';
+
 const DropdownSelector = ({ items, selectedItems, onToggle }) => {
   return (
     <div className='dropdown'>
