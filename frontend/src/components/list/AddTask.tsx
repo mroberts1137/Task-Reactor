@@ -196,7 +196,7 @@ const AddTask: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>Tax Rate</td>
+              <td>Tax Rate (%)</td>
               <td>
                 <input
                   type='number'
@@ -213,7 +213,7 @@ const AddTask: React.FC = () => {
                 <input
                   type='datetime-local'
                   onChange={handleStartTimeChange}
-                  value={startTime.toISOString().slice(0, -1)}
+                  value={startTime.toISOString().slice(0, -1).slice(0, 16)}
                   name='startTime'
                   className='long-input'
                 />
@@ -225,7 +225,7 @@ const AddTask: React.FC = () => {
                 <input
                   type='datetime-local'
                   onChange={handleEndTimeChange}
-                  value={endTime.toISOString().slice(0, -1)}
+                  value={endTime.toISOString().slice(0, -1).slice(0, 16)}
                   name='endTime'
                   className='long-input'
                 />

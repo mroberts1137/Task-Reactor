@@ -9,9 +9,9 @@ import {
   UserIdItemIdItemPayload
 } from '../types/payloads';
 
-const jwt = localStorage.getItem('jwt');
+// const jwt = localStorage.getItem('jwt');
 const config = {
-  headers: { Authorization: `Bearer ${jwt}` },
+  // headers: { Authorization: `Bearer ${jwt}` },
   withCredentials: true
 };
 
