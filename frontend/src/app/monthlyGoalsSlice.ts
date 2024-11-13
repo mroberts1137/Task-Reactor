@@ -1,6 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v4 as uuid } from 'uuid';
-
+import {
+  createSlice,
+  createEntityAdapter,
+  EntityState,
+  PayloadAction
+} from '@reduxjs/toolkit';
 import {
   fetchMonthlyGoals,
   addMonthlyGoal,
@@ -11,49 +14,50 @@ import {
 import { RootState } from './store';
 import { Goal } from '../types/types';
 
-export {
-  fetchMonthlyGoals,
-  addMonthlyGoal,
-  getMonthlyGoalById,
-  updateMonthlyGoalById,
-  removeMonthlyGoalById
-};
+export const goalsAdapter = createEntityAdapter<Goal>();
 
-export interface GoalsState {
-  monthlyGoalsArray: Goal[];
+export interface GoalsState extends EntityState<Goal, string> {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
-const initialState: GoalsState = {
-  monthlyGoalsArray: [
-    { _id: uuid(), title: 'Rent', value: 500 },
-    { _id: uuid(), title: 'Car Loan', value: 124 },
-    { _id: uuid(), title: 'Car Insurance', value: 93 },
-    { _id: uuid(), title: 'Credit Card', value: 122 },
-    { _id: uuid(), title: 'Nucamp', value: 160 },
-    { _id: uuid(), title: 'Phone', value: 37 },
-    { _id: uuid(), title: 'Groceries', value: 413 },
-    { _id: uuid(), title: 'Gas', value: 96 },
-    { _id: uuid(), title: 'Restaurant/Other', value: 232 },
-    { _id: uuid(), title: 'Shopping', value: 97 }
-  ],
+export const initialState: GoalsState = goalsAdapter.getInitialState({
   status: 'idle',
   error: null
-};
+});
+
+// const initialState: GoalsState = {
+//   monthlyGoalsArray: [
+//     { _id: generateUniqueId(), title: 'Rent', value: 500 },
+//     { _id: generateUniqueId(), title: 'Car Loan', value: 124 },
+//     { _id: generateUniqueId(), title: 'Car Insurance', value: 93 },
+//     { _id: generateUniqueId(), title: 'Credit Card', value: 122 },
+//     { _id: generateUniqueId(), title: 'Nucamp', value: 160 },
+//     { _id: generateUniqueId(), title: 'Phone', value: 37 },
+//     { _id: generateUniqueId(), title: 'Groceries', value: 413 },
+//     { _id: generateUniqueId(), title: 'Gas', value: 96 },
+//     { _id: generateUniqueId(), title: 'Restaurant/Other', value: 232 },
+//     { _id: generateUniqueId(), title: 'Shopping', value: 97 }
+//   ],
+//   order: [],
+//   status: 'idle',
+//   error: null
+// };
 
 const monthlyGoalsSlice = createSlice({
   name: 'monthlyGoals',
   initialState,
   reducers: {
-    setGoals: (state, action) => {
-      state = action.payload;
+    setGoals: (state, action: PayloadAction<Goal[]>) => {
+      goalsAdapter.setAll(state, action.payload);
     },
+    reset: () => initialState,
     clearMonthlyGoals: (state) => {
-      state.monthlyGoalsArray = [];
+      goalsAdapter.removeAll(state);
       state.status = 'idle';
       state.error = null;
-    }
+    },
+    reorderGoals: (state, action) => {}
   },
   extraReducers: (builder) => {
     builder
@@ -67,12 +71,12 @@ const monthlyGoalsSlice = createSlice({
         fetchMonthlyGoals.fulfilled,
         (state, action: PayloadAction<Goal[]>) => {
           state.status = 'succeeded';
-          state.monthlyGoalsArray = action.payload;
+          goalsAdapter.setAll(state, action.payload);
         }
       )
       .addCase(fetchMonthlyGoals.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error fetching monthly goals';
       })
       /* 
         addMonthlyGoal
@@ -84,12 +88,12 @@ const monthlyGoalsSlice = createSlice({
         addMonthlyGoal.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
-          state.monthlyGoalsArray.push(action.payload);
+          goalsAdapter.addOne(state, action.payload);
         }
       )
       .addCase(addMonthlyGoal.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error adding monthly goal';
       })
       /*
         getMonthlyGoalById
@@ -101,12 +105,12 @@ const monthlyGoalsSlice = createSlice({
         getMonthlyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
-          state.monthlyGoalsArray.push(action.payload);
+          goalsAdapter.upsertOne(state, action.payload);
         }
       )
       .addCase(getMonthlyGoalById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error fetching monthly goal';
       })
       /*
         updateMonthlyGoalById
@@ -118,16 +122,15 @@ const monthlyGoalsSlice = createSlice({
         updateMonthlyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
-          const updatedMonthlyGoalIdx = state.monthlyGoalsArray.findIndex(
-            (item) => item._id === action.payload._id
-          );
-          if (updatedMonthlyGoalIdx !== -1)
-            state.monthlyGoalsArray[updatedMonthlyGoalIdx] = action.payload;
+          goalsAdapter.updateOne(state, {
+            id: action.payload.id!,
+            changes: action.payload
+          });
         }
       )
       .addCase(updateMonthlyGoalById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error updating monthly goal';
       })
       /* 
         removeMonthlyGoalById
@@ -139,20 +142,26 @@ const monthlyGoalsSlice = createSlice({
         removeMonthlyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
-          state.monthlyGoalsArray = state.monthlyGoalsArray.filter(
-            (item) => item._id !== action.payload._id
-          );
+          goalsAdapter.removeOne(state, action.payload.id!);
         }
       )
       .addCase(removeMonthlyGoalById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error removing monthly goal';
       });
   }
 });
 
 export default monthlyGoalsSlice.reducer;
-export const { setGoals, clearMonthlyGoals } = monthlyGoalsSlice.actions;
+export const { setGoals, clearMonthlyGoals, reorderGoals, reset } =
+  monthlyGoalsSlice.actions;
 
-export const selectAllGoals = (state: RootState) =>
-  state.monthlyGoals.monthlyGoalsArray;
+const adapterSelectors = goalsAdapter.getSelectors<RootState>(
+  (state) => state.monthlyGoals
+);
+
+export const {
+  selectAll: selectAllMonthlyGoals,
+  selectById: selectMonthlyGoalById,
+  selectIds: selectMonthlyGoalIds
+} = adapterSelectors;

@@ -8,84 +8,96 @@ import {
   UserIdItemIdPayload,
   UserIdItemIdItemPayload
 } from '../types/payloads';
+import {
+  FrontendDocument,
+  MongoDocument,
+  transformMongoDocument,
+  transformToMongoDocument
+} from '../utils/transformMongoDoc';
+import { Goal } from '../types/types';
 
-const jwt = localStorage.getItem('jwt');
 const config = {
-  headers: { Authorization: `Bearer ${jwt}` },
   withCredentials: true
 };
 
 // @route   GET api/users/:user_id/daily_goals
 // @desc    Get all daily goals for a user
 // @access  Private
-export const fetchDailyGoals = createAsyncThunk(
-  'dailyGoals/fetchDailyGoals',
-  async ({ user_id }: UserIdPayload) => {
-    try {
-      const response = await axios.get(
-        DAILY_GOALS_URL.replace('{userId}', user_id),
-        config
-      );
-      return response.data;
-    } catch (err) {
-      console.error(`Error: ${err}`);
-      throw err;
-    }
+export const fetchDailyGoals = createAsyncThunk<
+  FrontendDocument<Goal>[],
+  UserIdPayload,
+  { rejectValue: string }
+>('dailyGoals/fetchDailyGoals', async ({ user_id }) => {
+  try {
+    const response = await axios.get<MongoDocument<Goal>[]>(
+      DAILY_GOALS_URL.replace('{userId}', user_id),
+      config
+    );
+    return response.data.map(transformMongoDocument);
+  } catch (err) {
+    console.error(`Error: ${err}`);
+    throw err;
   }
-);
+});
 
 // @route   POST api/users/:user_id/daily_goals
 // @desc    Create a daily goal for a user
 // @access  Private
-export const addDailyGoal = createAsyncThunk(
-  'dailyGoals/addDailyGoal',
-  async ({ user_id, item }: UserIdItemPayload) => {
-    try {
-      const response = await axios.post(
-        DAILY_GOALS_URL.replace('{userId}', user_id),
-        item,
-        config
-      );
-      return response.data;
-    } catch (err) {
-      console.error(`Error: ${err}`);
-      throw err;
-    }
+export const addDailyGoal = createAsyncThunk<
+  FrontendDocument<Goal>,
+  UserIdItemPayload,
+  { rejectValue: string }
+>('dailyGoals/addDailyGoal', async ({ user_id, item }, { rejectWithValue }) => {
+  try {
+    const response = await axios.post<MongoDocument<Goal>>(
+      DAILY_GOALS_URL.replace('{userId}', user_id),
+      item,
+      config
+    );
+    return transformMongoDocument<Goal>(response.data);
+  } catch (err) {
+    return rejectWithValue(err.message);
   }
-);
+});
 
 // @route   GET api/users/:user_id/daily_goals/:daily_goal_id
 // @desc    Get daily goal by id for a user
 // @access  Private
-export const getDailyGoalById = createAsyncThunk(
-  'dailyGoals/getDailyGoalById',
-  async ({ user_id, item_id }: UserIdItemIdPayload) => {
-    try {
-      const response = await axios.get(
-        DAILY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
-        config
-      );
-      return response.data;
-    } catch (err) {
-      console.error(`Error: ${err}`);
-      throw err;
-    }
+export const getDailyGoalById = createAsyncThunk<
+  FrontendDocument<Goal>,
+  UserIdItemIdPayload,
+  { rejectValue: string }
+>('dailyGoals/getDailyGoalById', async ({ user_id, item_id }) => {
+  try {
+    const response = await axios.get<MongoDocument<Goal>>(
+      `${DAILY_GOALS_URL.replace('{userId}', user_id)}/${item_id}`,
+      config
+    );
+    return transformMongoDocument<Goal>(response.data);
+  } catch (err) {
+    console.error(`Error: ${err}`);
+    throw err;
   }
-);
+});
 
 // @route   PUT api/users/:user_id/daily_goals/:daily_goal_id
 // @desc    Update a daily goal for a user
 // @access  Private
-export const updateDailyGoalById = createAsyncThunk(
+export const updateDailyGoalById = createAsyncThunk<
+  FrontendDocument<Goal>,
+  UserIdItemIdItemPayload,
+  { rejectValue: string }
+>(
   'dailyGoals/updateDailyGoalById',
-  async ({ user_id, item_id, updatedItem }: UserIdItemIdItemPayload) => {
+  async ({ user_id, item_id, updatedItem }) => {
     try {
-      const response = await axios.put(
-        DAILY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
-        updatedItem,
+      const mongoFormatData = transformToMongoDocument(updatedItem);
+      const response = await axios.put<MongoDocument<Goal>>(
+        `${DAILY_GOALS_URL.replace('{userId}', user_id)}/${item_id}`,
+        mongoFormatData,
         config
       );
-      return response.data;
+      return transformMongoDocument<Goal>(response.data);
     } catch (err) {
       console.error(`Error: ${err}`);
       throw err;
@@ -96,18 +108,19 @@ export const updateDailyGoalById = createAsyncThunk(
 // @route   DELETE api/users/:user_id/daily_goals/:daily_goal_id
 // @desc    Delete a daily goal for a user
 // @access  Private
-export const removeDailyGoalById = createAsyncThunk(
-  'dailyGoals/removeDailyGoalById',
-  async ({ user_id, item_id }: UserIdItemIdPayload) => {
-    try {
-      const response = await axios.delete(
-        DAILY_GOALS_URL.replace('{userId}', user_id) + `/${item_id}`,
-        config
-      );
-      return response.data;
-    } catch (err) {
-      console.error(`Error: ${err}`);
-      throw err;
-    }
+export const removeDailyGoalById = createAsyncThunk<
+  FrontendDocument<Goal>,
+  UserIdItemIdPayload,
+  { rejectValue: string }
+>('dailyGoals/removeDailyGoalById', async ({ user_id, item_id }) => {
+  try {
+    const response = await axios.delete<MongoDocument<Goal>>(
+      `${DAILY_GOALS_URL.replace('{userId}', user_id)}/${item_id}`,
+      config
+    );
+    return transformMongoDocument<Goal>(response.data);
+  } catch (err) {
+    console.error(`Error: ${err}`);
+    throw err;
   }
-);
+});

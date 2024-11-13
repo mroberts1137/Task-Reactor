@@ -50,6 +50,7 @@ export const formatCurrency = (value: number): string => {
 };
 
 export const resetTask = (): Task => ({
+  id: undefined,
   title: '',
   startTime: undefined,
   endTime: undefined,

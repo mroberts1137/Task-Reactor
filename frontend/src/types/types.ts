@@ -5,11 +5,11 @@ export interface User {
 }
 
 export interface Item {
-  _id?: string;
+  id: string;
 }
 
 export interface Task extends Item {
-  _id?: string;
+  id: string;
   title?: string;
   startTime?: Date;
   endTime?: Date;
@@ -22,7 +22,7 @@ export interface Task extends Item {
 }
 
 export interface Goal extends Item {
-  _id?: string;
+  id: string;
   title: string;
   value: number;
 }

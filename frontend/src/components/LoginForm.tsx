@@ -4,9 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import './RegisterForm.css';
 import { login } from '../app/userSlice';
-import { fetchTasks } from '../app/tasksSlice';
-import { fetchDailyGoals } from '../app/dailyGoalsSlice';
-import { fetchMonthlyGoals } from '../app/monthlyGoalsSlice';
 import { AppDispatch } from '../app/store';
 
 const LoginForm = () => {
@@ -43,10 +40,6 @@ const LoginForm = () => {
           password
         })
       ).unwrap();
-      //   // Fetch tasks for the logged-in user
-      //   dispatch(fetchTasks({ user_id }));
-      //   dispatch(fetchDailyGoals({ user_id }));
-      //   dispatch(fetchMonthlyGoals({ user_id }));
 
       // Navigate to dashboard
       navigate('/dashboard');

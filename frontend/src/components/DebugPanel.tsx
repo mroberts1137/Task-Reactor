@@ -16,7 +16,7 @@ const DebugPanel = () => {
       <ul>
         {tasks.map((task: Task, index: number) => (
           <li key={index}>
-            {JSON.stringify(task?.title)}' '{task?._id}
+            {JSON.stringify(task?.title)}' '{task?.id}
           </li>
         ))}
       </ul>

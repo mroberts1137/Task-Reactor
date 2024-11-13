@@ -38,16 +38,14 @@ const List: React.FC<ListProps> = ({ items, removeAction, displayKeys }) => {
           </tr>
         </thead>
         <tbody>
-          {items &&
-            items.length > 0 &&
-            items.map((item) => (
-              <ListItem
-                key={item._id}
-                item={item}
-                removeAction={removeAction}
-                displayKeys={displayKeys}
-              />
-            ))}
+          {items.map((item, index) => (
+            <ListItem
+              key={item.id}
+              item={item}
+              removeAction={removeAction}
+              displayKeys={displayKeys}
+            />
+          ))}
         </tbody>
       </table>
     </div>

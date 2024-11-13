@@ -6,10 +6,10 @@ import React, {
   useEffect
 } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTask } from '../../app/tasksSlice';
 import { UserContext } from '../../contexts/context';
 import { AppDispatch } from '../../app/store';
 import { Task } from '../../types/types';
+import { addTask } from '../../app/tasksThunks';
 
 const calculateEndTime = (
   startTime: Date,
@@ -78,6 +78,7 @@ const AddTask: React.FC = () => {
     }
 
     const newTask: Task = {
+      id: undefined,
       title: title || 'New Task',
       netIncome: parseFloat(netIncome.toString()) || 0,
       grossIncome: parseFloat(grossIncome.toString()) || 0,
@@ -196,7 +197,7 @@ const AddTask: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td>Tax Rate</td>
+              <td>Tax Rate (%)</td>
               <td>
                 <input
                   type='number'
@@ -213,7 +214,7 @@ const AddTask: React.FC = () => {
                 <input
                   type='datetime-local'
                   onChange={handleStartTimeChange}
-                  value={startTime.toISOString().slice(0, -1)}
+                  value={startTime.toISOString().slice(0, -1).slice(0, 16)}
                   name='startTime'
                   className='long-input'
                 />
@@ -225,7 +226,7 @@ const AddTask: React.FC = () => {
                 <input
                   type='datetime-local'
                   onChange={handleEndTimeChange}
-                  value={endTime.toISOString().slice(0, -1)}
+                  value={endTime.toISOString().slice(0, -1).slice(0, 16)}
                   name='endTime'
                   className='long-input'
                 />
@@ -236,7 +237,7 @@ const AddTask: React.FC = () => {
               <td>
                 <input
                   type='number'
-                  value={grossIncome}
+                  value={grossIncome.toFixed(2)}
                   readOnly
                   name='grossIncome'
                   className='short-input'
@@ -249,7 +250,7 @@ const AddTask: React.FC = () => {
                 <input
                   type='number'
                   readOnly
-                  value={netIncome}
+                  value={netIncome.toFixed(2)}
                   name='value'
                   className='short-input'
                 />
