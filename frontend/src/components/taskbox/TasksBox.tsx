@@ -1,5 +1,4 @@
 import { useState, useContext } from 'react';
-import { removeTaskById } from '../../app/tasksSlice';
 import DateDisplay from '../DateDisplay';
 import DropdownSelector from './DropdownSelector';
 import AddTask from '../list/AddTask';
@@ -8,6 +7,7 @@ import { TaskContext, DateContext } from '../../contexts/context';
 import { sumTotal } from '../../utils/functions';
 import { Task } from '../../types/types';
 import { formatCurrency } from '../../utils/time_box_functions';
+import { removeTaskById } from '../../app/tasksThunks';
 
 interface DisplayKey {
   name: string;

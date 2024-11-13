@@ -4,12 +4,16 @@ import { User, Task, Goal } from '../types/types';
 export interface UserContextType {
   user: User | null;
   user_id: string | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 export interface TaskContextType {
   tasks: Task[] | null;
   dailyTasks: Task[] | null;
   monthlyTasks: Task[] | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 export interface EarningsContextType {
@@ -28,11 +32,15 @@ export interface DateContextType {
 export interface DailyGoalsContextType {
   dailyGoals: Goal[];
   dailyTotalGoals: number;
+  isLoading: boolean;
+  error: string | null;
 }
 
 export interface MonthlyGoalsContextType {
   monthlyGoals: Goal[];
   monthlyTotalGoals: number;
+  isLoading: boolean;
+  error: string | null;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(

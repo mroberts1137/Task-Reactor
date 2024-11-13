@@ -1,5 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v4 as uuid } from 'uuid';
+import {
+  createSlice,
+  createEntityAdapter,
+  EntityState,
+  PayloadAction
+} from '@reduxjs/toolkit';
 import {
   fetchDailyGoals,
   addDailyGoal,
@@ -10,38 +14,32 @@ import {
 import { RootState } from './store';
 import { Goal } from '../types/types';
 
-export {
-  fetchDailyGoals,
-  addDailyGoal,
-  getDailyGoalById,
-  updateDailyGoalById,
-  removeDailyGoalById
-};
+export const goalsAdapter = createEntityAdapter<Goal>();
 
-export interface GoalsState {
-  dailyGoalsArray: Goal[];
+export interface GoalsState extends EntityState<Goal, string> {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
-const initialState: GoalsState = {
-  dailyGoalsArray: [{ _id: uuid(), title: 'Daily Minimum', value: 86 }],
+export const initialState: GoalsState = goalsAdapter.getInitialState({
   status: 'idle',
   error: null
-};
+});
 
 const dailyGoalsSlice = createSlice({
   name: 'dailyGoals',
   initialState,
   reducers: {
-    setGoals: (state, action) => {
-      state = action.payload;
+    setGoals: (state, action: PayloadAction<Goal[]>) => {
+      goalsAdapter.setAll(state, action.payload);
     },
+    reset: () => initialState,
     clearDailyGoals: (state) => {
-      state.dailyGoalsArray = [];
+      goalsAdapter.removeAll(state);
       state.status = 'idle';
       state.error = null;
-    }
+    },
+    reorderGoals: (state, action) => {}
   },
   extraReducers: (builder) => {
     builder
@@ -55,12 +53,12 @@ const dailyGoalsSlice = createSlice({
         fetchDailyGoals.fulfilled,
         (state, action: PayloadAction<Goal[]>) => {
           state.status = 'succeeded';
-          state.dailyGoalsArray = action.payload;
+          goalsAdapter.setAll(state, action.payload);
         }
       )
       .addCase(fetchDailyGoals.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error fetching daily goals';
       })
       /* 
         addDailyGoal
@@ -70,11 +68,11 @@ const dailyGoalsSlice = createSlice({
       })
       .addCase(addDailyGoal.fulfilled, (state, action: PayloadAction<Goal>) => {
         state.status = 'succeeded';
-        state.dailyGoalsArray.push(action.payload);
+        goalsAdapter.addOne(state, action.payload);
       })
       .addCase(addDailyGoal.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error adding daily goal';
       })
       /*
           getDailyGoalById
@@ -86,12 +84,12 @@ const dailyGoalsSlice = createSlice({
         getDailyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
-          state.dailyGoalsArray.push(action.payload);
+          goalsAdapter.upsertOne(state, action.payload);
         }
       )
       .addCase(getDailyGoalById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error fetching daily goal';
       })
       /*
           updateDailyGoalById
@@ -103,16 +101,15 @@ const dailyGoalsSlice = createSlice({
         updateDailyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
-          const updatedDailyGoalIdx = state.dailyGoalsArray.findIndex(
-            (item) => item._id === action.payload._id
-          );
-          if (updatedDailyGoalIdx !== -1)
-            state.dailyGoalsArray[updatedDailyGoalIdx] = action.payload;
+          goalsAdapter.updateOne(state, {
+            id: action.payload.id!,
+            changes: action.payload
+          });
         }
       )
       .addCase(updateDailyGoalById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error updating daily goal';
       })
       /* 
           removeDailyGoalById
@@ -124,20 +121,26 @@ const dailyGoalsSlice = createSlice({
         removeDailyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
-          state.dailyGoalsArray = state.dailyGoalsArray.filter(
-            (item) => item._id !== action.payload._id
-          );
+          goalsAdapter.removeOne(state, action.payload.id!);
         }
       )
       .addCase(removeDailyGoalById.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message || 'Error removing daily goal';
       });
   }
 });
 
 export default dailyGoalsSlice.reducer;
-export const { setGoals, clearDailyGoals } = dailyGoalsSlice.actions;
+export const { setGoals, clearDailyGoals, reorderGoals, reset } =
+  dailyGoalsSlice.actions;
 
-export const selectAllGoals = (state: RootState) =>
-  state.dailyGoals.dailyGoalsArray;
+const adapterSelectors = goalsAdapter.getSelectors<RootState>(
+  (state) => state.dailyGoals
+);
+
+export const {
+  selectAll: selectAllDailyGoals,
+  selectById: selectDailyGoalById,
+  selectIds: selectDailyGoalIds
+} = adapterSelectors;

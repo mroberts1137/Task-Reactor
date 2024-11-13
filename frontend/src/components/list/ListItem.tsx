@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
@@ -42,7 +43,7 @@ const ListItem: React.FC<ListItemProps> = ({
       console.log('No user logged in');
       return;
     }
-    dispatch(removeAction({ user_id, item_id: item._id }));
+    dispatch(removeAction({ user_id, item_id: item.id }));
   };
 
   const itemType = (item: any, displayKey: DisplayKey) => {

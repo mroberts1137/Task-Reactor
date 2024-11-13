@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 // Context
 import {
@@ -9,35 +9,97 @@ import {
   DateContext,
   EarningsContext
 } from './context';
-// Types
-import { User, Task, Goal } from '../types/types';
 import { AppDispatch, RootState } from '../app/store';
 // Redux
 import { selectUserId, selectUser } from '../app/userSlice';
 import {
-  fetchTasks,
   selectAllTasks,
   selectTasksByDate,
   selectAllTasksByMonth
 } from '../app/tasksSlice';
-import { fetchDailyGoals, selectAllGoals } from '../app/dailyGoalsSlice';
-import {
-  fetchMonthlyGoals,
-  selectAllGoals as selectAllMonthlyGoals
-} from '../app/monthlyGoalsSlice';
 import { sumTotal } from '../utils/functions';
+import { selectAllDailyGoals } from '../app/dailyGoalsSlice';
+import { selectAllMonthlyGoals } from '../app/monthlyGoalsSlice';
+import { fetchTasks } from '../app/tasksThunks';
+import { fetchDailyGoals } from '../app/dailyGoalsThunks';
+import { fetchMonthlyGoals } from '../app/monthlyGoalsThunks';
 
 const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  /**
-   * USER
-   */
+  // User selectors with memoization
+  const user_id = useSelector(selectUserId);
+  const user = useSelector(selectUser);
 
-  const user_id: string = useSelector(selectUserId);
-  const user: User | null = useSelector(selectUser);
+  // Date state
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const todaysDate = useMemo(() => new Date(), []);
 
-  // Fetch user tasks/goals when logging in
+  // Tasks selectors with memoization
+  const tasks = useSelector(selectAllTasks);
+  const dailyTasks = useSelector((state: RootState) =>
+    selectTasksByDate(state, selectedDate)
+  );
+  const monthlyTasks = useSelector((state: RootState) =>
+    selectAllTasksByMonth(state, selectedDate)
+  );
+
+  // Goals selectors with memoization
+  const dailyGoals = useSelector(selectAllDailyGoals);
+  const monthlyGoals = useSelector(selectAllMonthlyGoals);
+
+  //
+  const userStatus = useSelector((state: RootState) => state.user.status);
+  const userError = useSelector((state: RootState) => state.user.error);
+  const tasksStatus = useSelector((state: RootState) => state.tasks.status);
+  const tasksError = useSelector((state: RootState) => state.tasks.error);
+  const dailyGoalsStatus = useSelector(
+    (state: RootState) => state.dailyGoals.status
+  );
+  const dailyGoalsError = useSelector(
+    (state: RootState) => state.dailyGoals.error
+  );
+  const monthlyGoalsStatus = useSelector(
+    (state: RootState) => state.monthlyGoals.status
+  );
+  const monthlyGoalsError = useSelector(
+    (state: RootState) => state.monthlyGoals.error
+  );
+
+  // Calculate totals with useMemo
+  const dailyTotalGoals = useMemo(
+    () => sumTotal(dailyGoals.map((item) => item.value)),
+    [dailyGoals]
+  );
+
+  const monthlyTotalGoals = useMemo(
+    () => sumTotal(monthlyGoals.map((item) => item.value)),
+    [monthlyGoals]
+  );
+
+  // Earnings calculations with useMemo
+  const [currentTaskEarnings, setCurrentTaskEarnings] = useState<number>(0);
+
+  const dailyTasksEarnings = useMemo(
+    () => sumTotal(dailyTasks.map((item) => item.netIncome)),
+    [dailyTasks]
+  );
+
+  const dailyTotalEarnings = useMemo(
+    () => dailyTasksEarnings + currentTaskEarnings,
+    [dailyTasksEarnings, currentTaskEarnings]
+  );
+
+  const monthlyTotalEarnings = useMemo(
+    () => sumTotal(monthlyTasks.map((item) => item.netIncome)),
+    [monthlyTasks]
+  );
+
+  const earningsChange = useCallback((val: number) => {
+    setCurrentTaskEarnings(val);
+  }, []);
+
+  // Fetch data when user changes
   useEffect(() => {
     if (user && user_id) {
       dispatch(fetchTasks({ user_id }));
@@ -46,100 +108,65 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [dispatch, user, user_id]);
 
-  /**
-   * DATE
-   */
-
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const todaysDate = new Date();
-
-  /**
-   * TASKS
-   */
-
-  const tasks: Task[] = useSelector(selectAllTasks);
-  const dailyTasks: Task[] = useSelector((state: RootState) =>
-    selectTasksByDate(state, selectedDate)
+  // Memoize context values
+  const userContextValue = useMemo(
+    () => ({
+      user,
+      user_id,
+      isLoading: userStatus === 'loading',
+      error: userError
+    }),
+    [user, user_id, userStatus, userError]
   );
-  const monthlyTasks: Task[] = useSelector((state: any) =>
-    selectAllTasksByMonth(state, selectedDate)
+  const dateContextValue = useMemo(
+    () => ({ todaysDate, selectedDate, setSelectedDate }),
+    [todaysDate, selectedDate]
   );
-
-  /**
-   * GOALS
-   */
-
-  const dailyGoals: Goal[] = useSelector(selectAllGoals);
-  const monthlyGoals: Goal[] = useSelector(selectAllMonthlyGoals);
-  const [dailyTotalGoals, setDailyTotalGoals] = useState<number>(0);
-  const [monthlyTotalGoals, setMonthlyTotalGoals] = useState<number>(0);
-
-  // Sum daily goals values
-  useEffect(() => {
-    setDailyTotalGoals(sumTotal(dailyGoals.map((item) => item.value)));
-  }, [dailyGoals]);
-
-  // Sum monthly goals values
-  useEffect(() => {
-    setMonthlyTotalGoals(sumTotal(monthlyGoals.map((item) => item.value)));
-  }, [monthlyGoals]);
-
-  /**
-   * DAILY/MONTHLY EARNINGS
-   */
-
-  const [dailyTasksEarnings, setDailyTasksEarnings] = useState<number>(0);
-  const [currentTaskEarnings, setCurrentTaskEarnings] = useState<number>(0);
-  const [dailyTotalEarnings, setDailyTotalEarnings] = useState<number>(0);
-  const [monthlyTotalEarnings, setMonthlyTotalEarnings] = useState<number>(0);
-
-  // Sum daily tasks net income
-  useEffect(() => {
-    setDailyTasksEarnings(sumTotal(dailyTasks.map((item) => item.netIncome)));
-  }, [dailyTasks]);
-
-  // Set total daily earnings
-  useEffect(() => {
-    setDailyTotalEarnings(dailyTasksEarnings + currentTaskEarnings);
-  }, [dailyTasksEarnings, currentTaskEarnings]);
-
-  // Set monthly tasks net income
-  useEffect(() => {
-    setMonthlyTotalEarnings(
-      sumTotal(monthlyTasks.map((item) => item.netIncome))
-    );
-  }, [monthlyTasks]);
-
-  const earningsChange = useCallback((val: number) => {
-    setCurrentTaskEarnings(val);
-  }, []);
-
-  //////////////////////////////
+  const taskContextValue = useMemo(
+    () => ({
+      tasks,
+      dailyTasks,
+      monthlyTasks,
+      isLoading: tasksStatus === 'loading',
+      error: tasksError
+    }),
+    [tasks, dailyTasks, monthlyTasks, tasksStatus, tasksError]
+  );
+  const earningsContextValue = useMemo(
+    () => ({
+      dailyTasksEarnings,
+      dailyTotalEarnings,
+      monthlyTotalEarnings,
+      earningsChange
+    }),
+    [dailyTasksEarnings, dailyTotalEarnings, monthlyTotalEarnings]
+  );
+  const dailyGoalsContextValue = useMemo(
+    () => ({
+      dailyGoals,
+      dailyTotalGoals,
+      isLoading: dailyGoalsStatus === 'loading',
+      error: dailyGoalsError
+    }),
+    [dailyGoals, dailyTotalGoals, dailyGoalsStatus, dailyGoalsError]
+  );
+  const monthlyGoalsContextValue = useMemo(
+    () => ({
+      monthlyGoals,
+      monthlyTotalGoals,
+      isLoading: monthlyGoalsStatus === 'loading',
+      error: monthlyGoalsError
+    }),
+    [monthlyGoals, monthlyTotalGoals, monthlyGoalsStatus, monthlyGoalsError]
+  );
 
   return (
-    <UserContext.Provider value={{ user, user_id }}>
-      <DateContext.Provider
-        value={{ todaysDate, selectedDate, setSelectedDate }}
-      >
-        <TaskContext.Provider
-          value={{
-            tasks,
-            dailyTasks,
-            monthlyTasks
-          }}
-        >
-          <EarningsContext.Provider
-            value={{
-              dailyTasksEarnings,
-              dailyTotalEarnings,
-              monthlyTotalEarnings,
-              earningsChange
-            }}
-          >
-            <DailyGoalsContext.Provider value={{ dailyGoals, dailyTotalGoals }}>
-              <MonthlyGoalsContext.Provider
-                value={{ monthlyGoals, monthlyTotalGoals }}
-              >
+    <UserContext.Provider value={userContextValue}>
+      <DateContext.Provider value={dateContextValue}>
+        <TaskContext.Provider value={taskContextValue}>
+          <EarningsContext.Provider value={earningsContextValue}>
+            <DailyGoalsContext.Provider value={dailyGoalsContextValue}>
+              <MonthlyGoalsContext.Provider value={monthlyGoalsContextValue}>
                 {children}
               </MonthlyGoalsContext.Provider>
             </DailyGoalsContext.Provider>

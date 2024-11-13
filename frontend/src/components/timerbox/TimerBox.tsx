@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTask } from '../../app/tasksSlice';
 import {
   EarningsContext,
   UserContext,
@@ -15,6 +14,7 @@ import useInterval from '../../hooks/useInterval';
 import { Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 import { resetTask, updateTask } from '../../utils/time_box_functions';
+import { addTask } from '../../app/tasksThunks';
 
 const TimerBox: React.FC = () => {
   const [clockRunning, setClockRunning] = useState<boolean>(false);

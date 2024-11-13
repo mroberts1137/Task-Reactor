@@ -1,8 +1,4 @@
 import { useContext } from 'react';
-import {
-  removeMonthlyGoalById,
-  addMonthlyGoal
-} from '../../app/monthlyGoalsSlice';
 
 import AddItem from '../list/AddItem';
 import List from '../list/List';
@@ -10,6 +6,10 @@ import List from '../list/List';
 import { Goal } from '../../types/types';
 import { MonthlyGoalsContext } from '../../contexts/context';
 import { formatCurrency } from '../../utils/time_box_functions';
+import {
+  addMonthlyGoal,
+  removeMonthlyGoalById
+} from '../../app/monthlyGoalsThunks';
 
 interface DisplayKey {
   name: string;
@@ -20,7 +20,7 @@ interface DisplayKey {
 const MonthlyGoalsBox: React.FC = () => {
   const { monthlyGoals, monthlyTotalGoals } = useContext(MonthlyGoalsContext);
 
-  const displayKeys: Record<keyof Omit<Goal, '_id'>, DisplayKey> = {
+  const displayKeys: Record<keyof Omit<Goal, 'id' | 'order'>, DisplayKey> = {
     title: { name: 'Goal', type: 'String', show: true },
     value: { name: 'Value', type: 'Currency', show: true }
   };
