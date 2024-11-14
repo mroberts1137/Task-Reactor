@@ -1,21 +1,31 @@
-import { useRef, useState, useEffect, FormEvent } from 'react';
+import React, { useRef, useState, useEffect, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheck,
   faTimes,
   faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import './RegisterForm.css';
-import { register } from '../app/userSlice';
+import {
+  FormContainer,
+  FormSection,
+  Form,
+  Label,
+  Input,
+  Button,
+  StyledLink,
+  ErrorMessage,
+  Instructions,
+  ValidationIcon
+} from '../styles/components/AuthForms';
 import { AppDispatch } from '../app/store';
+import { register } from '../app/userSlice';
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-const RegisterForm = () => {
+const RegisterForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -93,33 +103,26 @@ const RegisterForm = () => {
   };
 
   return (
-    <div id='register-form'>
+    <FormContainer>
       {success ? (
-        <section>
+        <FormSection>
           <h1>Success!</h1>
-        </section>
+        </FormSection>
       ) : (
-        <section>
-          <p
-            ref={errRef}
-            className={errMsg ? 'errmsg' : 'offscreen'}
-            aria-live='assertive'
-          >
+        <FormSection>
+          <ErrorMessage show={!!errMsg} ref={errRef} aria-live='assertive'>
             {errMsg}
-          </p>
+          </ErrorMessage>
 
           <h1>Register</h1>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor='username'>
+          <Form onSubmit={handleSubmit}>
+            <Label htmlFor='username'>
               Username:
-              <span className={validUsername ? 'valid' : 'hide'}>
-                <FontAwesomeIcon icon={faCheck} />
-              </span>
-              <span className={validUsername || !username ? 'hide' : 'invalid'}>
-                <FontAwesomeIcon icon={faTimes} />
-              </span>
-            </label>
-            <input
+              <ValidationIcon valid={validUsername} hide={!username}>
+                <FontAwesomeIcon icon={validUsername ? faCheck : faTimes} />
+              </ValidationIcon>
+            </Label>
+            <Input
               type='text'
               id='username'
               ref={userRef}
@@ -131,13 +134,9 @@ const RegisterForm = () => {
               onFocus={() => setUsernameFocus(true)}
               onBlur={() => setUsernameFocus(false)}
             />
-            <p
+            <Instructions
               id='uidnote'
-              className={
-                usernameFocus && username && !validUsername
-                  ? 'instructions'
-                  : 'offscreen'
-              }
+              show={usernameFocus && username && !validUsername}
             >
               <FontAwesomeIcon icon={faInfoCircle} />
               4 to 24 characters.
@@ -145,9 +144,9 @@ const RegisterForm = () => {
               Must begin with a letter.
               <br />
               Letters, numbers, underscores, hyphens allowed.
-            </p>
+            </Instructions>
 
-            <label htmlFor='password'>
+            <Label htmlFor='password'>
               Password:
               <span className={validPassword ? 'valid' : 'hide'}>
                 <FontAwesomeIcon icon={faCheck} />
@@ -155,8 +154,8 @@ const RegisterForm = () => {
               <span className={validPassword || !password ? 'hide' : 'invalid'}>
                 <FontAwesomeIcon icon={faTimes} />
               </span>
-            </label>
-            <input
+            </Label>
+            <Input
               type='password'
               id='password'
               onChange={(e) => setPassword(e.target.value)}
@@ -166,12 +165,7 @@ const RegisterForm = () => {
               onFocus={() => setPasswordFocus(true)}
               onBlur={() => setPasswordFocus(false)}
             />
-            <p
-              id='pwdnote'
-              className={
-                passwordFocus && !validPassword ? 'instructions' : 'offscreen'
-              }
-            >
+            <Instructions id='pwdnote' show={passwordFocus && !validPassword}>
               <FontAwesomeIcon icon={faInfoCircle} />
               8 to 24 characters.
               <br />
@@ -184,9 +178,9 @@ const RegisterForm = () => {
               <span aria-label='hashtag'>#</span>{' '}
               <span aria-label='dollar sign'>$</span>{' '}
               <span aria-label='percent'>%</span>
-            </p>
+            </Instructions>
 
-            <label htmlFor='confirm_pwd'>
+            <Label htmlFor='confirm_pwd'>
               Confirm Password:
               <span className={validMatch && matchPassword ? 'valid' : 'hide'}>
                 <FontAwesomeIcon icon={faCheck} />
@@ -196,8 +190,8 @@ const RegisterForm = () => {
               >
                 <FontAwesomeIcon icon={faTimes} />
               </span>
-            </label>
-            <input
+            </Label>
+            <Input
               type='password'
               id='confirm_pwd'
               onChange={(e) => setMatchPassword(e.target.value)}
@@ -207,29 +201,24 @@ const RegisterForm = () => {
               onFocus={() => setMatchFocus(true)}
               onBlur={() => setMatchFocus(false)}
             />
-            <p
-              id='confirmnote'
-              className={
-                matchFocus && !validMatch ? 'instructions' : 'offscreen'
-              }
-            >
+            <Instructions id='confirmnote' show={matchFocus && !validMatch}>
               <FontAwesomeIcon icon={faInfoCircle} />
               Must match the first password input field.
-            </p>
+            </Instructions>
 
-            <button disabled={!validUsername || !validPassword || !validMatch}>
+            <Button disabled={!validUsername || !validPassword || !validMatch}>
               Sign Up
-            </button>
-          </form>
+            </Button>
+          </Form>
 
           <p>
             Already registered?
             <br />
-            <Link to={'/login'}>Login</Link>
+            <StyledLink to='/login'>Login</StyledLink>
           </p>
-        </section>
+        </FormSection>
       )}
-    </div>
+    </FormContainer>
   );
 };
 

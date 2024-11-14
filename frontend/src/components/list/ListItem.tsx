@@ -11,7 +11,7 @@ import {
   formatCurrency
 } from '../../utils/time_box_functions';
 import { FaTrash } from 'react-icons/fa';
-import { DeleteButton } from '../styledComponents/deleteButton';
+import { DeleteButton } from '../../styles/components/Button';
 
 interface DisplayKey {
   type: 'Currency' | 'String' | 'Duration' | 'Date';

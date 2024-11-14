@@ -1,12 +1,20 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-
-import './RegisterForm.css';
-import { login } from '../app/userSlice';
+import { useNavigate } from 'react-router-dom';
+import {
+  FormContainer,
+  FormSection,
+  Form,
+  Label,
+  Input,
+  Button,
+  StyledLink,
+  ErrorMessage
+} from '../styles/components/AuthForms';
 import { AppDispatch } from '../app/store';
+import { login } from '../app/userSlice';
 
-const LoginForm = () => {
+const LoginForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -54,25 +62,21 @@ const LoginForm = () => {
   };
 
   return (
-    <div id='register-form'>
+    <FormContainer>
       {success ? (
-        <section>
+        <FormSection>
           <h1>Success!</h1>
-        </section>
+        </FormSection>
       ) : (
-        <section>
-          <p
-            ref={errRef}
-            className={errMsg ? 'errmsg' : 'offscreen'}
-            aria-live='assertive'
-          >
+        <FormSection>
+          <ErrorMessage show={!!errMsg} ref={errRef} aria-live='assertive'>
             {errMsg}
-          </p>
+          </ErrorMessage>
 
           <h1>Login</h1>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor='username'>Username:</label>
-            <input
+          <Form onSubmit={handleSubmit}>
+            <Label htmlFor='username'>Username:</Label>
+            <Input
               type='text'
               id='username'
               ref={userRef}
@@ -82,8 +86,8 @@ const LoginForm = () => {
               onBlur={() => setUserFocus(false)}
             />
 
-            <label htmlFor='password'>Password:</label>
-            <input
+            <Label htmlFor='password'>Password:</Label>
+            <Input
               type='password'
               id='password'
               onChange={(e) => setPassword(e.target.value)}
@@ -92,17 +96,17 @@ const LoginForm = () => {
               onBlur={() => setPwdFocus(false)}
             />
 
-            <button disabled={!username || !password}>Sign In</button>
-          </form>
+            <Button disabled={!username || !password}>Sign In</Button>
+          </Form>
 
           <p>
             Create an account:
             <br />
-            <Link to={'/register'}>Register</Link>
+            <StyledLink to='/register'>Register</StyledLink>
           </p>
-        </section>
+        </FormSection>
       )}
-    </div>
+    </FormContainer>
   );
 };
 

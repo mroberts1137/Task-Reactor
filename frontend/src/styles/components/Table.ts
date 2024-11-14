@@ -1,9 +1,23 @@
 import styled from 'styled-components';
+import { Resizable } from 'react-resizable';
+
+export const ResizableHeader = styled(Resizable)`
+  .react-resizable-handle {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    bottom: 0;
+    right: -5px;
+    cursor: col-resize;
+    z-index: 1;
+  }
+`;
 
 export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  overflow-x: auto;
 
   th {
     background-color: ${(props) => props.theme.colors.table.headerBackground};

@@ -10,8 +10,10 @@
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.tsx",
     "tests/**/*.ts",
     "src/api/axios.js",
-    "src/components/**/*.tsx"
+    "src/components/**/*.tsx",
+    "src/styles/themes/**/*.ts"
   ]
 }

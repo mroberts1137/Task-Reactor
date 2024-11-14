@@ -1,22 +1,8 @@
 import React, { useState } from 'react';
-import { Resizable } from 'react-resizable';
 import ListItem from './ListItem';
-import styled from 'styled-components';
 import { Item } from '../../types/types';
-import { Table } from '../styledComponents/table';
 import './List.css';
-
-const ResizableHeader = styled(Resizable)`
-  .react-resizable-handle {
-    position: absolute;
-    width: 10px;
-    height: 100%;
-    bottom: -2px;
-    right: -2px;
-    cursor: col-resize;
-    z-index: 1;
-  }
-`;
+import { ResizableHeader, Table } from '../../styles/components/Table';
 
 interface DisplayKey {
   name: string;

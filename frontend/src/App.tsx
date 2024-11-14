@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
@@ -9,19 +8,22 @@ import SettingsPage from './pages/SettingsPage';
 import DashboardPage from './pages/DashboardPage';
 import PrivateRoute from './components/dashboard/PrivateRoute';
 import { ThemeProvider } from 'styled-components';
-import { lightTheme } from './themes/theme';
-import { GlobalStyle } from './themes/globalStyle';
+import GlobalStyle from './styles/themes/globalStyle';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
+import { useTheme } from './hooks/useTheme';
 // import { PersistGate } from 'redux-persist/integration/react';
 
 function App() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <Provider store={store}>
       {/* <PersistGate loading={null} persistor={persistor}> */}
       <BrowserRouter>
-        <ThemeProvider theme={lightTheme}>
-          <Header />
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <Header toggleTheme={toggleTheme} />
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/login' element={<LoginPage />} />

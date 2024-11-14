@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Theme } from '../../themes/theme';
+import { Theme } from '../../styles/themes/theme';
 
 interface CardProps {
   title: string;
