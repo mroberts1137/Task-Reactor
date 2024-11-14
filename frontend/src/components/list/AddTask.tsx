@@ -10,6 +10,7 @@ import { UserContext } from '../../contexts/context';
 import { AppDispatch } from '../../app/store';
 import { Task } from '../../types/types';
 import { addTask } from '../../app/tasksThunks';
+import { Table } from 'reactstrap';
 
 const calculateEndTime = (
   startTime: Date,
@@ -134,7 +135,7 @@ const AddTask: React.FC = () => {
   return (
     <div className='input-container'>
       <form onSubmit={handleSubmit}>
-        <table>
+        <Table>
           <tbody>
             <tr>
               <td>Task</td>
@@ -257,7 +258,7 @@ const AddTask: React.FC = () => {
               </td>
             </tr>
           </tbody>
-        </table>
+        </Table>
         <button className='add-item-btn' type='submit'>
           +
         </button>
