@@ -5,14 +5,14 @@ import { login, logout, register } from './userThunks';
 export { login, logout, register };
 
 interface UserState {
-  userId: string;
+  userId: string | null;
   user: User | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
 const initialState: UserState = {
-  userId: '',
+  userId: null,
   user: null,
   status: 'idle',
   error: null
@@ -21,7 +21,18 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setUser(state, action) {
+      state.user = action.payload.user;
+      state.userId = action.payload.userId;
+    },
+    clearUser(state) {
+      state.user = null;
+      state.userId = null;
+      state.status = 'idle';
+      state.error = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state, action) => {
@@ -67,6 +78,8 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+
+export const { setUser, clearUser } = userSlice.actions;
 
 export const selectUserId = (state: RootState) => state.user.userId;
 export const selectUser = (state: RootState) => state.user.user;

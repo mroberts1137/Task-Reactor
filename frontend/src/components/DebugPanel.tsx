@@ -1,13 +1,14 @@
-import { useContext } from 'react';
-import { TaskContext, UserContext } from '../contexts/context';
-import { Task, User } from '../types/types';
+import { Task } from '../types/types';
 import { persistStore } from 'redux-persist';
 import { store } from '../app/store';
+import { useSelector } from 'react-redux';
+import { selectAllTasks } from '../app/tasksSlice';
+import { selectUser, selectUserId } from '../app/userSlice';
 
 const DebugPanel = () => {
-  const { user, user_id }: { user: User; user_id: string } =
-    useContext(UserContext);
-  const { tasks }: { tasks: Task[] } = useContext(TaskContext);
+  const user_id = useSelector(selectUserId);
+  const user = useSelector(selectUser);
+  const tasks = useSelector(selectAllTasks);
 
   const handlePurgePersistStore = () => {
     // To purge all persisted data

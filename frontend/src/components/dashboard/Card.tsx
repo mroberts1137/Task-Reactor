@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Theme } from '../../styles/themes/theme';
 
@@ -6,6 +6,7 @@ interface CardProps {
   title: string;
   children: React.ReactNode;
   className?: string;
+  onToggleMinimize: (isMinimized: boolean) => void;
 }
 
 interface CardContentProps {
@@ -13,19 +14,21 @@ interface CardContentProps {
 }
 
 interface CardContainerProps {
+  isMinimized: boolean;
   className?: string;
 }
 
 const CardContainer = styled.div<CardContainerProps>`
-  background-color: ${({ theme }: { theme: Theme }) => theme.colors.surface};
-  border-radius: ${({ theme }: { theme: Theme }) => theme.borderRadius};
-  box-shadow: ${({ theme }: { theme: Theme }) => theme.shadows.card};
+  background-color: ${({ theme }) => theme.colors.surface};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  box-shadow: ${({ theme }) => theme.shadows.card};
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: ${({ isMinimized }) =>
+    isMinimized ? 'auto' : '100%'}; // Adjust height when minimized
   width: 100%;
   overflow: hidden;
-  transition: ${({ theme }: { theme: Theme }) => theme.transitions.default};
+  transition: ${({ theme }) => theme.transitions.default};
 `;
 
 const CardHeader = styled.div`
@@ -55,11 +58,9 @@ const CardContent = styled.div<CardContentProps>`
   padding: 15px;
   flex-grow: 1;
   overflow-y: auto;
-  ${(props) =>
-    props.isMinimized &&
-    `
-    display: none;
-  `}
+  display: ${({ isMinimized }) => (isMinimized ? 'none' : 'flex')};
+  justify-content: center;
+  align-items: center;
 `;
 
 const MinimizeButton = styled.button`
@@ -68,14 +69,18 @@ const MinimizeButton = styled.button`
   cursor: pointer;
   font-size: 18px;
   color: ${(props) => props.theme.colors.primary};
-  z-index: 1; // Ensure button is clickable
-  pointer-events: auto; // Ensure clicks work
+  z-index: 1;
   &:hover {
     color: ${(props) => props.theme.colors.secondary};
   }
 `;
 
-const Card: React.FC<CardProps> = ({ title, children, className }) => {
+const Card: React.FC<CardProps> = ({
+  title,
+  children,
+  className,
+  onToggleMinimize
+}) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
   const handleMinimizeClick = (e: React.MouseEvent) => {
@@ -83,8 +88,12 @@ const Card: React.FC<CardProps> = ({ title, children, className }) => {
     setIsMinimized(!isMinimized);
   };
 
+  useEffect(() => {
+    onToggleMinimize(isMinimized);
+  }, [isMinimized, onToggleMinimize]);
+
   return (
-    <CardContainer className={className}>
+    <CardContainer className={className} isMinimized={isMinimized}>
       <CardHeader className='draggable-handle'>
         <CardTitle>{title}</CardTitle>
         <MinimizeButton onClick={handleMinimizeClick}>

@@ -1,4 +1,3 @@
-import React from 'react';
 import DebugPanel from '../components/DebugPanel';
 
 const SettingsPage = () => {

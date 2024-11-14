@@ -3,6 +3,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validation = require('../middleware/validation');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -59,5 +60,17 @@ router.post(
     }
   }
 );
+
+// @route   GET api/auth/verify-session
+// @desc    Verify JWT token
+// @access  Public
+router.get('/verify-session', auth, async (req, res, next) => {
+  console.log(res?.user);
+  if (req.user) {
+    res.status(200).send(true);
+  } else {
+    res.status(400).send(false);
+  }
+});
 
 module.exports = router;

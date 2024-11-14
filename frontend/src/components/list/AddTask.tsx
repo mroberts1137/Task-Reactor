@@ -11,6 +11,7 @@ import { AppDispatch } from '../../app/store';
 import { Task } from '../../types/types';
 import { addTask } from '../../app/tasksThunks';
 import { Table } from 'reactstrap';
+import { AddButton, Input } from '../../styles/components/Table';
 
 const calculateEndTime = (
   startTime: Date,
@@ -140,7 +141,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Task</td>
               <td>
-                <input
+                <Input
                   type='text'
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setTitle(e.target.value)
@@ -154,7 +155,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Duration (Hours)</td>
               <td>
-                <input
+                <Input
                   type='number'
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleDurationChange(
@@ -171,7 +172,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Duration (Minutes)</td>
               <td>
-                <input
+                <Input
                   type='number'
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     handleDurationChange(
@@ -188,7 +189,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Rate</td>
               <td>
-                <input
+                <Input
                   type='number'
                   onChange={handleHourlyRateChange}
                   value={hourlyRate}
@@ -200,7 +201,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Tax Rate (%)</td>
               <td>
-                <input
+                <Input
                   type='number'
                   onChange={handleTaxRateChange}
                   value={taxRate}
@@ -212,7 +213,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Start Time</td>
               <td>
-                <input
+                <Input
                   type='datetime-local'
                   onChange={handleStartTimeChange}
                   value={startTime.toISOString().slice(0, -1).slice(0, 16)}
@@ -224,7 +225,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>End Time</td>
               <td>
-                <input
+                <Input
                   type='datetime-local'
                   onChange={handleEndTimeChange}
                   value={endTime.toISOString().slice(0, -1).slice(0, 16)}
@@ -236,7 +237,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Gross Income</td>
               <td>
-                <input
+                <Input
                   type='number'
                   value={grossIncome.toFixed(2)}
                   readOnly
@@ -248,7 +249,7 @@ const AddTask: React.FC = () => {
             <tr>
               <td>Net Income</td>
               <td>
-                <input
+                <Input
                   type='number'
                   readOnly
                   value={netIncome.toFixed(2)}
@@ -259,9 +260,9 @@ const AddTask: React.FC = () => {
             </tr>
           </tbody>
         </Table>
-        <button className='add-item-btn' type='submit'>
+        <AddButton className='add-item-btn' type='submit'>
           +
-        </button>
+        </AddButton>
       </form>
     </div>
   );

@@ -1,5 +1,7 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
 import { User } from '../types/types';
+import { VERIFY_SESSION_URL } from '../api/api_urls';
 
 export const auth = async (
   url: string,
@@ -17,3 +19,18 @@ export const auth = async (
 
   return { user, user_id };
 };
+
+export const verifySession = createAsyncThunk(
+  'auth/verifySession',
+  async () => {
+    try {
+      console.log('Verifying token...');
+      const response = await axios.get(VERIFY_SESSION_URL, {
+        withCredentials: true
+      });
+      return response.data.valid; // API responds with { valid: true/false }
+    } catch (error) {
+      return false;
+    }
+  }
+);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import logo from '../assets/logo.png';
@@ -21,45 +21,52 @@ import {
   SunIcon,
   MoonIcon
 } from '../styles/components/ThemeToggle';
-import { useTheme } from '../hooks/useTheme';
-import { logout } from '../app/userSlice';
+import { logout, selectUser } from '../app/userSlice';
 import { clearTasks } from '../app/tasksSlice';
 import { clearDailyGoals } from '../app/dailyGoalsSlice';
 import { clearMonthlyGoals } from '../app/monthlyGoalsSlice';
-import { AppDispatch, RootState } from '../app/store';
+import { AppDispatch } from '../app/store';
 
 interface HeaderProps {
-  isDarkMode: Boolean;
+  isDarkMode: boolean;
   toggleTheme: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
-  // const { isDarkMode } = useTheme();
-  console.log(isDarkMode);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const user = useSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.user.user);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownOpen) {
-        // setDropdownOpen(false);
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
       }
     };
 
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, [dropdownOpen]);
+  }, []);
 
   const handleLogout = async () => {
+    setDropdownOpen(false);
     await dispatch(logout()).unwrap();
     dispatch(clearTasks());
     dispatch(clearDailyGoals());
     dispatch(clearMonthlyGoals());
     navigate('/');
+  };
+
+  const handleDropdownNavigationClick = (path: string) => {
+    setDropdownOpen(false);
+    navigate(path);
   };
 
   return (
@@ -91,15 +98,19 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
             <NavItem>
               <NavLink to='/dashboard'>Dashboard</NavLink>
             </NavItem>
-            <DropdownContainer>
+            <DropdownContainer ref={dropdownRef}>
               <DropdownToggle onClick={() => setDropdownOpen(!dropdownOpen)}>
                 {user.username}
               </DropdownToggle>
               <DropdownMenu isOpen={dropdownOpen}>
-                <DropdownItem onClick={() => navigate('/profile')}>
+                <DropdownItem
+                  onClick={() => handleDropdownNavigationClick('/profile')}
+                >
                   Profile
                 </DropdownItem>
-                <DropdownItem onClick={() => navigate('/settings')}>
+                <DropdownItem
+                  onClick={() => handleDropdownNavigationClick('/settings')}
+                >
                   Settings
                 </DropdownItem>
                 <DropdownItem className='divider' />

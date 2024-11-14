@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { saveTask } from '../../app/savedTasksSlice';
 import { Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
+import { Input } from '../../styles/components/Table';
+import { Form, Label } from '../../styles/components/AuthForms';
 
 interface TaskFormProps {
   selectedTask: Task;
@@ -48,12 +50,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
   };
 
   return (
-    <form>
+    <Form>
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
-          alignItems: 'center'
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
         <div
@@ -63,8 +66,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
             marginInline: '1rem'
           }}
         >
-          <label>Task:</label>
-          <input
+          <Label>Task:</Label>
+          <Input
             name='title'
             value={title}
             onChange={handleTaskChange}
@@ -79,8 +82,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
             marginInline: '1rem'
           }}
         >
-          <label>Hourly Rate: $</label>
-          <input
+          <Label>Hourly Rate: $</Label>
+          <Input
             type='number'
             name='hourlyRate'
             value={hourlyRate}
@@ -97,8 +100,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
             marginInline: '1rem'
           }}
         >
-          <label>Tax Rate: %</label>
-          <input
+          <Label>Tax Rate: %</Label>
+          <Input
             type='number'
             name='taxRate'
             value={taxRate}
@@ -110,7 +113,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         </div>
         <button onClick={handleSaveTask}>Save Task</button>
       </div>
-    </form>
+    </Form>
   );
 };
 

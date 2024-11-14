@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ListItem from './ListItem';
 import { Item } from '../../types/types';
-import './List.css';
 import { ResizableHeader, Table } from '../../styles/components/Table';
 
 interface DisplayKey {

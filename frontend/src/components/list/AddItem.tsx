@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { UserContext } from '../../contexts/context';
+import { AddButton, Input } from '../../styles/components/Table';
 
 const AddItem = ({ addAction }) => {
   const [title, setTitle] = useState('');
@@ -34,7 +35,7 @@ const AddItem = ({ addAction }) => {
     <div className='input-container'>
       <form onSubmit={handleSubmit}>
         <label htmlFor='title'>Title: </label>
-        <input
+        <Input
           type='text'
           onChange={(e) => setTitle(e.target.value)}
           value={title}
@@ -42,16 +43,16 @@ const AddItem = ({ addAction }) => {
           className='long-input'
         />
         <label htmlFor='value'>Value: </label>
-        <input
+        <Input
           type='text'
           onChange={(e) => setValue(parseFloat(e.target.value))}
           value={value}
           name='value'
           className='short-input'
         />
-        <button className='add-item-btn' type='submit'>
+        <AddButton className='add-item-btn' type='submit'>
           +
-        </button>
+        </AddButton>
       </form>
     </div>
   );

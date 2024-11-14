@@ -95,9 +95,14 @@ export const Instructions = styled.p<{ show: boolean }>`
   display: ${({ show }) => (show ? 'block' : 'none')};
 `;
 
-export const ValidationIcon = styled.span<{ valid: boolean; hide: boolean }>`
+interface ValidationIconProps {
+  valid: boolean;
+  hide: boolean;
+}
+
+export const ValidationIcon = styled.span<ValidationIconProps>`
   color: ${({ valid, theme }) =>
     valid ? theme.colors.success : theme.colors.danger};
-  margin-left: 0.25rem;
   display: ${({ hide }) => (hide ? 'none' : 'inline')};
+  margin-left: 0.25rem;
 `;

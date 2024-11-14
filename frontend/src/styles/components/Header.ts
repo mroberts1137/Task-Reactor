@@ -10,7 +10,7 @@ export const NavbarContainer = styled.nav`
   background: ${({ theme }) => theme.colors.header};
   height: 6rem;
   color: ${({ theme }) => theme.colors.text.primary};
-  position: sticky;
+  // position: sticky;
   top: 0;
   z-index: 1000;
 `;

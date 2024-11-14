@@ -26,6 +26,7 @@ const persistConfig = {
     // Migration logic
     return Promise.resolve(state);
   }
+  // whitelist: ['user']
 };
 
 const rootReducer = combineReducers({

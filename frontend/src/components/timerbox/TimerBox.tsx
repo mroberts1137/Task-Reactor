@@ -9,12 +9,12 @@ import {
 import TaskTable from './TaskTable';
 import TaskForm from './TaskForm';
 import SavedTasks from './SavedTasks';
-import './TimerBox.css';
 import useInterval from '../../hooks/useInterval';
 import { Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 import { resetTask, updateTask } from '../../utils/time_box_functions';
 import { addTask } from '../../app/tasksThunks';
+import { StartButton } from '../../styles/components/Button';
 
 const TimerBox: React.FC = () => {
   const [clockRunning, setClockRunning] = useState<boolean>(false);
@@ -79,13 +79,13 @@ const TimerBox: React.FC = () => {
 
       <div className='flex-row'>
         {/** Start Button */}
-        <button
+        <StartButton
           disabled={!clockRunning && !task.title}
-          className={`btn ${clockRunning ? 'stop-btn' : 'start-btn'}`}
+          clockRunning={clockRunning}
           onClick={toggleClock}
         >
           {clockRunning ? 'Stop' : 'Start'}
-        </button>
+        </StartButton>
         <button className='reset-btn' onClick={reset}>
           Reset
         </button>

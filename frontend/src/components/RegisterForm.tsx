@@ -148,12 +148,9 @@ const RegisterForm: React.FC = () => {
 
             <Label htmlFor='password'>
               Password:
-              <span className={validPassword ? 'valid' : 'hide'}>
-                <FontAwesomeIcon icon={faCheck} />
-              </span>
-              <span className={validPassword || !password ? 'hide' : 'invalid'}>
-                <FontAwesomeIcon icon={faTimes} />
-              </span>
+              <ValidationIcon valid={validPassword} hide={!password}>
+                <FontAwesomeIcon icon={validPassword ? faCheck : faTimes} />
+              </ValidationIcon>
             </Label>
             <Input
               type='password'
@@ -182,14 +179,9 @@ const RegisterForm: React.FC = () => {
 
             <Label htmlFor='confirm_pwd'>
               Confirm Password:
-              <span className={validMatch && matchPassword ? 'valid' : 'hide'}>
-                <FontAwesomeIcon icon={faCheck} />
-              </span>
-              <span
-                className={validMatch || !matchPassword ? 'hide' : 'invalid'}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </span>
+              <ValidationIcon valid={validMatch} hide={!matchPassword}>
+                <FontAwesomeIcon icon={validMatch ? faCheck : faTimes} />
+              </ValidationIcon>
             </Label>
             <Input
               type='password'
