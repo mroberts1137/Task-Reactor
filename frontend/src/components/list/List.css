@@ -29,64 +29,6 @@
   font-weight: bold;
 }
 
-/* List/Table Styling */
-.list-container {
-  display: flex;
-  flex-direction: column; /* Not necessary if you only have the table inside */
-  width: auto;
-  min-height: 10rem;
-  padding: 2rem;
-  border-radius: 0.4rem;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
-table {
-  table-layout: fixed; /* Ensures columns distribute width evenly */
-  width: 100%;
-  border-collapse: collapse; /* Visually merge cell borders */
-}
-
-.list-container table {
-  margin: 0 auto;
-  width: 100%;
-}
-
-th,
-td {
-  padding: 0.5rem 0.5rem; /* Consistent padding for cells */
-  border: 1px solid rgb(84, 84, 84); /* Moved from .list-item */
-  text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Alternating Row Colors (using CSS variables) */
-
-tr:nth-child(odd) {
-  background-color: var(--list-item-odd-col);
-}
-tr:nth-child(even) {
-  background-color: var(--list-item-even-col);
-}
-
-th {
-  background-color: rgb(170, 155, 176);
-}
-
-/* Remove Item Button */
-.remove-item-btn {
-  width: 1.5rem; /* Slightly increased size */
-  height: 1.5rem;
-  font-size: 1rem;
-  border-radius: 50%; /* Makes a perfect circle */
-  border: none;
-  background-color: rgb(199, 92, 92);
-  color: white;
-  cursor: pointer; /* Indicate it's clickable */
-}
-
 .long-input {
   width: 50%;
 }

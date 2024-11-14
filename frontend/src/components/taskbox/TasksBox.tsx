@@ -74,7 +74,6 @@ const TaskBox: React.FC = () => {
       <h3>
         Completed Tasks: <span id='goals-total'>{formatCurrency(total)}</span>
       </h3>
-      <AddTask />
       <DropdownSelector
         items={Object.keys(showKeys)}
         selectedItems={showKeys}

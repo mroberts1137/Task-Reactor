@@ -10,6 +10,8 @@ import {
   formatDuration,
   formatCurrency
 } from '../../utils/time_box_functions';
+import { FaTrash } from 'react-icons/fa';
+import { DeleteButton } from '../styledComponents/deleteButton';
 
 interface DisplayKey {
   type: 'Currency' | 'String' | 'Duration' | 'Date';
@@ -65,9 +67,9 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <animated.tr className='list-item' style={slideIn}>
       <td>
-        <button className='remove-item-btn' onClick={handleDelete}>
-          X
-        </button>
+        <DeleteButton onClick={handleDelete}>
+          <FaTrash />
+        </DeleteButton>
       </td>
       {Object.keys(displayKeys).map((key, index) => (
         <td key={index} className='item-text'>
