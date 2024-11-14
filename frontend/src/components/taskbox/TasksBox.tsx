@@ -1,7 +1,6 @@
 import { useState, useContext } from 'react';
 import DateDisplay from '../DateDisplay';
 import DropdownSelector from './DropdownSelector';
-import AddTask from '../list/AddTask';
 import List from '../list/List';
 import { TaskContext, DateContext } from '../../contexts/context';
 import { sumTotal } from '../../utils/functions';
@@ -29,7 +28,7 @@ interface ShowKeys {
 const TaskBox: React.FC = () => {
   const { selectedDate } = useContext(DateContext);
   const { dailyTasks } = useContext(TaskContext);
-  const total = sumTotal(dailyTasks.map((item) => item.netIncome));
+  const total = sumTotal(dailyTasks?.map((item) => item.netIncome));
 
   const [showKeys, setShowKeys] = useState<ShowKeys>({
     title: true,

@@ -11,7 +11,7 @@ const SavedTasks = ({ onTaskSelect, disabled }) => {
       <h3>Saved Tasks:</h3>
       {!disabled ? (
         <select onChange={(e) => onTaskSelect(savedTasks[e.target.value])}>
-          {savedTasks.map((task, index) => (
+          {savedTasks?.map((task, index) => (
             <option key={index} value={index}>
               {task.task} - Rate: {task.rate}
             </option>

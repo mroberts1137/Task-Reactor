@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -15,7 +15,6 @@ import MonthlyProgressBox from '../progressbox/MonthlyProgressBox';
 import CalendarBox from '../calendarbox/CalendarBox';
 import DateDisplay from '../DateDisplay';
 import TimeDisplay from '../TimeDisplay';
-import DebugPanel from '../DebugPanel';
 import AddTask from '../list/AddTask';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);

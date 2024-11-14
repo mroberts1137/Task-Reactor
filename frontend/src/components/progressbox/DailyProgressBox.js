@@ -63,7 +63,7 @@ const DailyProgressBox = () => {
           />
 
           {/* Goal Division Lines */}
-          {goalLines.map((goalLine, index) => (
+          {goalLines?.map((goalLine, index) => (
             <div
               key={index}
               className={`goal-line ${

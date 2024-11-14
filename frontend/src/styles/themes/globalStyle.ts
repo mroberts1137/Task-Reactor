@@ -1,9 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
-import { Theme } from './theme';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-
   * {
     margin: 0;
     padding: 0;
@@ -11,7 +8,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    font-family: courier, 'Nunito', sans-serif;
+    font-family: courier, sans-serif;
     font-size: 22px;
     color: ${({ theme }) => theme.colors.text.primary};
   }

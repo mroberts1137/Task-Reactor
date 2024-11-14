@@ -44,7 +44,7 @@ const List: React.FC<ListProps> = ({ items, removeAction, displayKeys }) => {
       <thead>
         <tr>
           <th style={{ width: '44px' }}></th>
-          {visibleKeys.map((key, index) => (
+          {visibleKeys?.map((key, index) => (
             <ResizableHeader
               key={index}
               width={columnWidths[index] || 150}

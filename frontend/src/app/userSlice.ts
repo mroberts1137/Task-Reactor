@@ -1,10 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../types/types'; // Assuming User type is defined here
+import { createSlice } from '@reduxjs/toolkit';
+import { User } from '../types/types';
 import { RootState } from './store';
 import { login, logout, register } from './userThunks';
 export { login, logout, register };
 
-// Define the state type
 interface UserState {
   userId: string;
   user: User | null;
@@ -12,7 +11,6 @@ interface UserState {
   error: string | null;
 }
 
-// Define the initial state with the correct type
 const initialState: UserState = {
   userId: '',
   user: null,
@@ -38,9 +36,7 @@ const userSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      });
-
-    builder
+      })
       .addCase(register.pending, (state, action) => {
         state.status = 'loading';
       })
@@ -53,9 +49,7 @@ const userSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      });
-
-    builder
+      })
       .addCase(logout.pending, (state, action) => {
         state.status = 'loading';
       })
@@ -73,8 +67,6 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-// export const { setUser, setUserId } = userSlice.actions;
 
-// Selectors to retrieve userId and user from the Redux store
 export const selectUserId = (state: RootState) => state.user.userId;
 export const selectUser = (state: RootState) => state.user.user;

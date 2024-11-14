@@ -29,11 +29,13 @@ import { clearMonthlyGoals } from '../app/monthlyGoalsSlice';
 import { AppDispatch, RootState } from '../app/store';
 
 interface HeaderProps {
+  isDarkMode: Boolean;
   toggleTheme: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleTheme }) => {
-  const { isDarkMode } = useTheme();
+const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
+  // const { isDarkMode } = useTheme();
+  console.log(isDarkMode);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 

@@ -14,7 +14,7 @@ export const selectOrderedDailyGoals = createSelector(
   [selectDailyGoalsEntities, selectDailyGoalsIds],
   (entities, ids) =>
     ids
-      .map((id) => entities[id])
+      ?.map((id) => entities[id])
       .filter((goal): goal is Goal => goal !== undefined)
 );
 
@@ -22,6 +22,6 @@ export const selectOrderedMonthlyGoals = createSelector(
   [selectMonthlyGoalsEntities, selectMonthlyGoalsIds],
   (entities, ids) =>
     ids
-      .map((id) => entities[id])
+      ?.map((id) => entities[id])
       .filter((goal): goal is Goal => goal !== undefined)
 );

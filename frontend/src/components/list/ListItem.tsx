@@ -71,7 +71,7 @@ const ListItem: React.FC<ListItemProps> = ({
           <FaTrash />
         </DeleteButton>
       </td>
-      {Object.keys(displayKeys).map((key, index) => (
+      {Object.keys(displayKeys)?.map((key, index) => (
         <td key={index} className='item-text'>
           {itemType(item[key], displayKeys[key])}
         </td>

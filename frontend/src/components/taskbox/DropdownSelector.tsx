@@ -5,7 +5,7 @@ const DropdownSelector = ({ items, selectedItems, onToggle }) => {
     <div className='dropdown'>
       <p>Display Options</p>
       <div className='dropdown-menu'>
-        {items.map((item: string) => (
+        {items?.map((item: string) => (
           <label key={item} className='dropdown-item'>
             <input
               type='checkbox'

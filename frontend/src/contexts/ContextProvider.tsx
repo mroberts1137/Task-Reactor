@@ -68,12 +68,12 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Calculate totals with useMemo
   const dailyTotalGoals = useMemo(
-    () => sumTotal(dailyGoals.map((item) => item.value)),
+    () => sumTotal(dailyGoals?.map((item) => item.value)),
     [dailyGoals]
   );
 
   const monthlyTotalGoals = useMemo(
-    () => sumTotal(monthlyGoals.map((item) => item.value)),
+    () => sumTotal(monthlyGoals?.map((item) => item.value)),
     [monthlyGoals]
   );
 
@@ -81,7 +81,7 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentTaskEarnings, setCurrentTaskEarnings] = useState<number>(0);
 
   const dailyTasksEarnings = useMemo(
-    () => sumTotal(dailyTasks.map((item) => item.netIncome)),
+    () => sumTotal(dailyTasks?.map((item) => item.netIncome)),
     [dailyTasks]
   );
 
@@ -91,7 +91,7 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   const monthlyTotalEarnings = useMemo(
-    () => sumTotal(monthlyTasks.map((item) => item.netIncome)),
+    () => sumTotal(monthlyTasks?.map((item) => item.netIncome)),
     [monthlyTasks]
   );
 
@@ -139,7 +139,12 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
       monthlyTotalEarnings,
       earningsChange
     }),
-    [dailyTasksEarnings, dailyTotalEarnings, monthlyTotalEarnings]
+    [
+      dailyTasksEarnings,
+      dailyTotalEarnings,
+      monthlyTotalEarnings,
+      earningsChange
+    ]
   );
   const dailyGoalsContextValue = useMemo(
     () => ({
