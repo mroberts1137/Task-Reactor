@@ -36,7 +36,7 @@ export const fetchTasks = createAsyncThunk<
     );
     const responseOK = response && response.statusText === 'OK';
     if (!responseOK) throw new Error('Failed to fetch tasks');
-    return response.data.map(transformMongoDocument);
+    return response.data?.map(transformMongoDocument);
   } catch (error) {
     return rejectWithValue(error.message);
   }

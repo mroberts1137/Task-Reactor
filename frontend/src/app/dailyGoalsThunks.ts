@@ -33,7 +33,7 @@ export const fetchDailyGoals = createAsyncThunk<
       DAILY_GOALS_URL.replace('{userId}', user_id),
       config
     );
-    return response.data.map(transformMongoDocument);
+    return response.data?.map(transformMongoDocument);
   } catch (err) {
     console.error(`Error: ${err}`);
     throw err;
