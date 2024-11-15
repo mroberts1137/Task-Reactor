@@ -33,7 +33,12 @@ export const fetchMonthlyGoals = createAsyncThunk<
       MONTHLY_GOALS_URL.replace('{userId}', user_id),
       config
     );
-    return response.data.map(transformMongoDocument);
+    const responseOK = response && response.statusText === 'OK';
+
+    if (!responseOK) throw new Error('Failed to fetch monthly goals');
+    if (!response.data || response.data?.length === 0) return [];
+
+    return response.data?.map(transformMongoDocument);
   } catch (err) {
     console.error(`Error: ${err}`);
     throw err;

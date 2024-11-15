@@ -21,7 +21,7 @@ const app = express();
 connectDB();
 
 const corsOptions = {
-  origin: [process.env.DEV_ORIGIN],
+  origin: [process.env.DEV_ORIGIN, process.env.ORIGIN],
   credentials: true,
   optionsSuccessStatus: 200 // For legacy browser support
 };
