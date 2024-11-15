@@ -32,7 +32,8 @@ const corsOptions = {
   origin: [
     process.env.DEV_ORIGIN,
     process.env.PRODUCTION_ORIGIN,
-    'https://task-reactor-fdc1c.firebaseapp.com'
+    'https://task-reactor-fdc1c.firebaseapp.com',
+    'https://task-reactor-fdc1c.web.app'
   ],
   credentials: true,
   optionsSuccessStatus: 200 // For legacy browser support
