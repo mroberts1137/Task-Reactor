@@ -4,6 +4,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const rateLimit = require('express-rate-limit');
 
 const auth = require('./routes/auth');
 const users = require('./routes/users');
@@ -13,15 +14,26 @@ const monthlyGoals = require('./routes/monthly_goals');
 
 dotenv.config();
 
-const hostname = 'localhost';
-const port = 5000;
+const HOST = 'localhost';
+const PORT = process.env.PORT || 5000;
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
 
 connectDB();
 
 const corsOptions = {
-  origin: [process.env.DEV_ORIGIN, process.env.ORIGIN],
+  origin: [
+    process.env.DEV_ORIGIN,
+    process.env.PRODUCTION_ORIGIN,
+    'https://task-reactor-fdc1c.firebaseapp.com'
+  ],
   credentials: true,
   optionsSuccessStatus: 200 // For legacy browser support
 };
@@ -43,6 +55,11 @@ app.use('/api/users/:user_id/tasks', tasks);
 app.use('/api/users/:user_id/daily_goals', dailyGoals);
 app.use('/api/users/:user_id/monthly_goals', monthlyGoals);
 
-app.listen(port, () => {
-  console.log(`Server running at http://${hostname}:${port}`);
+// Render health check
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
 });
