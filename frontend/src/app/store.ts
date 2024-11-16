@@ -8,7 +8,8 @@ import {
   PAUSE,
   PERSIST,
   PURGE,
-  REGISTER
+  REGISTER,
+  createMigrate
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
@@ -26,6 +27,7 @@ const persistConfig = {
     // Migration logic
     return Promise.resolve(state);
   }
+  // migrate: createMigrate(migrations, { debug: process.env.NODE_ENV !== 'production' })
   // whitelist: ['user']
 };
 
@@ -53,7 +55,9 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  console.log('Rehydration complete');
+});
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

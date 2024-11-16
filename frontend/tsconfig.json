@@ -12,8 +12,9 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
-    "src/api/axios.js",
+    "src/api/axios.ts",
     "src/components/**/*.tsx",
     "src/styles/themes/**/*.ts"
-  ]
+  ],
+  "allowJs": true
 }

@@ -8,3 +8,10 @@ const API_BASE_URL =
 export default axios.create({
   baseURL: API_BASE_URL
 });
+
+export const handleError = (error) => {
+  if (axios.isAxiosError(error)) {
+    return error.response?.data?.message || error.message;
+  }
+  return error.message || 'An unexpected error occurred';
+};
