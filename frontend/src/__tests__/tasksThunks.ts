@@ -1,6 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import { thunk } from 'redux-thunk';
-import axios from '../api/axios';
+import axios from 'axios';
 import {
   fetchTasks,
   addTask,
@@ -10,7 +10,7 @@ import {
 } from '../app/tasksThunks';
 import { tasksAdapter, TasksState } from '../app/tasksSlice';
 
-jest.mock('../api/axios', () => ({
+jest.mock('axios', () => ({
   get: jest.fn(),
   post: jest.fn(),
   put: jest.fn(),

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from '../api/axios';
+import axios from 'axios';
+import { handleError } from '../api/axios';
 import { MONTHLY_GOALS_URL } from '../api/api_urls';
 
 import {

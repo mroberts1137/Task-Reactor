@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios, { handleError } from '../api/axios';
+import axios from 'axios';
+import { handleError } from '../api/axios';
 import { TASKS_URL } from '../api/api_urls';
 import { Task } from '../types/types';
 import {
