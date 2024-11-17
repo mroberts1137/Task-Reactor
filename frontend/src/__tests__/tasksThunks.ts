@@ -15,7 +15,8 @@ jest.mock('../api/axios', () => ({
   post: jest.fn(),
   put: jest.fn(),
   delete: jest.fn(),
-  handleError: jest.fn()
+  handleError: jest.fn((error) => error.message),
+  isAxiosError: jest.fn(() => false)
 }));
 
 const middlewares = [thunk];
@@ -62,7 +63,17 @@ describe('Task Thunks', () => {
 
     it('should handle fetchTasks failure', async () => {
       const errorMessage = 'Failed to fetch tasks';
-      (axios.get as jest.Mock).mockRejectedValue(new Error(errorMessage));
+      const axiosError = {
+        isAxiosError: true,
+        response: {
+          data: {
+            message: errorMessage
+          }
+        },
+        message: errorMessage
+      };
+
+      (axios.get as jest.Mock).mockRejectedValue(axiosError);
 
       await store.dispatch(fetchTasks({ user_id: 'user1' }) as any);
       const actions = store.getActions();
@@ -103,7 +114,16 @@ describe('Task Thunks', () => {
 
     it('should handle addTask failure', async () => {
       const errorMessage = 'Failed to add task';
-      (axios.post as jest.Mock).mockRejectedValue(new Error(errorMessage));
+      const axiosError = {
+        isAxiosError: true,
+        response: {
+          data: {
+            message: errorMessage
+          }
+        },
+        message: errorMessage
+      };
+      (axios.post as jest.Mock).mockRejectedValue(axiosError);
       const newTask = { id: undefined, title: 'New Task' };
 
       await store.dispatch(addTask({ user_id: 'user1', item: newTask }) as any);
@@ -132,7 +152,16 @@ describe('Task Thunks', () => {
 
     it('should handle getTaskById failure', async () => {
       const errorMessage = 'Failed to get task';
-      (axios.get as jest.Mock).mockRejectedValue(new Error(errorMessage));
+      const axiosError = {
+        isAxiosError: true,
+        response: {
+          data: {
+            message: errorMessage
+          }
+        },
+        message: errorMessage
+      };
+      (axios.get as jest.Mock).mockRejectedValue(axiosError);
 
       await store.dispatch(
         getTaskById({ user_id: 'user1', item_id: '1' }) as any
