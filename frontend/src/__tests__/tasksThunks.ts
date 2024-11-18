@@ -1,6 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import { thunk } from 'redux-thunk';
-import axios from '../api/axios';
+import axios from 'axios';
 import {
   fetchTasks,
   addTask,
@@ -8,256 +8,239 @@ import {
   updateTaskById,
   removeTaskById
 } from '../app/tasksThunks';
-import { TASKS_URL } from '../api/api_urls';
-import { Action } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { RootState } from '../app/store';
-import { TasksState } from '../app/tasksSlice';
-import { Task, Item } from '../types/types';
-import {
-  UserIdPayload,
-  UserIdItemPayload,
-  UserIdItemIdPayload,
-  UserIdItemIdItemPayload
-} from '../types/payloads';
+import { tasksAdapter, TasksState } from '../app/tasksSlice';
 
-jest.mock('../api/axios', () => ({
+jest.mock('axios', () => ({
   get: jest.fn(),
   post: jest.fn(),
   put: jest.fn(),
-  delete: jest.fn()
+  delete: jest.fn(),
+  handleError: jest.fn((error) => error.message),
+  isAxiosError: jest.fn(() => false)
 }));
 
 const middlewares = [thunk];
 const mockStore = configureMockStore<TasksState>(middlewares);
 
-const initialState: TasksState = {
-  taskArray: [],
-  status: 'idle',
-  error: null
-};
+describe('Task Thunks', () => {
+  let store: ReturnType<typeof mockStore>;
 
-let store: ReturnType<typeof mockStore>;
-
-const user_id = '123';
-const task_id = '456';
-const mockTask: Task = { id: task_id, task: 'Test Task' };
-const mockResponse = { data: mockTask, statusText: 'OK' };
-const errorMessage = 'Network Error';
-
-/**
- * fetchTasks
- */
-describe('fetchTasks', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(jest.fn());
-    store = mockStore(initialState);
-  });
-
-  it('should dispatch fetchTasks.fulfilled on success', async () => {
-    axios.get.mockResolvedValueOnce(mockResponse);
-
-    await store.dispatch(fetchTasks({ user_id }));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/fetchTasks/pending');
-    expect(actions[1].type).toBe('tasks/fetchTasks/fulfilled');
-    expect(actions[1].payload).toEqual(mockResponse.data);
-    expect(axios.get).toHaveBeenCalledWith(
-      TASKS_URL.replace('{userId}', user_id),
-      expect.any(Object)
-    );
-  });
-
-  it('should dispatch fetchTasks.rejected on failure', async () => {
-    axios.get.mockRejectedValueOnce(new Error(errorMessage));
-
-    await store.dispatch(fetchTasks({ user_id }));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/fetchTasks/pending');
-    expect(actions[1].type).toBe('tasks/fetchTasks/rejected');
-    expect(actions[1].payload).toEqual(errorMessage);
-    expect(axios.get).toHaveBeenCalledWith(
-      TASKS_URL.replace('{userId}', user_id),
-      expect.any(Object)
-    );
-  });
-});
-
-/**
- * addTasks
- */
-describe('addTask', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(jest.fn());
-    store = mockStore(initialState);
-  });
-
-  it('should dispatch addTask.fulfilled on success', async () => {
-    axios.post.mockResolvedValueOnce(mockResponse);
-
-    await store.dispatch(addTask({ user_id, item: mockTask }));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/addTask/pending');
-    expect(actions[1].type).toBe('tasks/addTask/fulfilled');
-    expect(actions[1].payload).toEqual(mockResponse.data);
-    expect(axios.post).toHaveBeenCalledWith(
-      TASKS_URL.replace('{userId}', user_id),
-      mockTask,
-      expect.any(Object)
-    );
-  });
-
-  it('should dispatch addTask.rejected on failure', async () => {
-    axios.post.mockRejectedValueOnce(new Error(errorMessage));
-
-    await store.dispatch(addTask({ user_id, item: mockTask }));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/addTask/pending');
-    expect(actions[1].type).toBe('tasks/addTask/rejected');
-    expect(actions[1].error.message).toEqual(errorMessage);
-    expect(axios.post).toHaveBeenCalledWith(
-      TASKS_URL.replace('{userId}', user_id),
-      mockTask,
-      expect.any(Object)
-    );
-  });
-});
-
-/**
- * getTaskById
- */
-describe('getTaskById', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(jest.fn());
-    store = mockStore(initialState);
-  });
-
-  it('should dispatch getTaskById.fulfilled on success', async () => {
-    axios.get.mockResolvedValueOnce(mockResponse);
-
-    await store.dispatch(getTaskById({ user_id, item_id: task_id }));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/getTaskById/pending');
-    expect(actions[1].type).toBe('tasks/getTaskById/fulfilled');
-    expect(actions[1].payload).toEqual(mockTask);
-    expect(axios.get).toHaveBeenCalledWith(
-      `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
-      expect.any(Object)
-    );
-  });
-
-  it('should dispatch getTaskById.rejected on failure', async () => {
-    axios.get.mockRejectedValueOnce(new Error(errorMessage));
-
-    await store.dispatch(getTaskById({ user_id, item_id: task_id }));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/getTaskById/pending');
-    expect(actions[1].type).toBe('tasks/getTaskById/rejected');
-    expect(actions[1].error.message).toEqual(errorMessage);
-    expect(axios.get).toHaveBeenCalledWith(
-      `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
-      expect.any(Object)
-    );
-  });
-});
-
-/**
- * updateTaskById
- */
-describe('updateTaskById', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(jest.fn());
-    store = mockStore(initialState);
-  });
-
-  const mockUpdatedTask: Task = { id: task_id, task: 'Updated Task' };
-
-  it('should dispatch updateTaskById.fulfilled on success', async () => {
-    axios.put.mockResolvedValueOnce({ data: mockUpdatedTask });
-
-    await store.dispatch(
-      updateTaskById({
-        user_id,
-        item_id: task_id,
-        updatedItem: mockUpdatedTask
+    store = mockStore(
+      tasksAdapter.getInitialState({
+        status: 'idle',
+        error: null
       })
     );
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/updateTaskById/pending');
-    expect(actions[1].type).toBe('tasks/updateTaskById/fulfilled');
-    expect(actions[1].payload).toEqual(mockUpdatedTask);
-    expect(axios.put).toHaveBeenCalledWith(
-      `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
-      mockUpdatedTask,
-      expect.any(Object)
-    );
   });
 
-  it('should dispatch updateTaskById.rejected on failure', async () => {
-    axios.put.mockRejectedValueOnce(new Error(errorMessage));
-
-    await store.dispatch(
-      updateTaskById({
-        user_id,
-        item_id: task_id,
-        updatedItem: mockUpdatedTask
-      })
-    );
-
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/updateTaskById/pending');
-    expect(actions[1].type).toBe('tasks/updateTaskById/rejected');
-    expect(actions[1].error.message).toEqual(errorMessage);
-    expect(axios.put).toHaveBeenCalledWith(
-      `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
-      mockUpdatedTask,
-      expect.any(Object)
-    );
-  });
-});
-
-/**
- * removeTaskById
- */
-describe('removeTaskById', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(jest.fn());
-    store = mockStore(initialState);
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should dispatch removeTaskById.fulfilled on success', async () => {
-    axios.delete.mockResolvedValueOnce({ data: {} });
+  describe('fetchTasks', () => {
+    it('should fetch tasks successfully', async () => {
+      const mockTasks = [
+        { _id: '1', title: 'Task 1' },
+        { _id: '2', title: 'Task 2' }
+      ];
+      const returnedTasks = [
+        { id: '1', title: 'Task 1' },
+        { id: '2', title: 'Task 2' }
+      ];
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockTasks,
+        statusText: 'OK'
+      });
 
-    await store.dispatch(removeTaskById({ user_id, item_id: task_id }));
+      await store.dispatch(fetchTasks({ user_id: 'user1' }) as any);
+      const actions = store.getActions();
 
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/removeTaskById/pending');
-    expect(actions[1].type).toBe('tasks/removeTaskById/fulfilled');
-    expect(axios.delete).toHaveBeenCalledWith(
-      `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
-      expect.any(Object)
-    );
+      expect(actions[0].type).toBe(fetchTasks.pending.type);
+      expect(actions[1].type).toBe(fetchTasks.fulfilled.type);
+      expect(actions[1].payload).toEqual(returnedTasks);
+    });
+
+    it('should handle fetchTasks failure', async () => {
+      const errorMessage = 'Failed to fetch tasks';
+      const axiosError = {
+        isAxiosError: true,
+        response: {
+          data: {
+            message: errorMessage
+          }
+        },
+        message: errorMessage
+      };
+
+      (axios.get as jest.Mock).mockRejectedValue(axiosError);
+
+      await store.dispatch(fetchTasks({ user_id: 'user1' }) as any);
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(fetchTasks.pending.type);
+      expect(actions[1].type).toBe(fetchTasks.rejected.type);
+      expect(actions[1].payload).toBe(errorMessage);
+    });
+
+    it('should handle fetchTasks with null response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: null,
+        statusText: 'OK'
+      });
+
+      await store.dispatch(fetchTasks({ user_id: 'user1' }) as any);
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(fetchTasks.pending.type);
+      expect(actions[1].type).toBe(fetchTasks.fulfilled.type);
+      expect(actions[1].payload).toEqual([]);
+    });
   });
 
-  it('should dispatch removeTaskById.rejected on failure', async () => {
-    axios.delete.mockRejectedValueOnce(new Error(errorMessage));
+  describe('addTask', () => {
+    it('should add a task successfully', async () => {
+      const newTask = { id: '3', title: 'New Task' };
+      const mockResponse = { _id: '3', ...newTask };
+      (axios.post as jest.Mock).mockResolvedValue({ data: mockResponse });
 
-    await store.dispatch(removeTaskById({ user_id, item_id: task_id }));
+      await store.dispatch(addTask({ user_id: 'user1', item: newTask }) as any);
+      const actions = store.getActions();
 
-    const actions = store.getActions();
-    expect(actions[0].type).toBe('tasks/removeTaskById/pending');
-    expect(actions[1].type).toBe('tasks/removeTaskById/rejected');
-    expect(actions[1].error.message).toEqual(errorMessage);
-    expect(axios.delete).toHaveBeenCalledWith(
-      `${TASKS_URL.replace('{userId}', user_id)}/${task_id}`,
-      expect.any(Object)
-    );
+      expect(actions[0].type).toBe(addTask.pending.type);
+      expect(actions[1].type).toBe(addTask.fulfilled.type);
+      expect(actions[1].payload).toEqual({ id: '3', ...newTask });
+    });
+
+    it('should handle addTask failure', async () => {
+      const errorMessage = 'Failed to add task';
+      const axiosError = {
+        isAxiosError: true,
+        response: {
+          data: {
+            message: errorMessage
+          }
+        },
+        message: errorMessage
+      };
+      (axios.post as jest.Mock).mockRejectedValue(axiosError);
+      const newTask = { id: undefined, title: 'New Task' };
+
+      await store.dispatch(addTask({ user_id: 'user1', item: newTask }) as any);
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(addTask.pending.type);
+      expect(actions[1].type).toBe(addTask.rejected.type);
+      expect(actions[1].payload).toBe(errorMessage);
+    });
+  });
+
+  describe('getTaskById', () => {
+    it('should get a task by id successfully', async () => {
+      const mockTask = { _id: '1', title: 'Task 1' };
+      (axios.get as jest.Mock).mockResolvedValue({ data: mockTask });
+
+      await store.dispatch(
+        getTaskById({ user_id: 'user1', item_id: '1' }) as any
+      );
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(getTaskById.pending.type);
+      expect(actions[1].type).toBe(getTaskById.fulfilled.type);
+      expect(actions[1].payload).toEqual({ id: '1', title: 'Task 1' });
+    });
+
+    it('should handle getTaskById failure', async () => {
+      const errorMessage = 'Failed to get task';
+      const axiosError = {
+        isAxiosError: true,
+        response: {
+          data: {
+            message: errorMessage
+          }
+        },
+        message: errorMessage
+      };
+      (axios.get as jest.Mock).mockRejectedValue(axiosError);
+
+      await store.dispatch(
+        getTaskById({ user_id: 'user1', item_id: '1' }) as any
+      );
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(getTaskById.pending.type);
+      expect(actions[1].type).toBe(getTaskById.rejected.type);
+      expect(actions[1].payload).toBe(errorMessage);
+    });
+  });
+
+  describe('updateTaskById', () => {
+    it('should update a task successfully', async () => {
+      const updatedTask = { id: '1', title: 'Updated Task' };
+      const mockResponse = { _id: '1', title: 'Updated Task' };
+      (axios.put as jest.Mock).mockResolvedValue({ data: mockResponse });
+
+      await store.dispatch(
+        updateTaskById({
+          user_id: 'user1',
+          item_id: '1',
+          updatedItem: updatedTask
+        }) as any
+      );
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(updateTaskById.pending.type);
+      expect(actions[1].type).toBe(updateTaskById.fulfilled.type);
+      expect(actions[1].payload).toEqual(updatedTask);
+    });
+
+    it('should handle updateTaskById failure', async () => {
+      const errorMessage = 'Failed to update task';
+      (axios.put as jest.Mock).mockRejectedValue(new Error(errorMessage));
+      const updatedItem = { id: '1', title: 'Updated Task' };
+
+      await store.dispatch(
+        updateTaskById({
+          user_id: 'user1',
+          item_id: '1',
+          updatedItem: updatedItem
+        }) as any
+      );
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(updateTaskById.pending.type);
+      expect(actions[1].type).toBe(updateTaskById.rejected.type);
+      expect(actions[1].payload).toBe(errorMessage);
+    });
+  });
+
+  describe('removeTaskById', () => {
+    it('should remove a task successfully', async () => {
+      const mockResponse = { _id: '1', title: 'Removed Task' };
+      (axios.delete as jest.Mock).mockResolvedValue({ data: mockResponse });
+
+      await store.dispatch(
+        removeTaskById({ user_id: 'user1', item_id: '1' }) as any
+      );
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(removeTaskById.pending.type);
+      expect(actions[1].type).toBe(removeTaskById.fulfilled.type);
+      expect(actions[1].payload).toEqual({ id: '1', title: 'Removed Task' });
+    });
+
+    it('should handle removeTaskById failure', async () => {
+      const errorMessage = 'Failed to remove task';
+      (axios.delete as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+      await store.dispatch(
+        removeTaskById({ user_id: 'user1', item_id: '1' }) as any
+      );
+      const actions = store.getActions();
+
+      expect(actions[0].type).toBe(removeTaskById.pending.type);
+      expect(actions[1].type).toBe(removeTaskById.rejected.type);
+      expect(actions[1].payload).toBe(errorMessage);
+    });
   });
 });

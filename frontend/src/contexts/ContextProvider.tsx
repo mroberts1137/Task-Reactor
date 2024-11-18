@@ -23,6 +23,7 @@ import { selectAllMonthlyGoals } from '../app/monthlyGoalsSlice';
 import { fetchTasks } from '../app/tasksThunks';
 import { fetchDailyGoals } from '../app/dailyGoalsThunks';
 import { fetchMonthlyGoals } from '../app/monthlyGoalsThunks';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -68,12 +69,12 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Calculate totals with useMemo
   const dailyTotalGoals = useMemo(
-    () => sumTotal(dailyGoals?.map((item) => item.value)),
+    () => sumTotal(dailyGoals?.map((item) => item?.value)),
     [dailyGoals]
   );
 
   const monthlyTotalGoals = useMemo(
-    () => sumTotal(monthlyGoals?.map((item) => item.value)),
+    () => sumTotal(monthlyGoals?.map((item) => item?.value)),
     [monthlyGoals]
   );
 
@@ -81,17 +82,17 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentTaskEarnings, setCurrentTaskEarnings] = useState<number>(0);
 
   const dailyTasksEarnings = useMemo(
-    () => sumTotal(dailyTasks?.map((item) => item.netIncome)),
+    () => sumTotal(dailyTasks?.map((item) => item?.netIncome)),
     [dailyTasks]
   );
 
   const dailyTotalEarnings = useMemo(
-    () => dailyTasksEarnings + currentTaskEarnings,
+    () => dailyTasksEarnings + (currentTaskEarnings || 0),
     [dailyTasksEarnings, currentTaskEarnings]
   );
 
   const monthlyTotalEarnings = useMemo(
-    () => sumTotal(monthlyTasks?.map((item) => item.netIncome)),
+    () => sumTotal(monthlyTasks?.map((item) => item?.netIncome)),
     [monthlyTasks]
   );
 
@@ -102,9 +103,17 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   // Fetch data when user changes
   useEffect(() => {
     if (user && user_id) {
-      dispatch(fetchTasks({ user_id }));
-      dispatch(fetchDailyGoals({ user_id }));
-      dispatch(fetchMonthlyGoals({ user_id }));
+      dispatch(fetchTasks({ user_id }))
+        .then()
+        .catch((error) => console.error('Failed to fetch tasks:', error));
+      dispatch(fetchDailyGoals({ user_id }))
+        .then()
+        .catch((error) => console.error('Failed to fetch daily goals:', error));
+      dispatch(fetchMonthlyGoals({ user_id }))
+        .then()
+        .catch((error) =>
+          console.error('Failed to fetch monthly goals:', error)
+        );
     }
   }, [dispatch, user, user_id]);
 
@@ -166,19 +175,21 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <UserContext.Provider value={userContextValue}>
-      <DateContext.Provider value={dateContextValue}>
-        <TaskContext.Provider value={taskContextValue}>
-          <EarningsContext.Provider value={earningsContextValue}>
-            <DailyGoalsContext.Provider value={dailyGoalsContextValue}>
-              <MonthlyGoalsContext.Provider value={monthlyGoalsContextValue}>
-                {children}
-              </MonthlyGoalsContext.Provider>
-            </DailyGoalsContext.Provider>
-          </EarningsContext.Provider>
-        </TaskContext.Provider>
-      </DateContext.Provider>
-    </UserContext.Provider>
+    <ErrorBoundary>
+      <UserContext.Provider value={userContextValue}>
+        <DateContext.Provider value={dateContextValue}>
+          <TaskContext.Provider value={taskContextValue}>
+            <EarningsContext.Provider value={earningsContextValue}>
+              <DailyGoalsContext.Provider value={dailyGoalsContextValue}>
+                <MonthlyGoalsContext.Provider value={monthlyGoalsContextValue}>
+                  {children}
+                </MonthlyGoalsContext.Provider>
+              </DailyGoalsContext.Provider>
+            </EarningsContext.Provider>
+          </TaskContext.Provider>
+        </DateContext.Provider>
+      </UserContext.Provider>
+    </ErrorBoundary>
   );
 };
 

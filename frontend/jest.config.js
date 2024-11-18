@@ -1,17 +1,19 @@
 module.exports = {
-  // transform: {
-  //   '^.+\\.tsx?$': 'ts-jest',
-  // },
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'ts-jest'
+    '^.+\\.(js|jsx|ts|tsx)$': [
+      'ts-jest',
+      {
+        useESM: true
+      }
+    ]
   },
-  transformIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/node_modules/(?!(axios)/)'
-  ],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1'
+  },
+  transformIgnorePatterns: ['/node_modules/(?!axios)/'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFiles: ['jest-localstorage-mock']
 };

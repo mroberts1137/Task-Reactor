@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from '../api/axios';
+import axios from 'axios';
+import { handleError } from '../api/axios';
 import { TASKS_URL } from '../api/api_urls';
 import { Task } from '../types/types';
 import {
@@ -15,9 +16,7 @@ import {
   transformToMongoDocument
 } from '../utils/transformMongoDoc';
 
-// const jwt = localStorage.getItem('jwt');
 const config = {
-  // headers: { Authorization: jwt ? `Bearer ${jwt}` : '' },
   withCredentials: true
 };
 
@@ -37,11 +36,11 @@ export const fetchTasks = createAsyncThunk<
     const responseOK = response && response.statusText === 'OK';
 
     if (!responseOK) throw new Error('Failed to fetch tasks');
-    if (!response.data || response.data?.length === 0) return [];
+    if (!response.data) return [];
 
-    return response.data?.map(transformMongoDocument);
+    return (response.data || []).map(transformMongoDocument);
   } catch (error) {
-    return rejectWithValue(error.message);
+    return rejectWithValue(handleError(error));
   }
 });
 
@@ -61,7 +60,7 @@ export const addTask = createAsyncThunk<
     );
     return transformMongoDocument<Task>(response.data);
   } catch (error) {
-    return rejectWithValue(error.message);
+    return rejectWithValue(handleError(error));
   }
 });
 
@@ -80,7 +79,7 @@ export const getTaskById = createAsyncThunk<
     );
     return transformMongoDocument<Task>(response.data);
   } catch (error) {
-    return rejectWithValue(error.message);
+    return rejectWithValue(handleError(error));
   }
 });
 
@@ -103,7 +102,7 @@ export const updateTaskById = createAsyncThunk<
       );
       return transformMongoDocument<Task>(response.data);
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(handleError(error));
     }
   }
 );
@@ -123,6 +122,6 @@ export const removeTaskById = createAsyncThunk<
     );
     return transformMongoDocument<Task>(response.data);
   } catch (error) {
-    return rejectWithValue(error.message);
+    return rejectWithValue(handleError(error));
   }
 });

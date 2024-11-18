@@ -57,7 +57,9 @@ const monthlyGoalsSlice = createSlice({
       state.status = 'idle';
       state.error = null;
     },
-    reorderGoals: (state, action) => {}
+    reorderGoals: (state, action) => {
+      state.ids = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder

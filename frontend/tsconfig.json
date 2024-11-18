@@ -6,13 +6,14 @@
     "skipLibCheck": true,
     "target": "ES6",
     "module": "commonjs",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowJs": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
-    "src/api/axios.js",
+    "src/api/axios.ts",
     "src/components/**/*.tsx",
     "src/styles/themes/**/*.ts"
   ]
