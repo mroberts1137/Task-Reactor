@@ -57,11 +57,16 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
 
   const handleLogout = async () => {
     setDropdownOpen(false);
-    await dispatch(logout()).unwrap();
-    dispatch(clearTasks());
-    dispatch(clearDailyGoals());
-    dispatch(clearMonthlyGoals());
-    navigate('/');
+    try {
+      await dispatch(logout()).unwrap();
+      dispatch(clearTasks());
+      dispatch(clearDailyGoals());
+      dispatch(clearMonthlyGoals());
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Handle logout error (e.g., show a notification)
+    }
   };
 
   const handleDropdownNavigationClick = (path: string) => {
@@ -74,6 +79,10 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
       <NavbarBrand>
         <Logo src={logo} alt='logo' />
         <Title>Task Reactor</Title>
+        <p style={{ marginLeft: 5, marginBottom: -12, fontSize: 16 }}>
+          v{process.env.REACT_APP_VERSION}
+          {process.env.NODE_ENV === 'production' ? '' : ' dev'}
+        </p>
       </NavbarBrand>
 
       <NavbarToggler onClick={() => setMenuOpen(!menuOpen)}>☰</NavbarToggler>
@@ -98,6 +107,7 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
             <NavItem>
               <NavLink to='/dashboard'>Dashboard</NavLink>
             </NavItem>
+
             <DropdownContainer ref={dropdownRef}>
               <DropdownToggle onClick={() => setDropdownOpen(!dropdownOpen)}>
                 {user.username}

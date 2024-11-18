@@ -1,17 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from '../api/axios';
+import axios from 'axios';
 import { User } from '../types/types';
-
-const LOGIN_URL = '/api/auth';
-const LOGOUT_URL = '/api/users/logout';
-const REGISTER_URL = '/api/users/register';
+import { LOGIN_URL, LOGOUT_URL, REGISTER_URL } from '../api/api_urls';
 
 export const login = createAsyncThunk(
   'user/login',
   async (credentials: { username: string; password: string }) => {
-    console.log(
-      `Submitting credentials to ${axios.defaults.baseURL + LOGIN_URL}`
-    );
+    console.log(`Submitting credentials to ${LOGIN_URL}`);
 
     const response = await axios.post(LOGIN_URL, JSON.stringify(credentials), {
       headers: { 'Content-Type': 'application/json' },
@@ -28,9 +23,7 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'user/register',
   async (credentials: { username: string; password: string }) => {
-    console.log(
-      `Submitting credentials to ${axios.defaults.baseURL + REGISTER_URL}`
-    );
+    console.log(`Submitting credentials to ${REGISTER_URL}`);
 
     const response = await axios.post(
       REGISTER_URL,

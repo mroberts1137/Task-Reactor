@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import RegisterForm from '../components/RegisterForm';
-import { setUserId, setUser } from '../app/userSlice';
-import { fetchTasks } from '../app/tasksSlice';
+import { setUser } from '../app/userSlice';
+import { fetchTasks } from '../app/tasksThunks';
 import { auth } from '../auth/auth';
 import { Task, User } from '../types/types';
 

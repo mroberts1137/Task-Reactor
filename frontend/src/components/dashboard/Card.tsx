@@ -1,33 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Theme } from '../../styles/themes/theme';
+import ErrorBoundary from '../ErrorBoundary';
 
 interface CardProps {
   title: string;
   children: React.ReactNode;
   className?: string;
-  onToggleMinimize: (isMinimized: boolean) => void;
 }
 
-interface CardContentProps {
-  isMinimized: boolean;
-}
-
-interface CardContainerProps {
-  isMinimized: boolean;
-  className?: string;
-}
-
-const CardContainer = styled.div<CardContainerProps>`
+const CardContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.surface};
   border-radius: ${({ theme }) => theme.borderRadius};
   box-shadow: ${({ theme }) => theme.shadows.card};
   display: flex;
   flex-direction: column;
-  height: ${({ isMinimized }) =>
-    isMinimized ? 'auto' : '100%'}; // Adjust height when minimized
+  height: 100%;
   width: 100%;
-  overflow: hidden;
+  overflow: hidden; /* Prevents content overflow */
   transition: ${({ theme }) => theme.transitions.default};
 `;
 
@@ -39,7 +29,7 @@ const CardHeader = styled.div`
   background-color: ${({ theme }: { theme: Theme }) => theme.colors.header};
   border-bottom: 1px solid
     ${({ theme }: { theme: Theme }) => theme.colors.border};
-  cursor: move; // Indicates draggable area
+  cursor: move;
 
   &:hover {
     background-color: ${({ theme }: { theme: Theme }) =>
@@ -50,58 +40,26 @@ const CardHeader = styled.div`
 const CardTitle = styled.h3`
   margin: 0;
   font-size: 16px;
-  color: ${(props) => props.theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.text.primary};
   pointer-events: none;
 `;
 
-const CardContent = styled.div<CardContentProps>`
+const CardContent = styled.div`
   padding: 15px;
   flex-grow: 1;
   overflow-y: auto;
-  display: ${({ isMinimized }) => (isMinimized ? 'none' : 'flex')};
-  justify-content: center;
-  align-items: center;
 `;
 
-const MinimizeButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: ${(props) => props.theme.colors.primary};
-  z-index: 1;
-  &:hover {
-    color: ${(props) => props.theme.colors.secondary};
-  }
-`;
-
-const Card: React.FC<CardProps> = ({
-  title,
-  children,
-  className,
-  onToggleMinimize
-}) => {
-  const [isMinimized, setIsMinimized] = useState(false);
-
-  const handleMinimizeClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent drag from starting
-    setIsMinimized(!isMinimized);
-  };
-
-  useEffect(() => {
-    onToggleMinimize(isMinimized);
-  }, [isMinimized, onToggleMinimize]);
-
+const Card: React.FC<CardProps> = ({ title, children, className }) => {
   return (
-    <CardContainer className={className} isMinimized={isMinimized}>
-      <CardHeader className='draggable-handle'>
-        <CardTitle>{title}</CardTitle>
-        <MinimizeButton onClick={handleMinimizeClick}>
-          {isMinimized ? '+' : '-'}
-        </MinimizeButton>
-      </CardHeader>
-      <CardContent isMinimized={isMinimized}>{children}</CardContent>
-    </CardContainer>
+    <ErrorBoundary>
+      <CardContainer className={className}>
+        <CardHeader className='draggable-handle'>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+      </CardContainer>
+    </ErrorBoundary>
   );
 };
 

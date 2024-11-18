@@ -21,6 +21,7 @@ import {
 } from '../styles/components/AuthForms';
 import { AppDispatch } from '../app/store';
 import { register } from '../app/userSlice';
+import ErrorBoundary from './ErrorBoundary';
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -103,114 +104,118 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <FormContainer>
-      {success ? (
-        <FormSection>
-          <h1>Success!</h1>
-        </FormSection>
-      ) : (
-        <FormSection>
-          <ErrorMessage show={!!errMsg} ref={errRef} aria-live='assertive'>
-            {errMsg}
-          </ErrorMessage>
+    <ErrorBoundary>
+      <FormContainer>
+        {success ? (
+          <FormSection>
+            <h1>Success!</h1>
+          </FormSection>
+        ) : (
+          <FormSection>
+            <ErrorMessage show={!!errMsg} ref={errRef} aria-live='assertive'>
+              {errMsg}
+            </ErrorMessage>
 
-          <h1>Register</h1>
-          <Form onSubmit={handleSubmit}>
-            <Label htmlFor='username'>
-              Username:
-              <ValidationIcon valid={validUsername} hide={!username}>
-                <FontAwesomeIcon icon={validUsername ? faCheck : faTimes} />
-              </ValidationIcon>
-            </Label>
-            <Input
-              type='text'
-              id='username'
-              ref={userRef}
-              autoComplete='off'
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              aria-invalid={validUsername ? 'false' : 'true'}
-              aria-describedby='uidnote'
-              onFocus={() => setUsernameFocus(true)}
-              onBlur={() => setUsernameFocus(false)}
-            />
-            <Instructions
-              id='uidnote'
-              show={usernameFocus && username && !validUsername}
-            >
-              <FontAwesomeIcon icon={faInfoCircle} />
-              4 to 24 characters.
+            <h1>Register</h1>
+            <Form onSubmit={handleSubmit}>
+              <Label htmlFor='username'>
+                Username:
+                <ValidationIcon valid={validUsername} hide={!username}>
+                  <FontAwesomeIcon icon={validUsername ? faCheck : faTimes} />
+                </ValidationIcon>
+              </Label>
+              <Input
+                type='text'
+                id='username'
+                ref={userRef}
+                autoComplete='off'
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                aria-invalid={validUsername ? 'false' : 'true'}
+                aria-describedby='uidnote'
+                onFocus={() => setUsernameFocus(true)}
+                onBlur={() => setUsernameFocus(false)}
+              />
+              <Instructions
+                id='uidnote'
+                show={usernameFocus && username && !validUsername}
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                4 to 24 characters.
+                <br />
+                Must begin with a letter.
+                <br />
+                Letters, numbers, underscores, hyphens allowed.
+              </Instructions>
+
+              <Label htmlFor='password'>
+                Password:
+                <ValidationIcon valid={validPassword} hide={!password}>
+                  <FontAwesomeIcon icon={validPassword ? faCheck : faTimes} />
+                </ValidationIcon>
+              </Label>
+              <Input
+                type='password'
+                id='password'
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                aria-invalid={validPassword ? 'false' : 'true'}
+                aria-describedby='pwdnote'
+                onFocus={() => setPasswordFocus(true)}
+                onBlur={() => setPasswordFocus(false)}
+              />
+              <Instructions id='pwdnote' show={passwordFocus && !validPassword}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                8 to 24 characters.
+                <br />
+                Must include uppercase and lowercase letters, a number, and a
+                special character.
+                <br />
+                Allowed special characters:{' '}
+                <span aria-label='exclamation mark'>!</span>{' '}
+                <span aria-label='at symbol'>@</span>{' '}
+                <span aria-label='hashtag'>#</span>{' '}
+                <span aria-label='dollar sign'>$</span>{' '}
+                <span aria-label='percent'>%</span>
+              </Instructions>
+
+              <Label htmlFor='confirm_pwd'>
+                Confirm Password:
+                <ValidationIcon valid={validMatch} hide={!matchPassword}>
+                  <FontAwesomeIcon icon={validMatch ? faCheck : faTimes} />
+                </ValidationIcon>
+              </Label>
+              <Input
+                type='password'
+                id='confirm_pwd'
+                onChange={(e) => setMatchPassword(e.target.value)}
+                required
+                aria-invalid={validMatch ? 'false' : 'true'}
+                aria-describedby='confirmnote'
+                onFocus={() => setMatchFocus(true)}
+                onBlur={() => setMatchFocus(false)}
+              />
+              <Instructions id='confirmnote' show={matchFocus && !validMatch}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                Must match the first password input field.
+              </Instructions>
+
+              <Button
+                disabled={!validUsername || !validPassword || !validMatch}
+              >
+                Sign Up
+              </Button>
+            </Form>
+
+            <p>
+              Already registered?
               <br />
-              Must begin with a letter.
-              <br />
-              Letters, numbers, underscores, hyphens allowed.
-            </Instructions>
-
-            <Label htmlFor='password'>
-              Password:
-              <ValidationIcon valid={validPassword} hide={!password}>
-                <FontAwesomeIcon icon={validPassword ? faCheck : faTimes} />
-              </ValidationIcon>
-            </Label>
-            <Input
-              type='password'
-              id='password'
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              aria-invalid={validPassword ? 'false' : 'true'}
-              aria-describedby='pwdnote'
-              onFocus={() => setPasswordFocus(true)}
-              onBlur={() => setPasswordFocus(false)}
-            />
-            <Instructions id='pwdnote' show={passwordFocus && !validPassword}>
-              <FontAwesomeIcon icon={faInfoCircle} />
-              8 to 24 characters.
-              <br />
-              Must include uppercase and lowercase letters, a number, and a
-              special character.
-              <br />
-              Allowed special characters:{' '}
-              <span aria-label='exclamation mark'>!</span>{' '}
-              <span aria-label='at symbol'>@</span>{' '}
-              <span aria-label='hashtag'>#</span>{' '}
-              <span aria-label='dollar sign'>$</span>{' '}
-              <span aria-label='percent'>%</span>
-            </Instructions>
-
-            <Label htmlFor='confirm_pwd'>
-              Confirm Password:
-              <ValidationIcon valid={validMatch} hide={!matchPassword}>
-                <FontAwesomeIcon icon={validMatch ? faCheck : faTimes} />
-              </ValidationIcon>
-            </Label>
-            <Input
-              type='password'
-              id='confirm_pwd'
-              onChange={(e) => setMatchPassword(e.target.value)}
-              required
-              aria-invalid={validMatch ? 'false' : 'true'}
-              aria-describedby='confirmnote'
-              onFocus={() => setMatchFocus(true)}
-              onBlur={() => setMatchFocus(false)}
-            />
-            <Instructions id='confirmnote' show={matchFocus && !validMatch}>
-              <FontAwesomeIcon icon={faInfoCircle} />
-              Must match the first password input field.
-            </Instructions>
-
-            <Button disabled={!validUsername || !validPassword || !validMatch}>
-              Sign Up
-            </Button>
-          </Form>
-
-          <p>
-            Already registered?
-            <br />
-            <StyledLink to='/login'>Login</StyledLink>
-          </p>
-        </FormSection>
-      )}
-    </FormContainer>
+              <StyledLink to='/login'>Login</StyledLink>
+            </p>
+          </FormSection>
+        )}
+      </FormContainer>
+    </ErrorBoundary>
   );
 };
 

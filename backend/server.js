@@ -14,8 +14,18 @@ const monthlyGoals = require('./routes/monthly_goals');
 
 dotenv.config();
 
+if (process.env.NODE_ENV === 'production') {
+  console.log('Running in production mode');
+} else {
+  console.log('Running in development mode');
+}
+
 const HOST = 'localhost';
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
+const serverUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://task-reactor.onrender.com'
+    : `http://${HOST}:${PORT}`;
 
 const app = express();
 
@@ -62,5 +72,5 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://${HOST}:${PORT}`);
+  console.log(`Server running at ${serverUrl}`);
 });

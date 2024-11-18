@@ -15,6 +15,7 @@ import { useTheme } from './hooks/useTheme';
 import { useEffect } from 'react';
 import { clearUser, selectUserId } from './app/userSlice';
 import { verifySession } from './auth/auth';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const { theme, isDarkMode, toggleTheme } = useTheme();
@@ -30,15 +31,20 @@ function App() {
       if (userId) {
         console.log('Verifying session...');
         // Dispatch an action to verify the session using the JWT from cookies
-        const validSession = await dispatch(verifySession()).unwrap();
-
-        if (validSession) {
-          console.log('Session verified!');
-          navigate('/dashboard'); // Redirect to dashboard if session is valid
-        } else {
-          console.log('Session not verified!');
-          dispatch(clearUser()); // Clear the user data if the token is invalid
-          navigate('/'); // Redirect to HomePage if session is invalid
+        try {
+          const validSession = await dispatch(verifySession()).unwrap();
+          if (validSession) {
+            console.log('Session verified!');
+            navigate('/dashboard');
+          } else {
+            console.log('Session not verified!');
+            dispatch(clearUser());
+            navigate('/');
+          }
+        } catch (error) {
+          console.error('Error verifying session:', error);
+          dispatch(clearUser());
+          navigate('/');
         }
       }
     };
@@ -47,22 +53,24 @@ function App() {
   }, [userId, dispatch, navigate]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/register' element={<RegisterPage />} />
+    <ErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/register' element={<RegisterPage />} />
 
-        {/* Protected Routes */}
-        <Route element={<PrivateRoute />}>
-          <Route path='/dashboard' element={<DashboardPage />} />
-          <Route path='/profile' element={<ProfilePage />} />
-          <Route path='/settings' element={<SettingsPage />} />
-        </Route>
-      </Routes>
-    </ThemeProvider>
+          {/* Protected Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route path='/dashboard' element={<DashboardPage />} />
+            <Route path='/profile' element={<ProfilePage />} />
+            <Route path='/settings' element={<SettingsPage />} />
+          </Route>
+        </Routes>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

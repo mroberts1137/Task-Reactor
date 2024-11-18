@@ -10,9 +10,10 @@ export const NavbarContainer = styled.nav`
   background: ${({ theme }) => theme.colors.header};
   height: 6rem;
   color: ${({ theme }) => theme.colors.text.primary};
-  // position: sticky;
+  position: relative;
   top: 0;
   z-index: 1000;
+  overflow: visible;
 `;
 
 export const NavbarBrand = styled.div`
@@ -107,12 +108,14 @@ export const DropdownMenu = styled.ul<{ isOpen: boolean }>`
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   position: absolute;
   right: 0;
+  top: 100%;
   background: ${({ theme }) => theme.colors.surface};
   box-shadow: ${({ theme }) => theme.shadows.card};
   list-style: none;
   padding: 0.5rem 0;
   border-radius: ${({ theme }) => theme.borderRadius};
   min-width: 150px;
+  z-index = 2000;
 `;
 
 export const DropdownItem = styled.li`

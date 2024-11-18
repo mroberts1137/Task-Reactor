@@ -15,6 +15,8 @@ import { AppDispatch } from '../../app/store';
 import { resetTask, updateTask } from '../../utils/time_box_functions';
 import { addTask } from '../../app/tasksThunks';
 import { StartButton } from '../../styles/components/Button';
+import { Container, FlexRow } from '../../styles/components/Container';
+import { H3 } from '../../styles/components/Text';
 
 const TimerBox: React.FC = () => {
   const [clockRunning, setClockRunning] = useState<boolean>(false);
@@ -60,15 +62,15 @@ const TimerBox: React.FC = () => {
   };
 
   return (
-    <div className='container'>
-      <h3 className='flex-row'>
+    <Container>
+      <H3>
         Current Task:{' '}
         {clockRunning ? (
           <p style={{ color: 'green', marginLeft: '20px' }}>Running...</p>
         ) : (
           <></>
         )}
-      </h3>
+      </H3>
 
       <TaskForm
         selectedTask={task}
@@ -77,7 +79,7 @@ const TimerBox: React.FC = () => {
       />
       <SavedTasks onTaskSelect={handleTaskSelect} disabled={clockRunning} />
 
-      <div className='flex-row'>
+      <FlexRow>
         {/** Start Button */}
         <StartButton
           disabled={!clockRunning && !task.title}
@@ -86,13 +88,10 @@ const TimerBox: React.FC = () => {
         >
           {clockRunning ? 'Stop' : 'Start'}
         </StartButton>
-        <button className='reset-btn' onClick={reset}>
-          Reset
-        </button>
-      </div>
+      </FlexRow>
 
       <TaskTable task={task} clockRunning={clockRunning} />
-    </div>
+    </Container>
   );
 };
 
