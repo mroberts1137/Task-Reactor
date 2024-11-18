@@ -13,7 +13,8 @@ export const login = createAsyncThunk(
       withCredentials: true
     });
 
-    const user = response.data.user as User;
+    const { _id, username, email, admin } = response.data.user;
+    const user = { user_id: _id, username, email, admin } as User;
     const userId = response.data.user._id as string;
 
     return { user, userId };

@@ -7,7 +7,6 @@ import { selectUser, selectUserId } from '../app/userSlice';
 
 const DebugPanel = () => {
   console.log(store.getState());
-  console.log(JSON.stringify(store.getState()));
   const user_id = useSelector(selectUserId);
   const user = useSelector(selectUser);
   const tasks = useSelector(selectAllTasks);
