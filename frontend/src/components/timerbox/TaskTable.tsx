@@ -5,6 +5,8 @@ import {
   formatCurrency,
   formatDuration
 } from '../../utils/time_box_functions';
+import { Container } from '../../styles/components/Container';
+import { Table } from '../../styles/components/Table';
 
 interface TaskTableProps {
   task: Task;
@@ -16,12 +18,12 @@ const TaskTable: React.FC<TaskTableProps> = ({ task, clockRunning }) => {
     task.endTime || (task.startTime && clockRunning ? new Date() : null);
 
   return (
-    <div className='outputBlock'>
-      <table id='trackList'>
+    <Container>
+      <Table>
         <thead>
           <tr>
             <th>Start Time:</th>
-            <th>End Time:</th>
+            {/* <th>End Time:</th> */}
             <th>Elapsed Time:</th>
             <th>Gross Earnings:</th>
             <th>Net Earnings:</th>
@@ -30,16 +32,16 @@ const TaskTable: React.FC<TaskTableProps> = ({ task, clockRunning }) => {
         <tbody>
           <tr>
             <td>{formatTime(task.startTime)}</td>
-            <td style={{ color: endTime && clockRunning ? '#888' : '' }}>
+            {/* <td style={{ color: endTime && clockRunning ? '#888' : '' }}>
               {formatTime(endTime)}
-            </td>
+            </td> */}
             <td>{formatDuration(task.duration)}</td>
             <td>{formatCurrency(task.grossIncome)}</td>
             <td>{formatCurrency(task.netIncome)}</td>
           </tr>
         </tbody>
-      </table>
-    </div>
+      </Table>
+    </Container>
   );
 };
 
