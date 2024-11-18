@@ -14,6 +14,12 @@ const monthlyGoals = require('./routes/monthly_goals');
 
 dotenv.config();
 
+if (process.env.NODE_ENV === 'production') {
+  console.log('Running in production mode');
+} else {
+  console.log('Running in development mode');
+}
+
 const HOST = 'localhost';
 const PORT = 5000;
 const serverUrl =

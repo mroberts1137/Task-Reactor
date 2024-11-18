@@ -79,6 +79,10 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
       <NavbarBrand>
         <Logo src={logo} alt='logo' />
         <Title>Task Reactor</Title>
+        <p style={{ marginLeft: 5, marginBottom: -12, fontSize: 16 }}>
+          v{process.env.REACT_APP_VERSION}
+          {process.env.NODE_ENV === 'production' ? '' : ' dev'}
+        </p>
       </NavbarBrand>
 
       <NavbarToggler onClick={() => setMenuOpen(!menuOpen)}>☰</NavbarToggler>

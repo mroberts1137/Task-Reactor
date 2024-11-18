@@ -7,6 +7,12 @@ import { BrowserRouter } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import App from './App';
 
+if (process.env.NODE_ENV === 'production') {
+  console.log('Running in production mode');
+} else {
+  console.log('Running in development mode');
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
