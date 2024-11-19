@@ -52,11 +52,6 @@ router.post(
           // console.log('Set-Cookie header:', res.getHeaders()['set-cookie']);
 
           res.json({ user });
-
-          console.log('Response:', {
-            headers: res.getHeaders(),
-            body: res.body
-          });
         }
       );
     } catch (err) {

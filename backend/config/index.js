@@ -33,7 +33,7 @@ module.exports = {
   jwt_options: {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'strict',
+    sameSite: isProduction ? 'none' : 'strict',
     expires: new Date(Date.now() + 1000 * 86400),
     domain: domain
   },
