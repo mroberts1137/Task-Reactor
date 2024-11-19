@@ -46,10 +46,8 @@ if (
 ) {
   app.use((req, res, next) => {
     console.log('Request:', {
-      path: req.path,
-      method: req.method,
+      path: `${req.method} ${req.path}`,
       origin: req.headers.origin,
-      url: req.url,
       isHTTPS: req.secure
     });
     next();

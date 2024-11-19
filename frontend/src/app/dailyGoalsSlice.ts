@@ -50,11 +50,13 @@ const dailyGoalsSlice = createSlice({
       */
       .addCase(fetchDailyGoals.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         fetchDailyGoals.fulfilled,
         (state, action: PayloadAction<Goal[]>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.setAll(state, action.payload);
         }
       )
@@ -67,9 +69,11 @@ const dailyGoalsSlice = createSlice({
       */
       .addCase(addDailyGoal.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(addDailyGoal.fulfilled, (state, action: PayloadAction<Goal>) => {
         state.status = 'succeeded';
+        state.error = null;
         goalsAdapter.addOne(state, action.payload);
       })
       .addCase(addDailyGoal.rejected, (state, action) => {
@@ -81,11 +85,13 @@ const dailyGoalsSlice = createSlice({
         */
       .addCase(getDailyGoalById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         getDailyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.upsertOne(state, action.payload);
         }
       )
@@ -98,11 +104,13 @@ const dailyGoalsSlice = createSlice({
         */
       .addCase(updateDailyGoalById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         updateDailyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.updateOne(state, {
             id: action.payload.id!,
             changes: action.payload
@@ -118,11 +126,13 @@ const dailyGoalsSlice = createSlice({
         */
       .addCase(removeDailyGoalById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         removeDailyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.removeOne(state, action.payload.id!);
         }
       )

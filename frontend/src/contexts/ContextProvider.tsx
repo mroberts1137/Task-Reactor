@@ -91,9 +91,14 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
     [dailyTasksEarnings, currentTaskEarnings]
   );
 
-  const monthlyTotalEarnings = useMemo(
+  const monthlyTasksEarnings = useMemo(
     () => sumTotal(monthlyTasks?.map((item) => item?.netIncome)),
     [monthlyTasks]
+  );
+
+  const monthlyTotalEarnings = useMemo(
+    () => monthlyTasksEarnings + (currentTaskEarnings || 0),
+    [monthlyTasksEarnings, currentTaskEarnings]
   );
 
   const earningsChange = useCallback((val: number) => {
@@ -145,12 +150,14 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
     () => ({
       dailyTasksEarnings,
       dailyTotalEarnings,
+      monthlyTasksEarnings,
       monthlyTotalEarnings,
       earningsChange
     }),
     [
       dailyTasksEarnings,
       dailyTotalEarnings,
+      monthlyTasksEarnings,
       monthlyTotalEarnings,
       earningsChange
     ]
