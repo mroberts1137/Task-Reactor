@@ -50,9 +50,11 @@ const tasksSlice = createSlice({
     builder
       .addCase(fetchTasks.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(fetchTasks.fulfilled, (state, action: PayloadAction<Task[]>) => {
         state.status = 'succeeded';
+        state.error = null;
         tasksAdapter.setAll(state, action.payload);
       })
       .addCase(fetchTasks.rejected, (state, action) => {
@@ -61,9 +63,11 @@ const tasksSlice = createSlice({
       })
       .addCase(addTask.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(addTask.fulfilled, (state, action: PayloadAction<Task>) => {
         state.status = 'succeeded';
+        state.error = null;
         tasksAdapter.addOne(state, action.payload);
       })
       .addCase(addTask.rejected, (state, action) => {
@@ -72,9 +76,11 @@ const tasksSlice = createSlice({
       })
       .addCase(getTaskById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(getTaskById.fulfilled, (state, action: PayloadAction<Task>) => {
         state.status = 'succeeded';
+        state.error = null;
         tasksAdapter.upsertOne(state, action.payload);
       })
       .addCase(getTaskById.rejected, (state, action) => {
@@ -83,11 +89,13 @@ const tasksSlice = createSlice({
       })
       .addCase(updateTaskById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         updateTaskById.fulfilled,
         (state, action: PayloadAction<Task>) => {
           state.status = 'succeeded';
+          state.error = null;
           tasksAdapter.updateOne(state, {
             id: action.payload.id!,
             changes: action.payload
@@ -100,11 +108,13 @@ const tasksSlice = createSlice({
       })
       .addCase(removeTaskById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         removeTaskById.fulfilled,
         (state, action: PayloadAction<Task>) => {
           state.status = 'succeeded';
+          state.error = null;
           tasksAdapter.removeOne(state, action.payload.id!);
         }
       )

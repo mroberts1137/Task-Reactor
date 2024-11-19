@@ -33,9 +33,10 @@ export const fetchTasks = createAsyncThunk<
       TASKS_URL.replace('{userId}', user_id),
       config
     );
-    const responseOK = response && response.statusText === 'OK';
+    console.log(response);
+    // const responseOK = response && response.statusText === 'OK';
 
-    if (!responseOK) throw new Error('Failed to fetch tasks');
+    // if (!responseOK) throw new Error('Failed to fetch tasks');
     if (!response.data) return [];
 
     return (response.data || []).map(transformMongoDocument);

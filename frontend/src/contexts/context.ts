@@ -19,6 +19,7 @@ export interface TaskContextType {
 export interface EarningsContextType {
   dailyTasksEarnings: number;
   dailyTotalEarnings: number;
+  monthlyTasksEarnings: number;
   monthlyTotalEarnings: number;
   earningsChange: (val: number) => void;
 }

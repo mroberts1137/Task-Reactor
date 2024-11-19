@@ -68,11 +68,13 @@ const monthlyGoalsSlice = createSlice({
       */
       .addCase(fetchMonthlyGoals.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         fetchMonthlyGoals.fulfilled,
         (state, action: PayloadAction<Goal[]>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.setAll(state, action.payload);
         }
       )
@@ -85,11 +87,13 @@ const monthlyGoalsSlice = createSlice({
       */
       .addCase(addMonthlyGoal.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         addMonthlyGoal.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.addOne(state, action.payload);
         }
       )
@@ -102,11 +106,13 @@ const monthlyGoalsSlice = createSlice({
       */
       .addCase(getMonthlyGoalById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         getMonthlyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.upsertOne(state, action.payload);
         }
       )
@@ -119,11 +125,13 @@ const monthlyGoalsSlice = createSlice({
       */
       .addCase(updateMonthlyGoalById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         updateMonthlyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.updateOne(state, {
             id: action.payload.id!,
             changes: action.payload
@@ -139,11 +147,13 @@ const monthlyGoalsSlice = createSlice({
       */
       .addCase(removeMonthlyGoalById.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(
         removeMonthlyGoalById.fulfilled,
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
+          state.error = null;
           goalsAdapter.removeOne(state, action.payload.id!);
         }
       )

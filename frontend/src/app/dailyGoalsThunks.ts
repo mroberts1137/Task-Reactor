@@ -34,9 +34,10 @@ export const fetchDailyGoals = createAsyncThunk<
       DAILY_GOALS_URL.replace('{userId}', user_id),
       config
     );
-    const responseOK = response && response.statusText === 'OK';
+    console.log(response);
+    // const responseOK = response && response.statusText === 'OK';
 
-    if (!responseOK) throw new Error('Failed to fetch daily goals');
+    // if (!responseOK) throw new Error('Failed to fetch daily goals');
     if (!response.data || response.data?.length === 0) return [];
 
     return response.data?.map(transformMongoDocument);
