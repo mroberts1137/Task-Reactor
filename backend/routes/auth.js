@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validation = require('../middleware/validation');
 const auth = require('../middleware/auth');
+const { jwt_options } = require('../config');
+const logger = require('../utils/logger');
 
 const router = express.Router();
 
@@ -16,6 +18,7 @@ router.post(
   validation.checkValidationErrors,
   async (req, res) => {
     try {
+      logger.info('Login attempt', { username: req.body.username });
       const { username, password } = req.body;
 
       const user = await User.findOne({ username });
@@ -44,13 +47,12 @@ router.post(
         { expiresIn: 1000 * 86400 },
         (err, token) => {
           if (err) throw err;
-          res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            expires: new Date(Date.now() + 1000 * 86400),
-            domain: 'localhost'
-          });
+          res.cookie('token', token, jwt_options);
+
+          console.log('Setting cookie with options:', { ...jwt_options });
+
+          console.log('Set-Cookie header:', res.getHeaders()['set-cookie']);
+
           res.json({ user });
         }
       );

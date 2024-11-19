@@ -21,14 +21,14 @@ import savedTasksReducer from './savedTasksSlice';
 
 const persistConfig = {
   key: 'root',
-  version: 1, // Update this when state shape changes
+  version: 2, // Update this when state shape changes
   storage,
   migrate: (state) => {
     // Migration logic
     return Promise.resolve(state);
-  }
+  },
+  whitelist: ['user', 'savedTasks']
   // migrate: createMigrate(migrations, { debug: process.env.NODE_ENV !== 'production' })
-  // whitelist: ['user']
 };
 
 const rootReducer = combineReducers({

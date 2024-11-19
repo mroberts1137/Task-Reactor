@@ -3,6 +3,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const validation = require('../middleware/validation');
 const auth = require('../middleware/auth');
+const { jwt_options } = require('../config');
 
 const router = express.Router();
 
@@ -91,7 +92,7 @@ router.post(
       // jwt payload. Used to identify user by routes requiring auth
       const payload = { id: user._id };
 
-      // This is currently using HttpOnly Cookies & local session storage:
+      // This is currently using HttpOnly Cookies
       // remove res.cookie to switch to only use local session storage
       // don't send token in response to switch to only use cookies
 
@@ -101,7 +102,7 @@ router.post(
         { expiresIn: 36000 },
         (err, token) => {
           if (err) throw err;
-          res.cookie('token', token, { httpOnly: true, secure: true });
+          res.cookie('token', token, jwt_options);
           res.json({ user });
         }
       );
@@ -117,13 +118,8 @@ router.post(
 // @access  Private
 router.post('/logout', (req, res) => {
   // Clear the JWT token cookie
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    domain: 'localhost'
-  });
-
+  const { expires, clear_jwt_options } = jwt_options;
+  res.clearCookie('token', clear_jwt_options);
   res.sendStatus(200);
 });
 
