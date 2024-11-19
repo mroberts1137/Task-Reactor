@@ -26,24 +26,6 @@ export const initialState: GoalsState = goalsAdapter.getInitialState({
   error: null
 });
 
-// const initialState: GoalsState = {
-//   monthlyGoalsArray: [
-//     { _id: generateUniqueId(), title: 'Rent', value: 500 },
-//     { _id: generateUniqueId(), title: 'Car Loan', value: 124 },
-//     { _id: generateUniqueId(), title: 'Car Insurance', value: 93 },
-//     { _id: generateUniqueId(), title: 'Credit Card', value: 122 },
-//     { _id: generateUniqueId(), title: 'Nucamp', value: 160 },
-//     { _id: generateUniqueId(), title: 'Phone', value: 37 },
-//     { _id: generateUniqueId(), title: 'Groceries', value: 413 },
-//     { _id: generateUniqueId(), title: 'Gas', value: 96 },
-//     { _id: generateUniqueId(), title: 'Restaurant/Other', value: 232 },
-//     { _id: generateUniqueId(), title: 'Shopping', value: 97 }
-//   ],
-//   order: [],
-//   status: 'idle',
-//   error: null
-// };
-
 const monthlyGoalsSlice = createSlice({
   name: 'monthlyGoals',
   initialState,
