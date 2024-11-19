@@ -4,7 +4,9 @@ dotenv.config();
 const isProduction = process.env.NODE_ENV === 'production';
 
 const domain =
-  process.env.NODE_ENV === 'production' ? process.env.API_URL : 'localhost';
+  process.env.NODE_ENV === 'production'
+    ? 'task-reactor.onrender.com'
+    : 'localhost';
 
 const environments = {
   development: {
