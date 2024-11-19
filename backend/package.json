@@ -3,9 +3,10 @@
   "version": "1.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=production node server.js",
-    "dev": "cross-env NODE_ENV=development nodemon server.js"
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
+    "staging": "cross-env NODE_ENV=staging node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Michael Roberts",
@@ -19,9 +20,12 @@
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.1",
     "express-validator": "^7.2.0",
+    "faker": "^6.6.6",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.3",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "puppeteer": "^23.8.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"
