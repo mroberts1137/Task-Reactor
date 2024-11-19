@@ -48,7 +48,9 @@ if (
     console.log('Request:', {
       path: req.path,
       method: req.method,
-      headers: req.headers
+      origin: req.headers.origin,
+      url: req.url,
+      isHTTPS: req.secure
     });
     next();
   });
