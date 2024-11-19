@@ -76,7 +76,6 @@ router.post(
   validation.validateRegister,
   validation.checkValidationErrors,
   async (req, res) => {
-    console.log(req.body);
     try {
       const { username, password } = req.body;
       let user = await User.findOne({ username });

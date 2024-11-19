@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const logger = require('morgan');
+const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
@@ -18,7 +18,7 @@ dotenv.config();
 const app = express();
 connectDB();
 
-const PORT = 5000;
+const PORT = 5000; //process.env.PORT || 5000;
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('Domain:', domain);
@@ -41,7 +41,8 @@ const corsOptions = {
 
 if (
   process.env.NODE_ENV === 'staging' ||
-  process.env.NODE_ENV === 'development'
+  process.env.NODE_ENV === 'development' ||
+  true
 ) {
   app.use((req, res, next) => {
     console.log('Request:', {
@@ -53,7 +54,7 @@ if (
   });
 }
 
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(limiter);
 app.use(cors(corsOptions));
 app.use(express.json());

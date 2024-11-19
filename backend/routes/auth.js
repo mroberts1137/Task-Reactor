@@ -49,11 +49,14 @@ router.post(
           if (err) throw err;
           res.cookie('token', token, jwt_options);
 
-          console.log('Setting cookie with options:', { ...jwt_options });
-
-          console.log('Set-Cookie header:', res.getHeaders()['set-cookie']);
+          // console.log('Set-Cookie header:', res.getHeaders()['set-cookie']);
 
           res.json({ user });
+
+          console.log('Response:', {
+            headers: res.getHeaders(),
+            body: res.body
+          });
         }
       );
     } catch (err) {
