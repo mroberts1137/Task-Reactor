@@ -9,9 +9,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
 
     steps:
       - uses: actions/checkout@v3
@@ -22,18 +19,20 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
+        working-directory: ./frontend
         run: npm install
 
       # - name: Run Tests
+      #   working-directory: ./frontend
       #   run: npm test
 
       - name: Build
+        working-directory: ./frontend
         run: npm run build
 
       - name: Deploy to Firebase
-        working-directory: ./frontend
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting
+        run: |
+          cd frontend
+          npx firebase-tools deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
