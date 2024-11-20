@@ -23,11 +23,11 @@ router.post('/', auth, async (req, res) => {
   try {
     const { id, ...taskData } = req.body;
 
-    if (id) {
-      return res
-        .status(400)
-        .json({ msg: 'Cannot create task with existing ID' });
-    }
+    // if (id) {
+    //   return res
+    //     .status(400)
+    //     .json({ msg: 'Cannot create task with existing ID' });
+    // }
 
     const task = new Task({ ...taskData, user: req.user.id });
     await task.save();
