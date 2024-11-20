@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "types": ["node", "jest"],
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "skipLibCheck": true,

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { version } from '../../package.json';
 import logo from '../assets/logo.png';
 import {
   NavbarContainer,
@@ -79,9 +80,9 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
       <NavbarBrand>
         <Logo src={logo} alt='logo' />
         <Title>Task Reactor</Title>
-        <p style={{ marginLeft: 5, marginBottom: -12, fontSize: 16 }}>
-          v{process.env.REACT_APP_VERSION}
-          {process.env.NODE_ENV === 'production' ? '' : ' dev'}
+        <p style={{ marginLeft: 5, marginBottom: -16, fontSize: 14 }}>
+          v{version}{' '}
+          {process.env.NODE_ENV === 'production' ? '' : process.env.NODE_ENV}
         </p>
       </NavbarBrand>
 

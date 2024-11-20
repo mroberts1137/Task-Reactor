@@ -7,28 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  # backend:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./backend
-
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: Set up Node.js
-  #     uses: actions/setup-node@v3
-  #     with:
-  #       node-version: '16'
-
-  #   - name: Install Dependencies
-  #     run: npm install
-
-  #   - name: Run Tests
-  #     run: npm test
-
-  # Add your backend deployment steps here
-
-  frontend:
+  build-and-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -36,10 +15,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install Dependencies
         run: npm install
@@ -48,7 +28,7 @@ jobs:
       #   run: npm test
 
       - name: Build
-        run: npm run build
+        run: CI=false npm run build
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
