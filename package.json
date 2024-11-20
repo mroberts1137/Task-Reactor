@@ -1,12 +1,13 @@
 {
   "name": "task-reactor",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Tracking and logging freelance work",
   "author": "Michael Roberts",
   "license": "ISC",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm start --prefix frontend\" \"npm run dev --prefix backend\""
+    "dev": "concurrently \"npm start --prefix frontend\" \"npm run dev --prefix backend\"",
+    "bump": "node update_version.js"
   },
   "workspaces": [
     "frontend",
