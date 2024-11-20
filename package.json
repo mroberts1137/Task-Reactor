@@ -1,10 +1,10 @@
 {
   "name": "task-reactor",
   "version": "0.1.4",
-  "private": true,
-  "author": "Michael Roberts",
   "description": "Tracking and logging freelance work",
+  "author": "Michael Roberts",
   "license": "ISC",
+  "private": true,
   "workspaces": [
     "frontend",
     "backend"

@@ -41,8 +41,7 @@ const corsOptions = {
 
 if (
   process.env.NODE_ENV === 'staging' ||
-  process.env.NODE_ENV === 'development' ||
-  true
+  process.env.NODE_ENV === 'development'
 ) {
   app.use((req, res, next) => {
     console.log('Request:', {
