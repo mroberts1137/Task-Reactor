@@ -23,12 +23,15 @@ const LoginForm: React.FC = () => {
   const errRef = useRef<HTMLParagraphElement>(null);
 
   const [username, setUsername] = useState('');
+  // eslint-disable-next-line
   const [userFocus, setUserFocus] = useState(false);
 
   const [password, setPassword] = useState('');
+  // eslint-disable-next-line
   const [pwdFocus, setPwdFocus] = useState(false);
 
   const [errMsg, setErrMsg] = useState('');
+  // eslint-disable-next-line
   const [success, setSuccess] = useState(false);
 
   // set focus to user input when component loads

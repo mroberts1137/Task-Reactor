@@ -8,8 +8,7 @@ import {
   PAUSE,
   PERSIST,
   PURGE,
-  REGISTER,
-  createMigrate
+  REGISTER
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 

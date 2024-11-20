@@ -14,6 +14,7 @@ interface TaskTableProps {
 }
 
 const TaskTable: React.FC<TaskTableProps> = ({ task, clockRunning }) => {
+  // eslint-disable-next-line
   const endTime =
     task.endTime || (task.startTime && clockRunning ? new Date() : null);
 

@@ -26,6 +26,7 @@ function App() {
   const userId = useSelector(selectUserId);
 
   useEffect(() => {
+    // eslint-disable-next-line
     const checkSession = async () => {
       console.log('Running checkSession...');
       if (userId) {

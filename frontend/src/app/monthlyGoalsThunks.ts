@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+// eslint-disable-next-line
 import { handleError } from '../api/axios';
 import { MONTHLY_GOALS_URL } from '../api/api_urls';
 
