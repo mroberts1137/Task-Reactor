@@ -1,7 +1,7 @@
-import React, { ChangeEvent } from 'react';
-import { useDispatch } from 'react-redux';
-import { saveTask } from '../../app/savedTasksSlice';
-import { Task } from '../../types/types';
+import React, { ChangeEvent, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveTask, selectSavedTasks } from '../../app/savedTasksSlice';
+import { SavedTask, Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 import { Input } from '../../styles/components/Table';
 import { Form, Label } from '../../styles/components/AuthForms';
@@ -17,9 +17,12 @@ const TaskForm: React.FC<TaskFormProps> = ({
   setTaskSelect,
   disabled
 }) => {
+  const savedTasks: SavedTask[] = useSelector(selectSavedTasks);
+
   const title = selectedTask?.title || '';
   const hourlyRate = selectedTask?.hourlyRate || 0;
   const taxRate = selectedTask?.taxRate || 0;
+  const [conflictMessage, setConflictMessage] = useState<string | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -40,13 +43,18 @@ const TaskForm: React.FC<TaskFormProps> = ({
     const sanitizedTask = title.trim() || 'Untitled Task';
     const sanitizedRate = hourlyRate || 0;
     const sanitizedTax = taxRate || 0;
-    dispatch(
-      saveTask({
-        title: sanitizedTask,
-        hourlyRate: sanitizedRate,
-        taxRate: sanitizedTax
-      })
-    );
+    const task = {
+      title: sanitizedTask,
+      hourlyRate: sanitizedRate,
+      taxRate: sanitizedTax
+    };
+    const existingTask = savedTasks.find((t) => t.title === task.title);
+    if (existingTask) {
+      setConflictMessage('Task already exists.');
+      setTimeout(() => setConflictMessage(null), 3000); // Clear message after 3 seconds
+    } else {
+      dispatch(saveTask(task));
+    }
   };
 
   return (
@@ -66,6 +74,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             marginInline: '1rem'
           }}
         >
+          {conflictMessage && <div>{conflictMessage}</div>}
           <Label>Task:</Label>
           <Input
             name='title'
@@ -73,6 +82,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             onChange={handleTaskChange}
             placeholder='Enter task title'
             disabled={disabled}
+            style={{ width: '16rem' }}
           />
         </div>
         <div
@@ -108,7 +118,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             onChange={handleTaskChange}
             placeholder='Enter tax rate'
             disabled={disabled}
-            style={{ width: '2rem' }}
+            style={{ width: '3rem' }}
           />
         </div>
         <button onClick={handleSaveTask}>Save Task</button>
