@@ -19,6 +19,7 @@ const CardContainer = styled.div`
   width: 100%;
   overflow: hidden; /* Prevents content overflow */
   transition: ${({ theme }) => theme.transitions.default};
+  z-index: 1;
 `;
 
 const CardHeader = styled.div`
@@ -48,6 +49,11 @@ const CardContent = styled.div`
   padding: 15px;
   flex-grow: 1;
   overflow-y: auto;
+
+  /* Allow elements with class 'overflow-visible' to break out */
+  .overflow-visible {
+    overflow: visible;
+  }
 `;
 
 const Card: React.FC<CardProps> = ({ title, children, className }) => {

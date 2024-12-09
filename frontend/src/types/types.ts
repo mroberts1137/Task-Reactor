@@ -15,8 +15,8 @@ export interface Task extends Item {
   startTime?: Date;
   endTime?: Date;
   duration?: number;
-  hourly_rate?: number;
-  tax_rate?: number;
+  hourlyRate?: number;
+  taxRate?: number;
   grossIncome?: number;
   netIncome?: number;
   [key: string]: any;
@@ -27,3 +27,10 @@ export interface Goal extends Item {
   title: string;
   value: number;
 }
+
+export type SavedTask = {
+  id: string;
+  title: string;
+  hourlyRate: number;
+  taxRate: number;
+};

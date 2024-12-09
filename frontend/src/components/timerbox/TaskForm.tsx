@@ -1,7 +1,7 @@
-import React, { ChangeEvent } from 'react';
-import { useDispatch } from 'react-redux';
-import { saveTask } from '../../app/savedTasksSlice';
-import { Task } from '../../types/types';
+import React, { ChangeEvent, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveTask, selectSavedTasks } from '../../app/savedTasksSlice';
+import { SavedTask, Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 import { Input } from '../../styles/components/Table';
 import { Form, Label } from '../../styles/components/AuthForms';
@@ -9,19 +9,24 @@ import { Form, Label } from '../../styles/components/AuthForms';
 interface TaskFormProps {
   selectedTask: Task;
   setTaskSelect: (task: Task) => void;
+  onSaveTask: (task: Task) => boolean;
   disabled: boolean;
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({
   selectedTask,
   setTaskSelect,
+  onSaveTask,
   disabled
 }) => {
   const title = selectedTask?.title || '';
   const hourlyRate = selectedTask?.hourlyRate || 0;
   const taxRate = selectedTask?.taxRate || 0;
 
-  const dispatch = useDispatch<AppDispatch>();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent page refresh
+    onSaveTask(selectedTask);
+  };
 
   const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,21 +41,26 @@ const TaskForm: React.FC<TaskFormProps> = ({
   };
 
   // Handle saving the task with default or sanitized values
-  const handleSaveTask = () => {
-    const sanitizedTask = title.trim() || 'Untitled Task';
-    const sanitizedRate = hourlyRate || 0;
-    const sanitizedTax = taxRate || 0;
-    dispatch(
-      saveTask({
-        title: sanitizedTask,
-        hourlyRate: sanitizedRate,
-        taxRate: sanitizedTax
-      })
-    );
-  };
+  // const handleSaveTask = () => {
+  //   const sanitizedTask = title.trim() || 'Untitled Task';
+  //   const sanitizedRate = hourlyRate || 0;
+  //   const sanitizedTax = taxRate || 0;
+  //   const task = {
+  //     title: sanitizedTask,
+  //     hourlyRate: sanitizedRate,
+  //     taxRate: sanitizedTax
+  //   };
+  //   const existingTask = savedTasks.find((t) => t.title === task.title);
+  //   if (existingTask) {
+  //     setConflictMessage('Task already exists.');
+  //     setTimeout(() => setConflictMessage(null), 3000); // Clear message after 3 seconds
+  //   } else {
+  //     dispatch(saveTask(task));
+  //   }
+  // };
 
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <div
         style={{
           display: 'flex',
@@ -73,6 +83,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             onChange={handleTaskChange}
             placeholder='Enter task title'
             disabled={disabled}
+            style={{ width: '16rem' }}
           />
         </div>
         <div
@@ -108,10 +119,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
             onChange={handleTaskChange}
             placeholder='Enter tax rate'
             disabled={disabled}
-            style={{ width: '2rem' }}
+            style={{ width: '3rem' }}
           />
         </div>
-        <button onClick={handleSaveTask}>Save Task</button>
+        <button type='submit'>Save Task</button>
       </div>
     </Form>
   );

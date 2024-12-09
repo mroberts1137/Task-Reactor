@@ -1,6 +1,6 @@
 {
   "name": "task-reactor-server",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production node server.js",
