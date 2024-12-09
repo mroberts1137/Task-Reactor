@@ -6,6 +6,7 @@ export const lightTheme = {
     danger: '#C54',
     dangerHover: '#CCC',
     success: '#28a745',
+    white: '#ffffff',
     primaryDark: '#1565c0',
     surface: '#FAFAFA',
     border: '#e0e0e0',

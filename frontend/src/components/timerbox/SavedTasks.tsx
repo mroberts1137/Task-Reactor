@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectSavedTasks,
-  saveTask,
-  deleteTask,
-  editTask
-} from '../../app/savedTasksSlice';
-import { SavedTask } from '../../types/types';
+import { selectSavedTasks, deleteTask } from '../../app/savedTasksSlice';
+import { SavedTask, Task } from '../../types/types';
 import {
   Container,
   Title,
@@ -20,128 +15,175 @@ import {
   ActionButtons,
   EditButton,
   DeleteButton,
-  DeleteIcon
+  DeleteIcon,
+  Backdrop,
+  EditContainer,
+  EditLabel,
+  EditRow,
+  EditInput
 } from '../../styles/components/SavedTasks';
 import { Input } from '../../styles/components/Table';
 
 interface SavedTasksProps {
   onTaskSelect: (task: SavedTask) => void;
+  onEditTask: (task: Task) => boolean;
   disabled: boolean;
 }
 
-const SavedTasks: React.FC<SavedTasksProps> = ({ onTaskSelect, disabled }) => {
+const SavedTasks: React.FC<SavedTasksProps> = ({
+  onTaskSelect,
+  onEditTask,
+  disabled
+}) => {
   const savedTasks: SavedTask[] = useSelector(selectSavedTasks);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [editedTask, setEditedTask] = useState<SavedTask | null>(null);
-  const [conflictMessage, setConflictMessage] = useState<string | null>(null);
 
-  const handleSaveTask = (task: SavedTask) => {
-    const existingTask = savedTasks.find((t) => t.title === task.title);
-    if (existingTask) {
-      setConflictMessage('Task already exists.');
-      setTimeout(() => setConflictMessage(null), 3000);
-    } else {
-      dispatch(saveTask(task));
-    }
-  };
-
-  const handleDeleteTask = (id: string) => {
-    dispatch(deleteTask(id));
-  };
-
-  const handleEditTask = (task: SavedTask) => {
+  const handleEditTask = (task: SavedTask, e: React.MouseEvent) => {
+    e.stopPropagation();
     setEditTaskId(task.id);
     setEditedTask(task);
   };
 
-  const handleSaveEditedTask = () => {
+  const handleDeleteTask = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch(deleteTask(id));
+  };
+
+  const handleSaveEditedTask = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (editedTask) {
-      dispatch(editTask(editedTask));
-      setEditTaskId(null);
-      setEditedTask(null);
+      const success = onEditTask(editedTask);
+      if (success) {
+        setEditTaskId(null);
+        setEditedTask(null);
+      }
     }
   };
 
   return (
-    <Container style={{ display: disabled ? 'none' : 'block' }}>
+    <Container
+      className='overflow-visible'
+      style={{ display: disabled ? 'none' : 'block' }}
+    >
       <Title>Saved Tasks:</Title>
-      {conflictMessage && <div>{conflictMessage}</div>}
       <DropdownButton onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? 'Hide Tasks' : 'Show Tasks'}
         <ExpandIcon isOpen={isOpen}>▼</ExpandIcon>
       </DropdownButton>
+      <Backdrop isOpen={isOpen} onClick={() => setIsOpen(false)} />
       <TasksList isOpen={isOpen}>
         {savedTasks.map((task) => (
           <TaskCard
             key={task.id}
             onClick={() => {
-              onTaskSelect(task);
-              setIsOpen(false);
+              if (editTaskId !== task.id) {
+                onTaskSelect(task);
+                setIsOpen(false);
+                setEditedTask(null);
+                setEditTaskId(null);
+              }
             }}
           >
-            {editTaskId === task.id ? (
-              <>
-                <TaskInfo>
-                  <Input
-                    type='text'
-                    value={editedTask?.title || ''}
-                    onChange={(e) =>
-                      setEditedTask({ ...task, title: e.target.value })
-                    }
-                  />
-                  <Input
-                    type='number'
-                    value={editedTask?.hourlyRate || 0}
-                    onChange={(e) =>
-                      setEditedTask({
-                        ...task,
-                        hourlyRate: Number(e.target.value)
-                      })
-                    }
-                  />
-                  <Input
-                    type='number'
-                    value={editedTask?.taxRate || 0}
-                    onChange={(e) =>
-                      setEditedTask({
-                        ...task,
-                        taxRate: Number(e.target.value)
-                      })
-                    }
-                  />
-                </TaskInfo>
-                <ActionButtons>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <TaskInfo>
+                <TaskTitle>{task.title}</TaskTitle>
+                <TaskDetails>
+                  Rate: ${task.hourlyRate} - Tax: {task.taxRate}%
+                </TaskDetails>
+
+                {editTaskId === task.id && (
+                  <EditContainer onClick={(e) => e.stopPropagation()}>
+                    <EditRow>
+                      <EditLabel>Title:</EditLabel>
+                      <Input
+                        type='text'
+                        value={editedTask?.title || ''}
+                        onChange={(e) =>
+                          setEditedTask({
+                            ...editedTask!,
+                            title: e.target.value
+                          })
+                        }
+                      />
+                    </EditRow>
+                    <EditRow>
+                      <EditLabel>Rate ($):</EditLabel>
+                      <Input
+                        type='number'
+                        value={editedTask?.hourlyRate || 0}
+                        onChange={(e) =>
+                          setEditedTask({
+                            ...editedTask!,
+                            hourlyRate: Number(e.target.value)
+                          })
+                        }
+                      />
+                    </EditRow>
+                    <EditRow>
+                      <EditLabel>Tax (%):</EditLabel>
+                      <Input
+                        type='number'
+                        value={editedTask?.taxRate || 0}
+                        onChange={(e) =>
+                          setEditedTask({
+                            ...editedTask!,
+                            taxRate: Number(e.target.value)
+                          })
+                        }
+                      />
+                    </EditRow>
+                    <ActionButtons style={{ marginTop: '10px' }}>
+                      <EditButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSaveEditedTask(e);
+                        }}
+                      >
+                        Save
+                      </EditButton>
+                      <EditButton
+                        onClick={(e: React.MouseEvent) => {
+                          e.stopPropagation();
+                          setEditedTask(null);
+                          setEditTaskId(null);
+                        }}
+                      >
+                        Cancel
+                      </EditButton>
+                    </ActionButtons>
+                  </EditContainer>
+                )}
+              </TaskInfo>
+            </div>
+
+            <ActionButtons>
+              {editTaskId === task.id ? (
+                <>
                   <EditButton onClick={handleSaveEditedTask}>Save</EditButton>
                   <EditButton
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setEditedTask(null);
                       setEditTaskId(null);
                     }}
                   >
                     Cancel
                   </EditButton>
-                </ActionButtons>
-              </>
-            ) : (
-              <>
-                <TaskInfo>
-                  <TaskTitle>{task.title}</TaskTitle>
-                  <TaskDetails>
-                    Rate: {task.hourlyRate} - Tax: {task.taxRate}%
-                  </TaskDetails>
-                </TaskInfo>
-                <ActionButtons>
-                  <EditButton onClick={() => handleEditTask(task)}>
+                </>
+              ) : (
+                <>
+                  <EditButton onClick={(e) => handleEditTask(task, e)}>
                     Edit
                   </EditButton>
-                  <DeleteButton onClick={() => handleDeleteTask(task.id)}>
+                  <DeleteButton onClick={(e) => handleDeleteTask(task.id, e)}>
                     <DeleteIcon />
                   </DeleteButton>
-                </ActionButtons>
-              </>
-            )}
+                </>
+              )}
+            </ActionButtons>
           </TaskCard>
         ))}
       </TasksList>
