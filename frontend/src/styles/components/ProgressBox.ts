@@ -23,7 +23,7 @@ export const ProgressBar = styled.div`
   overflow: hidden;
 `;
 
-export const Progress = styled.div<{ isComplete: Boolean; progress: number }>`
+export const Progress = styled.div<{ isComplete: boolean; progress: number }>`
   position: absolute;
   left: 0;
   height: 100%;
@@ -35,8 +35,8 @@ export const Progress = styled.div<{ isComplete: Boolean; progress: number }>`
 export const GoalLine = styled.div<{
   offset: number;
   width: number;
-  isExceeded: Boolean;
-  isComplete: Boolean;
+  isExceeded: boolean;
+  isComplete: boolean;
 }>`
   position: absolute;
   height: 100%;

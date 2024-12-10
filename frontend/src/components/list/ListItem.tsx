@@ -56,9 +56,11 @@ const ListItem: React.FC<ListItemProps> = ({
         return item;
       case 'Duration':
         return formatDuration(item);
-      case 'Date':
+      case 'Date': {
+        // Block scope for declaring const within case block
         const taskDate = new Date(item);
         return formatHourMin(taskDate);
+      }
       default:
         return item;
     }
