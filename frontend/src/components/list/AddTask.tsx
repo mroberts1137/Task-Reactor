@@ -12,6 +12,11 @@ import { Task } from '../../types/types';
 import { addTask } from '../../app/tasksThunks';
 import { Table } from 'reactstrap';
 import { AddButton, Input } from '../../styles/components/Table';
+import {
+  sanitizeDate,
+  sanitizeNumber,
+  sanitizeString
+} from '../../utils/sanitize-input';
 
 const calculateEndTime = (
   startTime: Date,
@@ -59,6 +64,7 @@ const AddTask: React.FC = () => {
   const [endTime, setEndTime] = useState<Date>(new Date());
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [taxRate, setTaxRate] = useState<number>(0);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Update grossIncome and netIncome when hourlyRate, duration, or taxRate change
   useEffect(() => {
@@ -79,16 +85,37 @@ const AddTask: React.FC = () => {
       return;
     }
 
+    // Validate and sanitize inputs
+    const newErrors: { [key: string]: string } = {};
+    const sanitizedTitle = sanitizeString(title);
+    const sanitizedHourlyRate = sanitizeNumber(hourlyRate.toString());
+    const sanitizedTaxRate = sanitizeNumber(taxRate.toString());
+    const sanitizedStartTime = sanitizeDate(startTime.toISOString());
+    const sanitizedEndTime = sanitizeDate(endTime.toISOString());
+
+    if (!sanitizedTitle) newErrors.title = 'Title is required';
+    if (isNaN(sanitizedHourlyRate))
+      newErrors.hourlyRate = 'Invalid hourly rate';
+    if (isNaN(sanitizedTaxRate)) newErrors.taxRate = 'Invalid tax rate';
+    if (!sanitizedStartTime) newErrors.startTime = 'Invalid start time';
+    if (!sanitizedEndTime) newErrors.endTime = 'Invalid end time';
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
     const newTask: Task = {
       id: undefined,
-      title: title || 'New Task',
-      netIncome: parseFloat(netIncome.toString()) || 0,
-      grossIncome: parseFloat(grossIncome.toString()) || 0,
-      duration: duration.hours * 60 + duration.minutes,
-      startTime: startTime || new Date(),
-      endTime: endTime || new Date(),
-      hourlyRate: parseFloat(hourlyRate.toString()) || 0,
-      taxRate: parseFloat(taxRate.toString()) || 0
+      title: sanitizedTitle,
+      netIncome: parseFloat(netIncome.toFixed(2)),
+      grossIncome: parseFloat(grossIncome.toFixed(2)),
+      duration: (duration.hours * 60 + duration.minutes) * 60 * 1000,
+      startTime: sanitizedStartTime!,
+      endTime: sanitizedEndTime!,
+      hourlyRate: sanitizedHourlyRate,
+      taxRate: sanitizedTaxRate
     };
 
     dispatch(addTask({ user_id, item: newTask }));
@@ -104,34 +131,92 @@ const AddTask: React.FC = () => {
     setTaxRate(0);
   };
 
-  const handleStartTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newStartTime = new Date(e.target.value);
-    setStartTime(newStartTime);
-    setEndTime(calculateEndTime(newStartTime, duration));
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const sanitizedTitle = sanitizeString(e.target.value);
+    setTitle(sanitizedTitle);
+    if (!sanitizedTitle) {
+      setErrors((prev) => ({ ...prev, title: 'Title is required' }));
+      return;
+    }
+    setErrors((prev) => ({ ...prev, title: '' }));
   };
 
-  const handleDurationChange = (hours: number, minutes: number) => {
-    setDuration({ hours, minutes });
-    setEndTime(calculateEndTime(startTime, { hours, minutes }));
+  const handleStartTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const newStartTime = new Date(e.target.value);
+    if (isNaN(newStartTime.getTime())) {
+      setErrors((prev) => ({ ...prev, startTime: 'Invalid start time' }));
+      return;
+    }
+    setStartTime(newStartTime);
+    setEndTime(calculateEndTime(newStartTime, duration));
+    setErrors((prev) => ({ ...prev, startTime: '' }));
+  };
+
+  const handleDurationChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    type: 'hours' | 'minutes'
+  ) => {
+    e.preventDefault();
+    const value = sanitizeNumber(e.target.value);
+    if (isNaN(value)) {
+      setErrors((prev) => ({ ...prev, [type]: `Invalid ${type}` }));
+      return;
+    }
+    const newDuration = {
+      ...duration,
+      [type]: Math.max(0, Math.floor(value))
+    };
+    setDuration(newDuration);
+    setEndTime(calculateEndTime(startTime, newDuration));
+    setErrors((prev) => ({ ...prev, [type]: '' }));
   };
 
   const handleEndTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let newEndTime = new Date(e.target.value);
-    // Ensure that the endTime is never before the startTime
+    e.preventDefault();
+    const newEndTime = new Date(e.target.value);
+    if (isNaN(newEndTime.getTime())) {
+      setErrors((prev) => ({ ...prev, endTime: 'Invalid end time' }));
+      return;
+    }
     if (newEndTime.getTime() < startTime.getTime()) {
-      newEndTime = startTime;
+      setErrors((prev) => ({
+        ...prev,
+        endTime: 'End time must be after start time'
+      }));
+      return;
     }
     setEndTime(newEndTime);
     setDuration(calculateDuration(startTime, newEndTime));
+    setErrors((prev) => ({ ...prev, endTime: '' }));
   };
 
   const handleHourlyRateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setHourlyRate(parseFloat(e.target.value));
+    e.preventDefault();
+    const value = sanitizeNumber(e.target.value);
+    if (isNaN(value) || value < 0) {
+      setErrors((prev) => ({ ...prev, hourlyRate: 'Invalid hourly rate' }));
+      return;
+    }
+    setHourlyRate(value);
+    setErrors((prev) => ({ ...prev, hourlyRate: '' }));
   };
 
   const handleTaxRateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTaxRate(parseFloat(e.target.value));
+    e.preventDefault();
+    const value = sanitizeNumber(e.target.value);
+    if (isNaN(value) || value < 0 || value > 100) {
+      setErrors((prev) => ({ ...prev, taxRate: 'Invalid tax rate (0-100)' }));
+      return;
+    }
+    setTaxRate(value);
+    setErrors((prev) => ({ ...prev, taxRate: '' }));
   };
+
+  const ErrorMessage: React.FC<{ message: string }> = ({ message }) => (
+    <span style={{ color: 'red', fontSize: '0.8em' }}>{message}</span>
+  );
 
   return (
     <div className='input-container'>
@@ -143,13 +228,12 @@ const AddTask: React.FC = () => {
               <td>
                 <Input
                   type='text'
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setTitle(e.target.value)
-                  }
+                  onChange={handleTitleChange}
                   value={title}
                   name='title'
                   className='long-input'
                 />
+                {errors.title && <ErrorMessage message={errors.title} />}
               </td>
             </tr>
             <tr>
@@ -157,16 +241,12 @@ const AddTask: React.FC = () => {
               <td>
                 <Input
                   type='number'
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleDurationChange(
-                      parseInt(e.target.value),
-                      duration.minutes
-                    )
-                  }
+                  onChange={(e) => handleDurationChange(e, 'hours')}
                   value={duration.hours}
                   name='durationHours'
                   className='short-input'
                 />
+                {errors.duration && <ErrorMessage message={errors.duration} />}
               </td>
             </tr>
             <tr>
@@ -174,12 +254,7 @@ const AddTask: React.FC = () => {
               <td>
                 <Input
                   type='number'
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleDurationChange(
-                      duration.hours,
-                      parseInt(e.target.value)
-                    )
-                  }
+                  onChange={(e) => handleDurationChange(e, 'minutes')}
                   value={duration.minutes}
                   name='durationMinutes'
                   className='short-input'
@@ -196,6 +271,9 @@ const AddTask: React.FC = () => {
                   name='rate'
                   className='short-input'
                 />
+                {errors.hourlyRate && (
+                  <ErrorMessage message={errors.hourlyRate} />
+                )}
               </td>
             </tr>
             <tr>
@@ -208,6 +286,7 @@ const AddTask: React.FC = () => {
                   name='taxRate'
                   className='short-input'
                 />
+                {errors.taxRate && <ErrorMessage message={errors.taxRate} />}
               </td>
             </tr>
             <tr>
@@ -216,10 +295,18 @@ const AddTask: React.FC = () => {
                 <Input
                   type='datetime-local'
                   onChange={handleStartTimeChange}
-                  value={startTime.toISOString().slice(0, -1).slice(0, 16)}
+                  value={new Date(
+                    startTime.getTime() - startTime.getTimezoneOffset() * 60000
+                  )
+                    .toISOString()
+                    .slice(0, -1)
+                    .slice(0, 16)}
                   name='startTime'
                   className='long-input'
                 />
+                {errors.startTime && (
+                  <ErrorMessage message={errors.startTime} />
+                )}
               </td>
             </tr>
             <tr>
@@ -228,10 +315,16 @@ const AddTask: React.FC = () => {
                 <Input
                   type='datetime-local'
                   onChange={handleEndTimeChange}
-                  value={endTime.toISOString().slice(0, -1).slice(0, 16)}
+                  value={new Date(
+                    endTime.getTime() - startTime.getTimezoneOffset() * 60000
+                  )
+                    .toISOString()
+                    .slice(0, -1)
+                    .slice(0, 16)}
                   name='endTime'
                   className='long-input'
                 />
+                {errors.endTime && <ErrorMessage message={errors.endTime} />}
               </td>
             </tr>
             <tr>

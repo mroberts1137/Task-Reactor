@@ -10,7 +10,7 @@ import TaskTable from './TaskTable';
 import TaskForm from './TaskForm';
 import SavedTasks from './SavedTasks';
 import useInterval from '../../hooks/useInterval';
-import { SavedTask, Task } from '../../types/types';
+import { isValidTask, SavedTask, Task } from '../../types/types';
 import { AppDispatch } from '../../app/store';
 import { resetTask, updateTask } from '../../utils/time_box_functions';
 import { addTask } from '../../app/tasksThunks';
@@ -131,7 +131,7 @@ const TimerBox: React.FC = () => {
       <FlexRow>
         {/** Start Button */}
         <StartButton
-          disabled={!clockRunning && !selectedTask.title}
+          disabled={!clockRunning && !isValidTask(selectedTask)}
           clockRunning={clockRunning}
           onClick={toggleClock}
         >

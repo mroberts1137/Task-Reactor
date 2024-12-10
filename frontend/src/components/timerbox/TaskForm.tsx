@@ -1,10 +1,13 @@
-import React, { ChangeEvent, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { saveTask, selectSavedTasks } from '../../app/savedTasksSlice';
-import { SavedTask, Task } from '../../types/types';
-import { AppDispatch } from '../../app/store';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { Task } from '../../types/types';
 import { Input } from '../../styles/components/Table';
 import { Form, Label } from '../../styles/components/AuthForms';
+import { sanitizeNumber, sanitizeString } from '../../utils/sanitize-input';
+import { validateForm } from '../../utils/validate-inputs';
+
+const ErrorMessage: React.FC<{ message: string }> = ({ message }) => (
+  <span style={{ color: 'red', fontSize: '0.8em' }}>{message}</span>
+);
 
 interface TaskFormProps {
   selectedTask: Task;
@@ -19,45 +22,49 @@ const TaskForm: React.FC<TaskFormProps> = ({
   onSaveTask,
   disabled
 }) => {
-  const title = selectedTask?.title || '';
-  const hourlyRate = selectedTask?.hourlyRate || 0;
-  const taxRate = selectedTask?.taxRate || 0;
+  const [errors, setErrors] = useState<{
+    title?: string;
+    hourlyRate?: string;
+    taxRate?: string;
+  }>({});
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    const { isValid, errors } = validateForm(selectedTask);
+    setErrors(errors);
+    setIsFormValid(isValid);
+  }, [selectedTask]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent page refresh
-    onSaveTask(selectedTask);
+    e.preventDefault();
+    if (isFormValid) {
+      onSaveTask(selectedTask);
+    }
   };
 
   const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // Update task state with the new value from the input
-    setTaskSelect({
-      ...selectedTask,
-      [name]:
-        name === 'hourlyRate' || name === 'taxRate'
-          ? parseFloat(value) || 0
-          : value
-    });
-  };
+    let sanitizedValue: string | number;
 
-  // Handle saving the task with default or sanitized values
-  // const handleSaveTask = () => {
-  //   const sanitizedTask = title.trim() || 'Untitled Task';
-  //   const sanitizedRate = hourlyRate || 0;
-  //   const sanitizedTax = taxRate || 0;
-  //   const task = {
-  //     title: sanitizedTask,
-  //     hourlyRate: sanitizedRate,
-  //     taxRate: sanitizedTax
-  //   };
-  //   const existingTask = savedTasks.find((t) => t.title === task.title);
-  //   if (existingTask) {
-  //     setConflictMessage('Task already exists.');
-  //     setTimeout(() => setConflictMessage(null), 3000); // Clear message after 3 seconds
-  //   } else {
-  //     dispatch(saveTask(task));
-  //   }
-  // };
+    switch (name) {
+      case 'title':
+        sanitizedValue = sanitizeString(value);
+        break;
+      case 'hourlyRate':
+      case 'taxRate':
+        sanitizedValue = sanitizeNumber(value);
+        break;
+      default:
+        sanitizedValue = value;
+    }
+
+    const updatedTask = {
+      ...selectedTask,
+      [name]: sanitizedValue
+    };
+
+    setTaskSelect(updatedTask);
+  };
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -79,12 +86,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
           <Label>Task:</Label>
           <Input
             name='title'
-            value={title}
+            value={selectedTask.title || ''}
             onChange={handleTaskChange}
             placeholder='Enter task title'
             disabled={disabled}
             style={{ width: '16rem' }}
           />
+          {errors.title && <ErrorMessage message={errors.title} />}
         </div>
         <div
           style={{
@@ -97,12 +105,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
           <Input
             type='number'
             name='hourlyRate'
-            value={hourlyRate}
+            value={selectedTask.hourlyRate || 0}
             onChange={handleTaskChange}
             placeholder='Enter hourly rate'
             disabled={disabled}
             style={{ width: '4rem' }}
           />
+          {errors.hourlyRate && <ErrorMessage message={errors.hourlyRate} />}
         </div>
         <div
           style={{
@@ -115,14 +124,17 @@ const TaskForm: React.FC<TaskFormProps> = ({
           <Input
             type='number'
             name='taxRate'
-            value={taxRate}
+            value={selectedTask.taxRate || 0}
             onChange={handleTaskChange}
             placeholder='Enter tax rate'
             disabled={disabled}
             style={{ width: '3rem' }}
           />
+          {errors.taxRate && <ErrorMessage message={errors.taxRate} />}
         </div>
-        <button type='submit'>Save Task</button>
+        <button type='submit' disabled={!isFormValid || disabled}>
+          Save Task
+        </button>
       </div>
     </Form>
   );

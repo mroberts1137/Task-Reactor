@@ -34,3 +34,12 @@ export type SavedTask = {
   hourlyRate: number;
   taxRate: number;
 };
+
+export const isValidTask = (task: Task): boolean => {
+  return (
+    !!task.title.trim() &&
+    task.hourlyRate >= 0 &&
+    task.taxRate >= 0 &&
+    task.taxRate <= 100
+  );
+};
