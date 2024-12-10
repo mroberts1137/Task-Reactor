@@ -8,7 +8,7 @@ import React, {
 import { useDispatch } from 'react-redux';
 import { UserContext } from '../../contexts/context';
 import { AppDispatch } from '../../app/store';
-import { Task } from '../../types/types';
+import { isValidTask, Task } from '../../types/types';
 import { addTask } from '../../app/tasksThunks';
 import { Table } from 'reactstrap';
 import { AddButton, Input } from '../../styles/components/Table';
@@ -117,6 +117,8 @@ const AddTask: React.FC = () => {
       hourlyRate: sanitizedHourlyRate,
       taxRate: sanitizedTaxRate
     };
+
+    if (!isValidTask(newTask)) return;
 
     dispatch(addTask({ user_id, item: newTask }));
 
