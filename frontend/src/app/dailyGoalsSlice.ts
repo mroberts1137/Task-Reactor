@@ -112,7 +112,7 @@ const dailyGoalsSlice = createSlice({
           state.status = 'succeeded';
           state.error = null;
           goalsAdapter.updateOne(state, {
-            id: action.payload.id!,
+            id: action.payload.id,
             changes: action.payload
           });
         }
@@ -133,7 +133,7 @@ const dailyGoalsSlice = createSlice({
         (state, action: PayloadAction<Goal>) => {
           state.status = 'succeeded';
           state.error = null;
-          goalsAdapter.removeOne(state, action.payload.id!);
+          goalsAdapter.removeOne(state, action.payload.id);
         }
       )
       .addCase(removeDailyGoalById.rejected, (state, action) => {
