@@ -8,7 +8,8 @@ module.exports = {
     'plugin:@typescript-eslint/recommended'
   ],
   rules: {
-    '@typescript-eslint/no-unused-vars':
-      process.env.NODE_ENV === 'production' ? 'off' : 'warn'
+    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-non-null-assertion': 'warn'
   }
 };
