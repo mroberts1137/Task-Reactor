@@ -25,31 +25,29 @@ import {
 
 const TimerBox: React.FC = () => {
   const [clockRunning, setClockRunning] = useState<boolean>(false);
-  const [task, setTask] = useState<Task>(resetTask());
+  const [selectedTask, setSelectedTask] = useState<Task>(resetTask());
   const { user_id }: UserContextType = useContext(UserContext);
   const { earningsChange } = useContext(EarningsContext);
 
-  const [selectedTask, setSelectedTask] = useState<Task>(resetTask());
   const [conflictMessage, setConflictMessage] = useState<string | null>(null);
   const savedTasks = useSelector(selectSavedTasks);
 
   const dispatch = useDispatch<AppDispatch>();
 
-  useInterval(() => setTask(updateTask(task)), clockRunning ? 1000 : null);
+  useInterval(
+    () => setSelectedTask(updateTask(selectedTask)),
+    clockRunning ? 1000 : null
+  );
 
   useEffect(() => {
-    earningsChange(task?.netIncome || 0);
-  }, [task?.netIncome, earningsChange]);
-
-  const handleTaskSelect = (selectedTask: Task) => {
-    setTask((prevTask) => ({ ...prevTask, ...selectedTask }));
-  };
+    earningsChange(selectedTask?.netIncome || 0);
+  }, [selectedTask?.netIncome, earningsChange]);
 
   const toggleClock = () => {
     if (clockRunning) {
       const endTime = new Date();
       const updatedTask = {
-        ...updateTask(task),
+        ...updateTask(selectedTask),
         endTime
       };
 
@@ -61,7 +59,7 @@ const TimerBox: React.FC = () => {
         console.log('No user logged in');
       }
     } else {
-      setTask({ ...task, startTime: new Date() });
+      setSelectedTask({ ...selectedTask, startTime: new Date() });
     }
     setClockRunning(!clockRunning);
   };
@@ -101,7 +99,7 @@ const TimerBox: React.FC = () => {
   };
 
   const reset = () => {
-    setTask(resetTask());
+    setSelectedTask(resetTask());
   };
 
   return (
@@ -133,7 +131,7 @@ const TimerBox: React.FC = () => {
       <FlexRow>
         {/** Start Button */}
         <StartButton
-          disabled={!clockRunning && !task.title}
+          disabled={!clockRunning && !selectedTask.title}
           clockRunning={clockRunning}
           onClick={toggleClock}
         >
@@ -141,7 +139,7 @@ const TimerBox: React.FC = () => {
         </StartButton>
       </FlexRow>
 
-      <TaskTable task={task} clockRunning={clockRunning} />
+      <TaskTable task={selectedTask} clockRunning={clockRunning} />
     </Container>
   );
 };
