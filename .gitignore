@@ -2,6 +2,8 @@
 **/node_modules
 **/*.log
 
+**/scrap.*
+
 # backend
 
 /backend/node_modules
