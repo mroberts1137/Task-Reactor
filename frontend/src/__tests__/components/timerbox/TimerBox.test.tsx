@@ -10,7 +10,8 @@ import {
 import TimerBox from '../../../components/timerbox/TimerBox';
 import { User } from '../../../types/types';
 import { addTask } from '../../../app/tasksThunks';
-import { theme, ThemeProvider } from '../../../__mocks__/styled-components';
+import { ThemeProvider } from 'styled-components';
+import { lightTheme as theme } from '../../../styles/themes/theme';
 
 jest.useFakeTimers();
 

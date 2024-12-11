@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm start --prefix frontend\" \"npm run dev --prefix backend\"",
-    "bump": "node update_version.js",
+    "bump": "node scripts/update_version.js",
     "frontend:lint": "npm run lint -w frontend",
     "frontend:test": "npm run test -w frontend"
   },

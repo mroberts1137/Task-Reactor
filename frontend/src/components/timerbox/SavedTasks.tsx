@@ -105,7 +105,7 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
                         value={editedTask?.title || ''}
                         onChange={(e) =>
                           setEditedTask({
-                            ...editedTask!,
+                            ...editedTask,
                             title: e.target.value
                           })
                         }
@@ -118,7 +118,7 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
                         value={editedTask?.hourlyRate || 0}
                         onChange={(e) =>
                           setEditedTask({
-                            ...editedTask!,
+                            ...editedTask,
                             hourlyRate: Number(e.target.value)
                           })
                         }
@@ -131,7 +131,7 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
                         value={editedTask?.taxRate || 0}
                         onChange={(e) =>
                           setEditedTask({
-                            ...editedTask!,
+                            ...editedTask,
                             taxRate: Number(e.target.value)
                           })
                         }
