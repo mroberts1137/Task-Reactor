@@ -1,13 +1,17 @@
 {
   "name": "task-reactor",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Tracking and logging freelance work",
   "author": "Michael Roberts",
   "license": "ISC",
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm start --prefix frontend\" \"npm run dev --prefix backend\"",
-    "bump": "node update_version.js"
+    "bump": "node scripts/update_version.js",
+    "build": "npm run build -w frontend",
+    "frontend:lint": "npm run lint -w frontend",
+    "frontend:test": "npm run test -w frontend",
+    "test": "npm run test -w frontend"
   },
   "workspaces": [
     "frontend",
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "eslint": "^9.16.0"
   }
 }

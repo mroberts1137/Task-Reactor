@@ -10,13 +10,13 @@ import { Table } from '../../styles/components/Table';
 
 interface TaskTableProps {
   task: Task;
-  clockRunning: boolean;
+  clockrunning: boolean;
 }
 
-const TaskTable: React.FC<TaskTableProps> = ({ task, clockRunning }) => {
+const TaskTable: React.FC<TaskTableProps> = ({ task, clockrunning }) => {
   // eslint-disable-next-line
   const endTime =
-    task.endTime || (task.startTime && clockRunning ? new Date() : null);
+    task.endTime || (task.startTime && clockrunning ? new Date() : null);
 
   return (
     <Container>
@@ -33,7 +33,7 @@ const TaskTable: React.FC<TaskTableProps> = ({ task, clockRunning }) => {
         <tbody>
           <tr>
             <td>{formatTime(task.startTime)}</td>
-            {/* <td style={{ color: endTime && clockRunning ? '#888' : '' }}>
+            {/* <td style={{ color: endTime && clockrunning ? '#888' : '' }}>
               {formatTime(endTime)}
             </td> */}
             <td>{formatDuration(task.duration)}</td>

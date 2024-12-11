@@ -16,7 +16,7 @@ export const validateForm = (
   const isValid = isValidTask(task);
 
   if (!task.title.trim()) {
-    newErrors.title = 'Task title is required';
+    newErrors.title = 'Title is required';
   }
   if (task.hourlyRate < 0) {
     newErrors.hourlyRate = 'Hourly rate cannot be negative';

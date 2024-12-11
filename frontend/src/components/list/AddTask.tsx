@@ -112,8 +112,8 @@ const AddTask: React.FC = () => {
       netIncome: parseFloat(netIncome.toFixed(2)),
       grossIncome: parseFloat(grossIncome.toFixed(2)),
       duration: (duration.hours * 60 + duration.minutes) * 60 * 1000,
-      startTime: sanitizedStartTime!,
-      endTime: sanitizedEndTime!,
+      startTime: sanitizedStartTime,
+      endTime: sanitizedEndTime,
       hourlyRate: sanitizedHourlyRate,
       taxRate: sanitizedTaxRate
     };

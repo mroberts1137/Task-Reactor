@@ -1,13 +1,13 @@
-import React from 'react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import RegisterForm from '../components/RegisterForm';
-import { setUser } from '../app/userSlice';
-import { fetchTasks } from '../app/tasksThunks';
-import { auth } from '../auth/auth';
-import { Task, User } from '../types/types';
-
 test('pass', () => expect(true).toBe(true));
+
+// import React from 'react';
+// import { Provider } from 'react-redux';
+// import { configureStore } from '@reduxjs/toolkit';
+// import RegisterForm from '../../components/RegisterForm';
+// import { setUser } from '../../app/userSlice';
+// import { fetchTasks } from '../../app/tasksThunks';
+// import { auth } from '../../auth/auth';
+// import { Task, User } from '../../types/types';
 
 // // Mock the auth function to return a mock user and user_id
 // jest.mock('../auth/auth', () => ({

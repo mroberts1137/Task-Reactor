@@ -91,7 +91,7 @@ const RegisterForm: React.FC = () => {
 
       // Navigate to dashboard
       navigate('/dashboard');
-    } catch (err: any) {
+    } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
       } else if (err.response?.status === 409) {

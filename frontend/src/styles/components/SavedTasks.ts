@@ -38,21 +38,21 @@ export const DropdownButton = styled.button`
 `;
 
 interface ExpandIconProps {
-  isOpen: boolean;
+  isopen: boolean;
 }
 
 export const ExpandIcon = styled.span<ExpandIconProps>`
   margin-left: 10px;
   transition: transform 0.3s ease;
-  ${({ isOpen }) => isOpen && 'transform: rotate(180deg);'}
+  ${({ isopen }) => isopen && 'transform: rotate(180deg);'}
 `;
 
 interface TaskListProps {
-  isOpen: boolean;
+  isopen: boolean;
 }
 
 export const TasksList = styled.div<TaskListProps>`
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ isopen }) => (isopen ? 'block' : 'none')};
   position: absolute;
   top: 100%;
   left: 0;
@@ -87,7 +87,7 @@ export const TasksList = styled.div<TaskListProps>`
 
 // Optional: Add a backdrop when the dropdown is open
 export const Backdrop = styled.div<TaskListProps>`
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ isopen }) => (isopen ? 'block' : 'none')};
   position: fixed;
   top: 0;
   left: 0;

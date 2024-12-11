@@ -132,14 +132,14 @@ const TimerBox: React.FC = () => {
         {/** Start Button */}
         <StartButton
           disabled={!clockRunning && !isValidTask(selectedTask)}
-          clockRunning={clockRunning}
+          clockrunning={clockRunning}
           onClick={toggleClock}
         >
           {clockRunning ? 'Stop' : 'Start'}
         </StartButton>
       </FlexRow>
 
-      <TaskTable task={selectedTask} clockRunning={clockRunning} />
+      <TaskTable task={selectedTask} clockrunning={clockRunning} />
     </Container>
   );
 };

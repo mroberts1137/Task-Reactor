@@ -31,21 +31,22 @@ const SaveLoad = () => {
     setFile(file);
   };
 
-  const handleFileRead = (event) => {
-    const content = event.target.result;
-    const state = JSON.parse(content);
-    dispatch(setGoals(state.dailyGoals));
-    dispatch(setTasks(state.tasks));
-  };
-
   useEffect(() => {
     console.log(file);
+
+    const handleFileRead = (event) => {
+      const content = event.target.result;
+      const state = JSON.parse(content);
+      dispatch(setGoals(state.dailyGoals));
+      dispatch(setTasks(state.tasks));
+    };
+
     if (file) {
       const reader = new FileReader();
       reader.onload = handleFileRead;
       reader.readAsText(file);
     }
-  }, [file]);
+  }, [file, dispatch]);
 
   // const handleFileRead = (event) => {
   //   const content = event.target.result;

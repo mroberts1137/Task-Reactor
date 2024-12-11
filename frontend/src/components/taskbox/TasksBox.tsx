@@ -41,7 +41,7 @@ const TaskBox: React.FC = () => {
     netIncome: true
   });
 
-  const displayKeys: Record<keyof Omit<Task, '_id'>, DisplayKey> = {
+  const displayKeys: Record<keyof Omit<Task, 'id'>, DisplayKey> = {
     title: { name: 'Task', type: 'String', show: showKeys.title },
     startTime: { name: 'Start Time', type: 'Date', show: showKeys.startTime },
     endTime: { name: 'End Time', type: 'Date', show: showKeys.endTime },

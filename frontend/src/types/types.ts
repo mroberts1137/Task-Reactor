@@ -19,7 +19,6 @@ export interface Task extends Item {
   taxRate?: number;
   grossIncome?: number;
   netIncome?: number;
-  [key: string]: any;
 }
 
 export interface Goal extends Item {

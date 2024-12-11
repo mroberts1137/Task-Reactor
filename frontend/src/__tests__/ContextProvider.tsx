@@ -1,10 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+import { legacy_configureStore as configureStore } from 'redux-mock-store';
 import {
   UserContext,
   TaskContext,
@@ -108,8 +104,8 @@ jest.mock('../utils/functions', () => ({
 }));
 
 describe('ContextProvider', () => {
-  let store;
-  let mockDispatch;
+  let store: typeof mockStore;
+  let mockDispatch: typeof mockStore.dispatch;
 
   beforeEach(() => {
     store = mockStore(initialState);
@@ -123,7 +119,7 @@ describe('ContextProvider', () => {
     jest.clearAllMocks();
   });
 
-  const renderWithProviders = (children) =>
+  const renderWithProviders = (children: React.ReactNode) =>
     render(
       <Provider store={store}>
         <ContextProvider>{children}</ContextProvider>
@@ -274,7 +270,7 @@ describe('ContextProvider', () => {
   });
 
   it('correctly handles earningsChange callback', () => {
-    const { getByTestId } = renderWithProviders(
+    renderWithProviders(
       <EarningsContext.Consumer>
         {(value) => (
           <div>
@@ -294,13 +290,13 @@ describe('ContextProvider', () => {
     );
 
     // Verify initial context value
-    const contextElement = getByTestId('earnings-context');
+    const contextElement = screen.getByTestId('earnings-context');
     const initialContextValue = JSON.parse(contextElement.textContent || '{}');
     expect(initialContextValue.dailyTasksEarnings).toBe(50);
     expect(initialContextValue.dailyTotalEarnings).toBe(50);
 
     // Simulate button click
-    const button = getByTestId('earnings-button');
+    const button = screen.getByTestId('earnings-button');
     button.click();
 
     // Verify context value after callback
@@ -374,7 +370,7 @@ describe('ContextProvider', () => {
 
     const consoleSpy = jest
       .spyOn(console, 'error')
-      .mockImplementation(() => {});
+      .mockImplementation(() => null);
 
     (tasksThunks.fetchTasks as unknown as jest.Mock).mockReturnValue({
       then: () => Promise.reject('Error fetching tasks')
@@ -437,7 +433,7 @@ describe('ContextProvider', () => {
   it('should handle failed data fetching', async () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
-      .mockImplementation(() => {});
+      .mockImplementation(() => null);
 
     (tasksThunks.fetchTasks as unknown as jest.Mock).mockRejectedValue(
       new Error('Failed to fetch tasks')

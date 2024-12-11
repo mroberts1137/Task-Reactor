@@ -12,6 +12,7 @@ import {
 } from '../../utils/time_box_functions';
 import { FaTrash } from 'react-icons/fa';
 import { DeleteButton } from '../../styles/components/Button';
+import { RemoveAction } from '../../app/tasksThunks';
 
 interface DisplayKey {
   type: 'Currency' | 'String' | 'Duration' | 'Date';
@@ -19,7 +20,7 @@ interface DisplayKey {
 
 interface ListItemProps {
   item: Item;
-  removeAction: any;
+  removeAction: RemoveAction;
   displayKeys: Record<string, DisplayKey>;
 }
 
@@ -48,17 +49,17 @@ const ListItem: React.FC<ListItemProps> = ({
     dispatch(removeAction({ user_id, item_id: item.id }));
   };
 
-  const itemType = (item: any, displayKey: DisplayKey) => {
+  const itemType = (item: string | number | Date, displayKey: DisplayKey) => {
     switch (displayKey.type) {
       case 'Currency':
-        return formatCurrency(item);
+        return formatCurrency(item as number);
       case 'String':
         return item;
       case 'Duration':
-        return formatDuration(item);
+        return formatDuration(item as number);
       case 'Date': {
         // Block scope for declaring const within case block
-        const taskDate = new Date(item);
+        const taskDate = new Date(item as Date);
         return formatHourMin(taskDate);
       }
       default:
@@ -69,13 +70,13 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <animated.tr className='list-item' style={slideIn}>
       <td>
-        <DeleteButton onClick={handleDelete}>
+        <DeleteButton onClick={handleDelete} aria-label='Delete'>
           <FaTrash />
         </DeleteButton>
       </td>
       {Object.keys(displayKeys)?.map((key, index) => (
         <td key={index} className='item-text'>
-          {itemType(item[key], displayKeys[key])}
+          {itemType(item[key], displayKeys[key]) as React.ReactNode}
         </td>
       ))}
     </animated.tr>

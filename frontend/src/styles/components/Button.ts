@@ -34,7 +34,7 @@ export const DeleteButton = styled(DangerButton)`
 `;
 
 interface StartButtonProps {
-  clockRunning: boolean;
+  clockrunning: boolean;
 }
 
 export const StartButton = styled.button<StartButtonProps>`
@@ -47,8 +47,8 @@ export const StartButton = styled.button<StartButtonProps>`
   box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.5);
   cursor: pointer;
 
-  background-color: ${({ clockRunning }) =>
-    clockRunning ? 'rgb(239, 22, 22)' : 'rgb(22, 239, 91)'};
+  background-color: ${({ clockrunning }) =>
+    clockrunning ? 'rgb(239, 22, 22)' : 'rgb(22, 239, 91)'};
 
   &:disabled {
     background-color: grey;

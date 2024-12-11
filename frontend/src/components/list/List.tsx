@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ListItem from './ListItem';
 import { Item } from '../../types/types';
 import { ResizableHeader, Table } from '../../styles/components/Table';
+import { ResizeCallbackData } from 'react-resizable';
+import { RemoveAction } from '../../app/tasksThunks';
 
 interface DisplayKey {
   name: string;
@@ -11,7 +13,7 @@ interface DisplayKey {
 
 interface ListProps {
   items: Item[];
-  removeAction: any;
+  removeAction: RemoveAction;
   displayKeys: Record<string, DisplayKey>;
 }
 
@@ -31,7 +33,7 @@ const List: React.FC<ListProps> = ({ items, removeAction, displayKeys }) => {
 
   const onResize =
     (index: number) =>
-    (e: any, { size }: any) => {
+    (e: React.SyntheticEvent, { size }: ResizeCallbackData) => {
       setColumnWidths((prevWidths) => ({
         ...prevWidths,
         [index]: size.width
