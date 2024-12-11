@@ -1,3 +1,4 @@
+import { Action } from '@reduxjs/toolkit';
 import tasksReducer, {
   TasksState,
   initialState,
@@ -181,7 +182,7 @@ describe('taskSlice updateTaskById', () => {
       type: updateTaskById.rejected.type,
       error: { message: errorMessage }
     };
-    const state = tasksReducer(initialState, action as any);
+    const state = tasksReducer(initialState, action as Action);
     expect(state.status).toBe('failed');
     expect(state.error).toBe(errorMessage);
   });

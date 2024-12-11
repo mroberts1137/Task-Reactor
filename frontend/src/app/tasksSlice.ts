@@ -97,7 +97,7 @@ const tasksSlice = createSlice({
           state.status = 'succeeded';
           state.error = null;
           tasksAdapter.updateOne(state, {
-            id: action.payload.id!,
+            id: action.payload.id,
             changes: action.payload
           });
         }
@@ -115,7 +115,7 @@ const tasksSlice = createSlice({
         (state, action: PayloadAction<Task>) => {
           state.status = 'succeeded';
           state.error = null;
-          tasksAdapter.removeOne(state, action.payload.id!);
+          tasksAdapter.removeOne(state, action.payload.id);
         }
       )
       .addCase(removeTaskById.rejected, (state, action) => {

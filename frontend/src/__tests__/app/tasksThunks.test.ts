@@ -9,6 +9,7 @@ import {
   removeTaskById
 } from '../../app/tasksThunks';
 import { tasksAdapter, TasksState } from '../../app/tasksSlice';
+import { Action } from '@reduxjs/toolkit';
 
 jest.mock('axios', () => ({
   get: jest.fn(),
@@ -53,7 +54,7 @@ describe('Task Thunks', () => {
         statusText: 'OK'
       });
 
-      await store.dispatch(fetchTasks({ user_id: 'user1' }) as any);
+      store.dispatch(fetchTasks({ user_id: 'user1' }) as unknown as Action);
       const actions = store.getActions();
 
       expect(actions[0].type).toBe(fetchTasks.pending.type);
@@ -75,7 +76,9 @@ describe('Task Thunks', () => {
 
       (axios.get as jest.Mock).mockRejectedValue(axiosError);
 
-      await store.dispatch(fetchTasks({ user_id: 'user1' }) as any);
+      await store.dispatch(
+        fetchTasks({ user_id: 'user1' }) as unknown as Action
+      );
       const actions = store.getActions();
 
       expect(actions[0].type).toBe(fetchTasks.pending.type);
@@ -89,7 +92,9 @@ describe('Task Thunks', () => {
         statusText: 'OK'
       });
 
-      await store.dispatch(fetchTasks({ user_id: 'user1' }) as any);
+      await store.dispatch(
+        fetchTasks({ user_id: 'user1' }) as unknown as Action
+      );
       const actions = store.getActions();
 
       expect(actions[0].type).toBe(fetchTasks.pending.type);
@@ -104,7 +109,9 @@ describe('Task Thunks', () => {
       const mockResponse = { _id: '3', ...newTask };
       (axios.post as jest.Mock).mockResolvedValue({ data: mockResponse });
 
-      await store.dispatch(addTask({ user_id: 'user1', item: newTask }) as any);
+      await store.dispatch(
+        addTask({ user_id: 'user1', item: newTask }) as unknown as Action
+      );
       const actions = store.getActions();
 
       expect(actions[0].type).toBe(addTask.pending.type);
@@ -126,7 +133,9 @@ describe('Task Thunks', () => {
       (axios.post as jest.Mock).mockRejectedValue(axiosError);
       const newTask = { id: undefined, title: 'New Task' };
 
-      await store.dispatch(addTask({ user_id: 'user1', item: newTask }) as any);
+      await store.dispatch(
+        addTask({ user_id: 'user1', item: newTask }) as unknown as Action
+      );
       const actions = store.getActions();
 
       expect(actions[0].type).toBe(addTask.pending.type);
@@ -141,7 +150,7 @@ describe('Task Thunks', () => {
       (axios.get as jest.Mock).mockResolvedValue({ data: mockTask });
 
       await store.dispatch(
-        getTaskById({ user_id: 'user1', item_id: '1' }) as any
+        getTaskById({ user_id: 'user1', item_id: '1' }) as unknown as Action
       );
       const actions = store.getActions();
 
@@ -164,7 +173,7 @@ describe('Task Thunks', () => {
       (axios.get as jest.Mock).mockRejectedValue(axiosError);
 
       await store.dispatch(
-        getTaskById({ user_id: 'user1', item_id: '1' }) as any
+        getTaskById({ user_id: 'user1', item_id: '1' }) as unknown as Action
       );
       const actions = store.getActions();
 
@@ -185,7 +194,7 @@ describe('Task Thunks', () => {
           user_id: 'user1',
           item_id: '1',
           updatedItem: updatedTask
-        }) as any
+        }) as unknown as Action
       );
       const actions = store.getActions();
 
@@ -204,7 +213,7 @@ describe('Task Thunks', () => {
           user_id: 'user1',
           item_id: '1',
           updatedItem: updatedItem
-        }) as any
+        }) as unknown as Action
       );
       const actions = store.getActions();
 
@@ -220,7 +229,7 @@ describe('Task Thunks', () => {
       (axios.delete as jest.Mock).mockResolvedValue({ data: mockResponse });
 
       await store.dispatch(
-        removeTaskById({ user_id: 'user1', item_id: '1' }) as any
+        removeTaskById({ user_id: 'user1', item_id: '1' }) as unknown as Action
       );
       const actions = store.getActions();
 
@@ -234,7 +243,7 @@ describe('Task Thunks', () => {
       (axios.delete as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
       await store.dispatch(
-        removeTaskById({ user_id: 'user1', item_id: '1' }) as any
+        removeTaskById({ user_id: 'user1', item_id: '1' }) as unknown as Action
       );
       const actions = store.getActions();
 

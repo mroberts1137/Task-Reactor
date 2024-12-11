@@ -3,7 +3,8 @@ import { Theme, lightTheme as theme } from '../styles/themes/theme';
 
 // Helper function to handle both strings and components
 const styledComponent =
-  (Component: string | React.ComponentType<any>) => () => (props: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (Component: string | React.ComponentType) => () => (props: any) => {
     if (typeof Component === 'string') {
       return React.createElement(Component, props);
     }
@@ -31,7 +32,7 @@ const styled = {
 };
 
 // Make styled a function that can be called with a component
-const styledFunction = (Component: string | React.ComponentType<any>) =>
+const styledFunction = (Component: string | React.ComponentType<unknown>) =>
   styledComponent(Component);
 
 // Add all properties of styled to the function
@@ -41,7 +42,8 @@ Object.assign(styledFunction, styled);
 styledFunction.createElement = (tag: string) => styledComponent(tag);
 
 // Export the function as default
-export default new Proxy(styledFunction, {
+
+const proxy = new Proxy(styledFunction, {
   get(target, prop) {
     if (prop in target) {
       return target[prop as keyof typeof styled];
@@ -49,9 +51,10 @@ export default new Proxy(styledFunction, {
     return target.createElement(prop as string);
   }
 });
+export default proxy;
 
 // Mock other exports from styled-components
-const css = (...args: any[]) => JSON.stringify(args);
+const css = (...args: string[]) => JSON.stringify(args);
 const createGlobalStyle = () => () => null;
 const keyframes = () => '';
 const ThemeProvider = ({

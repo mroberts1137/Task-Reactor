@@ -8,8 +8,10 @@
   "scripts": {
     "dev": "concurrently \"npm start --prefix frontend\" \"npm run dev --prefix backend\"",
     "bump": "node scripts/update_version.js",
+    "build": "npm run build -w frontend",
     "frontend:lint": "npm run lint -w frontend",
-    "frontend:test": "npm run test -w frontend"
+    "frontend:test": "npm run test -w frontend",
+    "test": "npm run test -w frontend"
   },
   "workspaces": [
     "frontend",

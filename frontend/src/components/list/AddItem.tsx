@@ -9,7 +9,7 @@ const AddItem = ({ addAction }) => {
   const dispatch = useDispatch();
   const { user, user_id } = useContext(UserContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title || !value || value < 0) {

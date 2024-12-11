@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+import { legacy_configureStore as configureStore } from 'redux-mock-store';
 import {
   UserContext,
   TaskContext,
@@ -270,7 +270,7 @@ describe('ContextProvider', () => {
   });
 
   it('correctly handles earningsChange callback', () => {
-    const view = renderWithProviders(
+    renderWithProviders(
       <EarningsContext.Consumer>
         {(value) => (
           <div>
@@ -290,13 +290,13 @@ describe('ContextProvider', () => {
     );
 
     // Verify initial context value
-    const contextElement = view.getByTestId('earnings-context');
+    const contextElement = screen.getByTestId('earnings-context');
     const initialContextValue = JSON.parse(contextElement.textContent || '{}');
     expect(initialContextValue.dailyTasksEarnings).toBe(50);
     expect(initialContextValue.dailyTotalEarnings).toBe(50);
 
     // Simulate button click
-    const button = view.getByTestId('earnings-button');
+    const button = screen.getByTestId('earnings-button');
     button.click();
 
     // Verify context value after callback

@@ -126,3 +126,7 @@ export const removeTaskById = createAsyncThunk<
     return rejectWithValue(handleError(error));
   }
 });
+
+export type FetchTasksType = typeof fetchTasks;
+export type FetchReturnType = ReturnType<typeof fetchTasks>;
+export type RemoveAction = typeof removeTaskById;
