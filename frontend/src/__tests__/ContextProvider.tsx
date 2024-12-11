@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -123,7 +119,7 @@ describe('ContextProvider', () => {
     jest.clearAllMocks();
   });
 
-  const renderWithProviders = (children) =>
+  const renderWithProviders = (children: React.ReactNode) =>
     render(
       <Provider store={store}>
         <ContextProvider>{children}</ContextProvider>

@@ -69,7 +69,7 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <animated.tr className='list-item' style={slideIn}>
       <td>
-        <DeleteButton onClick={handleDelete}>
+        <DeleteButton onClick={handleDelete} aria-label='Delete'>
           <FaTrash />
         </DeleteButton>
       </td>

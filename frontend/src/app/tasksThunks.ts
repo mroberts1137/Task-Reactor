@@ -33,7 +33,7 @@ export const fetchTasks = createAsyncThunk<
       TASKS_URL.replace('{userId}', user_id),
       config
     );
-    console.log(response);
+    // console.log(response);
     // const responseOK = response && response.statusText === 'OK';
 
     // if (!responseOK) throw new Error('Failed to fetch tasks');

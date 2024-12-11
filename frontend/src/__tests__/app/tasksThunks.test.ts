@@ -7,8 +7,8 @@ import {
   getTaskById,
   updateTaskById,
   removeTaskById
-} from '../app/tasksThunks';
-import { tasksAdapter, TasksState } from '../app/tasksSlice';
+} from '../../app/tasksThunks';
+import { tasksAdapter, TasksState } from '../../app/tasksSlice';
 
 jest.mock('axios', () => ({
   get: jest.fn(),

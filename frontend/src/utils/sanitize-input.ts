@@ -1,6 +1,33 @@
 export const sanitizeString = (input: string): string => {
-  // Remove any HTML tags and trim whitespace
-  return input.replace(/<[^>]*>?/gm, '');
+  if (typeof input !== 'string') return '';
+
+  // Remove any HTML tags
+  let sanitized = input.replace(/<[^>]*>?/gm, '');
+
+  // Escape special characters that could be used for XSS
+  sanitized = sanitized
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+
+  // Remove potential SQL injection patterns
+  sanitized = sanitized
+    .replace(/'/g, '')
+    .replace(/;/g, '')
+    .replace(/--/g, '')
+    .replace(/\/\*/g, '')
+    .replace(/\*\//g, '')
+    .replace(/xp_/gi, '')
+    .replace(/UNION/gi, '')
+    .replace(/SELECT/gi, '')
+    .replace(/DROP/gi, '')
+    .replace(/DELETE/gi, '')
+    .replace(/UPDATE/gi, '');
+
+  return sanitized.trim();
 };
 
 export const sanitizeNumber = (input: string): number => {

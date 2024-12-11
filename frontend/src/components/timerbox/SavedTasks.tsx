@@ -19,8 +19,7 @@ import {
   Backdrop,
   EditContainer,
   EditLabel,
-  EditRow,
-  EditInput
+  EditRow
 } from '../../styles/components/SavedTasks';
 import { Input } from '../../styles/components/Table';
 
@@ -37,7 +36,7 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
 }) => {
   const savedTasks: SavedTask[] = useSelector(selectSavedTasks);
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [editedTask, setEditedTask] = useState<SavedTask | null>(null);
 
@@ -69,12 +68,15 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
       style={{ display: disabled ? 'none' : 'block' }}
     >
       <Title>Saved Tasks:</Title>
+
       <DropdownButton onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? 'Hide Tasks' : 'Show Tasks'}
-        <ExpandIcon isOpen={isOpen}>▼</ExpandIcon>
+        <ExpandIcon isopen={isOpen}>▼</ExpandIcon>
       </DropdownButton>
-      <Backdrop isOpen={isOpen} onClick={() => setIsOpen(false)} />
-      <TasksList isOpen={isOpen}>
+
+      <Backdrop isopen={isOpen} onClick={() => setIsOpen(false)} />
+
+      <TasksList isopen={isOpen}>
         {savedTasks.map((task) => (
           <TaskCard
             key={task.id}
@@ -94,7 +96,7 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
                   Rate: ${task.hourlyRate} - Tax: {task.taxRate}%
                 </TaskDetails>
 
-                {editTaskId === task.id && (
+                {editTaskId === task.id ? (
                   <EditContainer onClick={(e) => e.stopPropagation()}>
                     <EditRow>
                       <EditLabel>Title:</EditLabel>
@@ -141,6 +143,7 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
                           e.stopPropagation();
                           handleSaveEditedTask(e);
                         }}
+                        aria-label={'Save'}
                       >
                         Save
                       </EditButton>
@@ -150,40 +153,30 @@ const SavedTasks: React.FC<SavedTasksProps> = ({
                           setEditedTask(null);
                           setEditTaskId(null);
                         }}
+                        aria-label={'Cancel'}
                       >
                         Cancel
                       </EditButton>
                     </ActionButtons>
                   </EditContainer>
+                ) : (
+                  <ActionButtons>
+                    <EditButton
+                      onClick={(e) => handleEditTask(task, e)}
+                      aria-label={'Edit'}
+                    >
+                      Edit
+                    </EditButton>
+                    <DeleteButton
+                      onClick={(e) => handleDeleteTask(task.id, e)}
+                      aria-label='Delete'
+                    >
+                      <DeleteIcon />
+                    </DeleteButton>
+                  </ActionButtons>
                 )}
               </TaskInfo>
             </div>
-
-            <ActionButtons>
-              {editTaskId === task.id ? (
-                <>
-                  <EditButton onClick={handleSaveEditedTask}>Save</EditButton>
-                  <EditButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditedTask(null);
-                      setEditTaskId(null);
-                    }}
-                  >
-                    Cancel
-                  </EditButton>
-                </>
-              ) : (
-                <>
-                  <EditButton onClick={(e) => handleEditTask(task, e)}>
-                    Edit
-                  </EditButton>
-                  <DeleteButton onClick={(e) => handleDeleteTask(task.id, e)}>
-                    <DeleteIcon />
-                  </DeleteButton>
-                </>
-              )}
-            </ActionButtons>
           </TaskCard>
         ))}
       </TasksList>
