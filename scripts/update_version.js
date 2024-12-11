@@ -3,7 +3,7 @@ const path = require('path');
 
 // Read version from root package.json
 const getRootVersion = () => {
-  const rootPackagePath = path.join(__dirname, 'package.json');
+  const rootPackagePath = path.join(__dirname, '../package.json');
   if (!fs.existsSync(rootPackagePath)) {
     console.error('Root package.json not found');
     process.exit(1);
@@ -64,9 +64,9 @@ const main = () => {
 
   // Update all package.json files
   const packagePaths = [
-    path.join(__dirname, 'package.json'),
-    path.join(__dirname, 'frontend', 'package.json'),
-    path.join(__dirname, 'backend', 'package.json')
+    path.join(__dirname, '../package.json'),
+    path.join(__dirname, '../frontend', 'package.json'),
+    path.join(__dirname, '../backend', 'package.json')
   ];
 
   for (const packagePath of packagePaths) {
