@@ -63,8 +63,10 @@ const ResizableHeader: React.FC<ResizableHeaderProps> = ({
 
   return (
     <HeaderCell>
-      {children}
-      <ResizeHandle onMouseDown={handleMouseDown} />
+      <>
+        {children}
+        <ResizeHandle onMouseDown={handleMouseDown} />
+      </>
     </HeaderCell>
   );
 };

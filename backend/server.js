@@ -30,7 +30,7 @@ const limiter = rateLimit({
 });
 
 const corsOptions = {
-  origin: config.CLIENT_URL,
+  origin: [config.CLIENT_URL, 'http://localhost:3000', 'http://localhost:3001'],
   credentials: true,
   optionsSuccessStatus: 200
 };

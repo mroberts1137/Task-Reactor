@@ -1,3 +1,4 @@
+import React from 'react';
 import { Task } from '../types/types';
 import { persistStore } from 'redux-persist';
 import { store } from '../app/store';

@@ -22,7 +22,8 @@ import {
   SunIcon,
   MoonIcon
 } from '../styles/components/ThemeToggle';
-import { logout, selectUser } from '../app/userSlice';
+import { selectUser } from '../app/userSlice';
+import { logout } from '../app/userThunks';
 import { clearTasks } from '../app/tasksSlice';
 import { clearDailyGoals } from '../app/dailyGoalsSlice';
 import { clearMonthlyGoals } from '../app/monthlyGoalsSlice';

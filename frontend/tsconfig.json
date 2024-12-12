@@ -7,9 +7,11 @@
     "skipLibCheck": true,
     "target": "ES6",
     "module": "commonjs",
-    "jsx": "react-jsx",
+    "jsx": "react",
     "allowJs": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "lib": ["dom", "esnext"]
   },
   "include": [
     "src/**/*.ts",

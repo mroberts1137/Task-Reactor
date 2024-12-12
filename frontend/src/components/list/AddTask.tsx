@@ -10,8 +10,7 @@ import { UserContext } from '../../contexts/context';
 import { AppDispatch } from '../../app/store';
 import { isValidTask, Task } from '../../types/types';
 import { addTask } from '../../app/tasksThunks';
-import { Table } from 'reactstrap';
-import { AddButton, Input } from '../../styles/components/Table';
+import { Table, AddButton, Input } from '../../styles/components/Table';
 import {
   sanitizeDate,
   sanitizeNumber,

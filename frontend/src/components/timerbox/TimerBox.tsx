@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   EarningsContext,

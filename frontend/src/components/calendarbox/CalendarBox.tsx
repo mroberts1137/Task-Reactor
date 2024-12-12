@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import TaskCalendar from './TaskCalendar';
 import DateDisplay from '../DateDisplay';
 import { DateContext } from '../../contexts/context';

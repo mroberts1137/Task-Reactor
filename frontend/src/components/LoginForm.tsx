@@ -12,7 +12,7 @@ import {
   ErrorMessage
 } from '../styles/components/AuthForms';
 import { AppDispatch } from '../app/store';
-import { login } from '../app/userSlice';
+import { login } from '../app/userThunks';
 import ErrorBoundary from './ErrorBoundary';
 import Loading from './Loading';
 
@@ -55,8 +55,6 @@ const LoginForm: React.FC = () => {
         })
       ).unwrap();
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       // Navigate to dashboard
       navigate('/dashboard');
     } catch (err) {
@@ -69,7 +67,7 @@ const LoginForm: React.FC = () => {
       } else {
         setErrMsg('Login Failed');
       }
-      errRef.current?.focus();
+      errRef?.current?.focus();
     } finally {
       setIsLoading(false);
     }
@@ -89,7 +87,11 @@ const LoginForm: React.FC = () => {
     <ErrorBoundary>
       <FormContainer>
         <FormSection>
-          <ErrorMessage show={!!errMsg} ref={errRef} aria-live='assertive'>
+          <ErrorMessage
+            show={!!errMsg as boolean}
+            ref={errRef}
+            aria-live='assertive'
+          >
             {errMsg}
           </ErrorMessage>
 

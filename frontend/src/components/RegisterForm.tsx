@@ -20,7 +20,7 @@ import {
   ValidationIcon
 } from '../styles/components/AuthForms';
 import { AppDispatch } from '../app/store';
-import { register } from '../app/userSlice';
+import { register } from '../app/userThunks';
 import ErrorBoundary from './ErrorBoundary';
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;

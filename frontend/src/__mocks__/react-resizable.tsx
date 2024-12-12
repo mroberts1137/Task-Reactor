@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const Resizable: React.FC<{ children: React.ReactNode }> = ({
   children,
   ...props

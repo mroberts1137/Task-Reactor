@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/types';
 import { RootState } from './store';
 import { login, logout, register } from './userThunks';
-export { login, logout, register };
 
 export interface UserState {
   userId: string | null;

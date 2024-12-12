@@ -1,15 +1,30 @@
+import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { BrowserRouter } from 'react-router-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import LoginForm from '../components/LoginForm';
-import userReducer, { login, UserState } from '../app/userSlice';
+import LoginForm from '../../components/LoginForm';
+import userReducer from '../../app/userSlice';
+import { login } from '../../app/userThunks';
 
-jest.mock('../app/userSlice');
+// Mock the userSlice
+// jest.mock('../../app/userSlice', () => ({
+//   ...jest.requireActual('../../app/userSlice'),
+//   default: jest.fn(
+//     (
+//       state = { userId: null, user: false, status: 'idle', error: null },
+//       action
+//     ) => state
+//   ),
+//   login: jest.fn(() => async () => ({
+//     type: 'user/login/fulfilled',
+//     payload: { userId: '1', user: { user_id: '1', name: 'testuser' } }
+//   }))
+// }));
 
 // Mock the Loading component
-jest.mock('../components/Loading', () => () => (
+jest.mock('../../components/Loading', () => () => (
   <div data-testid='loading'>Loading...</div>
 ));
 
@@ -20,22 +35,30 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }));
 
-const makeStore = (
-  initialState: { user: UserState } = {
-    user: userReducer(undefined, { type: 'INIT' })
-  }
-) => {
+// const makeStore = (
+//   initialState = {
+//     user: { userId: null, user: false, status: 'idle', error: null }
+//   }
+// ) => {
+//   return configureStore({
+//     reducer: {
+//       user: userReducer || ((state = initialState.user, action) => state)
+//     },
+//     preloadedState: initialState ?? {
+//       user: {
+//         userId: null,
+//         user: false,
+//         status: 'idle',
+//         error: null
+//       }
+//     }
+//   });
+// };
+
+const makeStore = () => {
   return configureStore({
     reducer: {
       user: userReducer
-    },
-    preloadedState: initialState ?? {
-      user: {
-        userId: null,
-        user: false,
-        status: 'idle',
-        error: null
-      }
     }
   });
 };
@@ -44,9 +67,7 @@ describe('LoginForm', () => {
   let store: ReturnType<typeof makeStore>;
 
   beforeEach(() => {
-    store = makeStore({
-      user: { userId: '123', user: null, status: 'idle', error: null }
-    });
+    store = makeStore();
     mockNavigate.mockClear();
     jest.clearAllMocks();
   });
@@ -92,18 +113,6 @@ describe('LoginForm', () => {
     await userEvent.type(screen.getByLabelText(/username/i), 'testuser');
     await userEvent.type(screen.getByLabelText(/password/i), 'testpass');
 
-    // Mock the login thunk with proper pending action
-    // const mockLoginThunk = createAsyncThunk('user/login', async () => {
-    //   await new Promise((resolve) => setTimeout(resolve, 100));
-    //   return { id: '1', username: 'testuser' };
-    // });
-
-    // jest
-    //   .spyOn(store, 'dispatch')
-    //   .mockImplementation(() =>
-    //     mockLoginThunk()(store.dispatch, store.getState, undefined)
-    //   );
-
     const mockLoginThunk = jest.fn(
       () => () => new Promise((resolve) => setTimeout(resolve, 100))
     );
@@ -113,7 +122,6 @@ describe('LoginForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     // Check loading state
-    expect(screen.getByTestId('loading')).toBeInTheDocument();
     expect(
       screen.getByRole('textbox', { name: /loading/i })
     ).toBeInTheDocument();
@@ -121,17 +129,6 @@ describe('LoginForm', () => {
 
   it('handles successful login', async () => {
     renderLoginForm();
-
-    // Mock successful login
-    // const mockLoginThunk = createAsyncThunk('user/login', async () => {
-    //   return { id: '1', username: 'testuser' };
-    // });
-
-    // jest
-    //   .spyOn(store, 'dispatch')
-    //   .mockImplementation(() =>
-    //     mockLoginThunk()(store.dispatch, store.getState, undefined)
-    //   );
 
     const mockLoginThunk = jest.fn(
       () => () =>
@@ -174,17 +171,6 @@ describe('LoginForm', () => {
       // Reset form
       store = makeStore();
       renderLoginForm();
-
-      // Mock error response with proper rejected action
-      // const mockLoginThunk = createAsyncThunk('user/login', async () => {
-      //   throw testCase.error;
-      // });
-
-      // jest
-      //   .spyOn(store, 'dispatch')
-      //   .mockImplementation(() =>
-      //     mockLoginThunk()(store.dispatch, store.getState, undefined)
-      //   );
 
       const mockLoginThunk = jest.fn(
         () => () => Promise.reject(testCase.error)

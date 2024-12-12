@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { legacy_configureStore as configureStore } from 'redux-mock-store';

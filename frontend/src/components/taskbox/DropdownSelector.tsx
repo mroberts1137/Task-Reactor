@@ -1,3 +1,4 @@
+import React from 'react';
 import './DropdownSelector.css';
 
 const DropdownSelector = ({ items, selectedItems, onToggle }) => {

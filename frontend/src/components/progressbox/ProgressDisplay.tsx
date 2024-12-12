@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatCurrency } from '../../utils/time_box_functions';
 import {
   Container,

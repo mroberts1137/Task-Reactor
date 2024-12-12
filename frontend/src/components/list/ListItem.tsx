@@ -1,7 +1,6 @@
 import React from 'react';
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSpring, animated } from 'react-spring';
 import { UserContext } from '../../contexts/context';
 import { AppDispatch } from '../../app/store';
 import { Item } from '../../types/types';
@@ -30,16 +29,7 @@ const ListItem: React.FC<ListItemProps> = ({
   displayKeys
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [animate, setAnimate] = useState(false);
   const { user, user_id } = useContext(UserContext);
-
-  const slideIn = useSpring({
-    opacity: animate ? 1 : 0,
-    transform: animate ? 'translateX(0%)' : 'translateX(100%)',
-    config: { duration: 200, mass: 5, friction: 20, tension: 120 }
-  });
-
-  useEffect(() => setAnimate(true), []);
 
   const handleDelete = () => {
     if (!user_id || !user) {
@@ -49,12 +39,15 @@ const ListItem: React.FC<ListItemProps> = ({
     dispatch(removeAction({ user_id, item_id: item.id }));
   };
 
-  const itemType = (item: string | number | Date, displayKey: DisplayKey) => {
+  const itemType = (
+    item: string | number | Date,
+    displayKey: DisplayKey
+  ): string => {
     switch (displayKey.type) {
       case 'Currency':
         return formatCurrency(item as number);
       case 'String':
-        return item;
+        return item as string;
       case 'Duration':
         return formatDuration(item as number);
       case 'Date': {
@@ -63,12 +56,12 @@ const ListItem: React.FC<ListItemProps> = ({
         return formatHourMin(taskDate);
       }
       default:
-        return item;
+        return item as string;
     }
   };
 
   return (
-    <animated.tr className='list-item' style={slideIn}>
+    <tr className='list-item'>
       <td>
         <DeleteButton onClick={handleDelete} aria-label='Delete'>
           <FaTrash />
@@ -76,10 +69,10 @@ const ListItem: React.FC<ListItemProps> = ({
       </td>
       {Object.keys(displayKeys)?.map((key, index) => (
         <td key={index} className='item-text'>
-          {itemType(item[key], displayKeys[key]) as React.ReactNode}
+          <p>{itemType(item[key], displayKeys[key])}</p>
         </td>
       ))}
-    </animated.tr>
+    </tr>
   );
 };
 
