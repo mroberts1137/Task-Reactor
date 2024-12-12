@@ -14,10 +14,13 @@ import {
 import { AppDispatch } from '../app/store';
 import { login } from '../app/userSlice';
 import ErrorBoundary from './ErrorBoundary';
+import Loading from './Loading';
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const userRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
@@ -31,12 +34,10 @@ const LoginForm: React.FC = () => {
   const [pwdFocus, setPwdFocus] = useState(false);
 
   const [errMsg, setErrMsg] = useState('');
-  // eslint-disable-next-line
-  const [success, setSuccess] = useState(false);
 
   // set focus to user input when component loads
   useEffect(() => {
-    userRef?.current.focus();
+    userRef?.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await dispatch(
         login({
@@ -52,6 +54,8 @@ const LoginForm: React.FC = () => {
           password
         })
       ).unwrap();
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Navigate to dashboard
       navigate('/dashboard');
@@ -66,55 +70,61 @@ const LoginForm: React.FC = () => {
         setErrMsg('Login Failed');
       }
       errRef.current?.focus();
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <ErrorBoundary>
+        <FormContainer>
+          <Loading />
+        </FormContainer>
+      </ErrorBoundary>
+    );
+  }
 
   return (
     <ErrorBoundary>
       <FormContainer>
-        {success ? (
-          <FormSection>
-            <h1>Success!</h1>
-          </FormSection>
-        ) : (
-          <FormSection>
-            <ErrorMessage show={!!errMsg} ref={errRef} aria-live='assertive'>
-              {errMsg}
-            </ErrorMessage>
+        <FormSection>
+          <ErrorMessage show={!!errMsg} ref={errRef} aria-live='assertive'>
+            {errMsg}
+          </ErrorMessage>
 
-            <h1>Login</h1>
-            <Form onSubmit={handleSubmit}>
-              <Label htmlFor='username'>Username:</Label>
-              <Input
-                type='text'
-                id='username'
-                ref={userRef}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                onFocus={() => setUserFocus(true)}
-                onBlur={() => setUserFocus(false)}
-              />
+          <h1>Login</h1>
+          <Form onSubmit={handleSubmit}>
+            <Label htmlFor='username'>Username:</Label>
+            <Input
+              type='text'
+              id='username'
+              ref={userRef}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              onFocus={() => setUserFocus(true)}
+              onBlur={() => setUserFocus(false)}
+            />
 
-              <Label htmlFor='password'>Password:</Label>
-              <Input
-                type='password'
-                id='password'
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                onFocus={() => setPwdFocus(true)}
-                onBlur={() => setPwdFocus(false)}
-              />
+            <Label htmlFor='password'>Password:</Label>
+            <Input
+              type='password'
+              id='password'
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              onFocus={() => setPwdFocus(true)}
+              onBlur={() => setPwdFocus(false)}
+            />
 
-              <Button disabled={!username || !password}>Sign In</Button>
-            </Form>
+            <Button disabled={!username || !password}>Sign In</Button>
+          </Form>
 
-            <p>
-              Create an account:
-              <br />
-              <StyledLink to='/register'>Register</StyledLink>
-            </p>
-          </FormSection>
-        )}
+          <p>
+            Create an account:
+            <br />
+            <StyledLink to='/register'>Register</StyledLink>
+          </p>
+        </FormSection>
       </FormContainer>
     </ErrorBoundary>
   );

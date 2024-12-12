@@ -1,109 +1,259 @@
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { User } from '../types/types';
-import { setUser } from '../app/userSlice';
-import { fetchTasks } from '../app/tasksThunks';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import LoginForm from '../components/LoginForm';
-import { auth } from '../auth/auth';
-import { LOGIN_URL } from '../api/api_urls';
+import userReducer, { login, UserState } from '../app/userSlice';
 
-// Mock the auth function to return a mock user and user_id
-jest.mock('../auth/auth', () => ({
-  auth: jest
-    .fn()
-    .mockResolvedValue({ user: { user_id: '1' } as User, user_id: '1' })
+jest.mock('../app/userSlice');
+
+// Mock the Loading component
+jest.mock('../components/Loading', () => () => (
+  <div data-testid='loading'>Loading...</div>
+));
+
+// Mock navigation
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate
 }));
 
-// Mock the Redux store
-const mockStore = configureStore({
-  reducer: {
-    user: (state = {}, action) => {
-      switch (action.type) {
-        case setUser.type:
-          return action.payload;
-        default:
-          return state;
-      }
+const makeStore = (
+  initialState: { user: UserState } = {
+    user: userReducer(undefined, { type: 'INIT' })
+  }
+) => {
+  return configureStore({
+    reducer: {
+      user: userReducer
     },
-    tasks: (state = {}, action) => {
-      switch (action.type) {
-        case fetchTasks.fulfilled.type:
-          return action.payload;
-        default:
-          return state;
+    preloadedState: initialState ?? {
+      user: {
+        userId: null,
+        user: false,
+        status: 'idle',
+        error: null
       }
     }
-  }
-});
+  });
+};
 
 describe('LoginForm', () => {
-  let store: any;
+  let store: ReturnType<typeof makeStore>;
 
   beforeEach(() => {
-    store = mockStore({ user: {}, tasks: {} }); // Initial state of the store
+    store = makeStore({
+      user: { userId: '123', user: null, status: 'idle', error: null }
+    });
+    mockNavigate.mockClear();
+    jest.clearAllMocks();
   });
 
-  it('renders login form', () => {
+  const renderLoginForm = () => {
     render(
       <Provider store={store}>
-        <LoginForm />
+        <BrowserRouter>
+          <LoginForm />
+        </BrowserRouter>
       </Provider>
     );
-    const usernameInput = screen.getByRole('textbox', { name: /username/i });
-    const passwordInput = screen.getByRole('textbox', { name: /password/i });
+  };
+
+  it('renders login form with initial empty state', async () => {
+    renderLoginForm();
+
+    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeDisabled();
+  });
+
+  it('enables submit button when both fields are filled', async () => {
+    renderLoginForm();
+
     const submitButton = screen.getByRole('button', { name: /sign in/i });
-    expect(usernameInput).toBeInTheDocument();
-    expect(passwordInput).toBeInTheDocument();
-    expect(submitButton).toBeInTheDocument();
-  });
+    const usernameInput = screen.getByLabelText(/username/i);
+    const passwordInput = screen.getByLabelText(/password/i);
 
-  it('handles username and password input', () => {
-    render(
-      <Provider store={store}>
-        <LoginForm />
-      </Provider>
-    );
-    const usernameInput = screen.getByRole('textbox', { name: /username/i });
-    const passwordInput = screen.getByRole('textbox', { name: /password/i });
-
-    fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-    fireEvent.change(passwordInput, { target: { value: 'testpassword' } });
+    await userEvent.type(usernameInput, 'testuser');
     expect(usernameInput).toHaveValue('testuser');
+    expect(submitButton).toBeDisabled();
+
+    await userEvent.type(passwordInput, 'testpassword');
     expect(passwordInput).toHaveValue('testpassword');
+    expect(submitButton).toBeEnabled();
   });
 
-  it('submits the form and dispatches actions', async () => {
-    const mockedFetchTasks = jest.fn();
-    // Mock the fetchTasks action creator to return a mocked array of tasks
-    jest.mock('../app/tasksSlice', () => ({
-      ...jest.requireActual('../app/tasksSlice'),
-      fetchTasks: jest.fn().mockReturnValue(mockedFetchTasks)
-    }));
+  it('shows loading state while submitting', async () => {
+    renderLoginForm();
 
-    render(
-      <Provider store={store}>
-        <LoginForm />
-      </Provider>
+    // Fill in the form
+    await userEvent.type(screen.getByLabelText(/username/i), 'testuser');
+    await userEvent.type(screen.getByLabelText(/password/i), 'testpass');
+
+    // Mock the login thunk with proper pending action
+    // const mockLoginThunk = createAsyncThunk('user/login', async () => {
+    //   await new Promise((resolve) => setTimeout(resolve, 100));
+    //   return { id: '1', username: 'testuser' };
+    // });
+
+    // jest
+    //   .spyOn(store, 'dispatch')
+    //   .mockImplementation(() =>
+    //     mockLoginThunk()(store.dispatch, store.getState, undefined)
+    //   );
+
+    const mockLoginThunk = jest.fn(
+      () => () => new Promise((resolve) => setTimeout(resolve, 100))
     );
+    (login as unknown as jest.Mock).mockImplementation(mockLoginThunk);
 
-    const usernameInput = screen.getByRole('textbox', { name: /username/i });
-    const passwordInput = screen.getByRole('textbox', { name: /password/i });
+    // Submit the form
+    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    // Check loading state
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
+    expect(
+      screen.getByRole('textbox', { name: /loading/i })
+    ).toBeInTheDocument();
+  });
+
+  it('handles successful login', async () => {
+    renderLoginForm();
+
+    // Mock successful login
+    // const mockLoginThunk = createAsyncThunk('user/login', async () => {
+    //   return { id: '1', username: 'testuser' };
+    // });
+
+    // jest
+    //   .spyOn(store, 'dispatch')
+    //   .mockImplementation(() =>
+    //     mockLoginThunk()(store.dispatch, store.getState, undefined)
+    //   );
+
+    const mockLoginThunk = jest.fn(
+      () => () =>
+        Promise.resolve({ payload: { id: '1', username: 'testuser' } })
+    );
+    (login as unknown as jest.Mock).mockImplementation(mockLoginThunk);
+
+    await userEvent.type(screen.getByLabelText(/username/i), 'testuser');
+    await userEvent.type(screen.getByLabelText(/password/i), 'testpass');
+    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+    });
+  });
+
+  it('handles server error responses', async () => {
+    renderLoginForm();
+
+    const testCases = [
+      {
+        error: new Error('Network Error'),
+        expectedError: 'No Server Response'
+      },
+      {
+        error: { response: { status: 400 } },
+        expectedError: 'Missing Username or Password'
+      },
+      {
+        error: { response: { status: 401 } },
+        expectedError: 'Unauthorized'
+      },
+      {
+        error: { response: { status: 500 } },
+        expectedError: 'Login Failed'
+      }
+    ];
+
+    for (const testCase of testCases) {
+      // Reset form
+      store = makeStore();
+      renderLoginForm();
+
+      // Mock error response with proper rejected action
+      // const mockLoginThunk = createAsyncThunk('user/login', async () => {
+      //   throw testCase.error;
+      // });
+
+      // jest
+      //   .spyOn(store, 'dispatch')
+      //   .mockImplementation(() =>
+      //     mockLoginThunk()(store.dispatch, store.getState, undefined)
+      //   );
+
+      const mockLoginThunk = jest.fn(
+        () => () => Promise.reject(testCase.error)
+      );
+      (login as unknown as jest.Mock).mockImplementation(mockLoginThunk);
+
+      // Fill and submit form
+      await userEvent.type(screen.getByLabelText(/username/i), 'testuser');
+      await userEvent.type(screen.getByLabelText(/password/i), 'testpass');
+      await userEvent.click(
+        screen.getAllByRole('button', { name: /sign in/i })[0]
+      );
+
+      // Verify error message
+      await waitFor(() => {
+        expect(screen.getByText(testCase.expectedError)).toBeInTheDocument();
+      });
+    }
+  });
+
+  it('clears error message when user types', async () => {
+    renderLoginForm();
+
+    // Trigger an error first
+    const mockLoginThunk = jest.fn(
+      () => () => Promise.reject({ response: { status: 401 } })
+    );
+    (login as unknown as jest.Mock).mockImplementation(mockLoginThunk);
+
+    await userEvent.type(screen.getByLabelText(/username/i), 'testuser');
+    await userEvent.type(screen.getByLabelText(/password/i), 'testpass');
+    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Unauthorized')).toBeInTheDocument();
+    });
+
+    // Type in either field should clear the error
+    await userEvent.type(screen.getByLabelText(/username/i), 'a');
+    expect(screen.queryByText('Unauthorized')).not.toBeInTheDocument();
+  });
+
+  it('sets focus to username input on load', async () => {
+    renderLoginForm();
+    await waitFor(() => {
+      expect(screen.getByLabelText(/username/i)).toHaveFocus();
+    });
+  });
+
+  it('sets focus to error message when error occurs', async () => {
+    renderLoginForm();
+
+    // Trigger an error
+    const mockLoginThunk = jest.fn(
+      () => () => Promise.reject({ response: { status: 401 } })
+    );
+    (login as unknown as jest.Mock).mockImplementation(mockLoginThunk);
+
+    const usernameInput = screen.getByLabelText(/username/i);
+    const passwordInput = screen.getByLabelText(/password/i);
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
-    fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-    fireEvent.change(passwordInput, { target: { value: 'testpassword' } });
-    fireEvent.click(submitButton);
+    await userEvent.type(usernameInput, 'testuser');
+    await userEvent.type(passwordInput, 'testpass');
+    await userEvent.click(submitButton);
 
-    // Wait for any asynchronous dispatches to complete
     await waitFor(() => {
-      expect(auth).toHaveBeenCalledWith(LOGIN_URL, {
-        username: 'testuser',
-        password: 'testpassword'
-      });
-      expect(setUser).toHaveBeenCalledWith({ id: '1' }); // Mocked user data
-      expect(setUserId).toHaveBeenCalledWith('1'); // Mocked user_id
-      expect(mockedFetchTasks).toHaveBeenCalledWith('1'); // Mocked user_id for fetchTasks
+      const errorMessage = screen.getByText('Unauthorized');
+      expect(errorMessage).toHaveFocus();
     });
   });
 });

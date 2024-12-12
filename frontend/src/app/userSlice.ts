@@ -4,7 +4,7 @@ import { RootState } from './store';
 import { login, logout, register } from './userThunks';
 export { login, logout, register };
 
-interface UserState {
+export interface UserState {
   userId: string | null;
   user: User | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
