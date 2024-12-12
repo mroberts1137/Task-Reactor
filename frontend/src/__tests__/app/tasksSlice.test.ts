@@ -3,7 +3,8 @@ import tasksReducer, {
   TasksState,
   initialState,
   setTasks,
-  reset
+  reset,
+  tasksAdapter
 } from '../../app/tasksSlice';
 import {
   fetchTasks,
@@ -13,17 +14,6 @@ import {
   removeTaskById
 } from '../../app/tasksThunks';
 import { Task } from '../../types/types';
-
-jest.mock('../api/axios', () => ({
-  get: jest.fn(),
-  post: jest.fn(),
-  put: jest.fn(),
-  delete: jest.fn()
-}));
-
-/**
- * tasksSlice
- */
 
 describe('tasksSlice', () => {
   it('should handle initial state', () => {
@@ -35,17 +25,16 @@ describe('tasksSlice', () => {
     const action = setTasks(tasks);
     const state = tasksReducer(initialState, action);
 
-    expect(state.taskArray).toEqual(tasks);
+    expect(tasksAdapter.getSelectors().selectAll(state)).toEqual(tasks);
     expect(state.status).toBe('idle');
     expect(state.error).toBeNull();
   });
 
   it('should handle reset', () => {
-    const stateWithTasks: TasksState = {
-      taskArray: [{ id: '1', task: 'Task 1' }],
-      status: 'succeeded',
-      error: 'Error'
-    };
+    const stateWithTasks: TasksState = tasksAdapter.setAll(
+      { ...initialState, status: 'succeeded', error: 'Error' },
+      [{ id: '1', title: 'Task 1' }]
+    );
     const action = reset();
     const state = tasksReducer(stateWithTasks, action);
 
@@ -53,9 +42,6 @@ describe('tasksSlice', () => {
   });
 });
 
-/**
- * fetchTasks
- */
 describe('tasksSlice fetchTasks', () => {
   it('should handle fetchTasks.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
@@ -79,7 +65,7 @@ describe('tasksSlice fetchTasks', () => {
     const newState = tasksReducer(state, action);
 
     expect(newState.status).toBe('succeeded');
-    expect(newState.taskArray).toEqual(mockTasks);
+    expect(tasksAdapter.getSelectors().selectAll(newState)).toEqual(mockTasks);
   });
 
   it('should handle fetchTasks.rejected', () => {
@@ -99,9 +85,6 @@ describe('tasksSlice fetchTasks', () => {
   });
 });
 
-/**
- * addTask
- */
 describe('taskSlice addTask', () => {
   it('should handle addTask.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
@@ -122,7 +105,7 @@ describe('taskSlice addTask', () => {
     const newState = tasksReducer(state, action);
 
     expect(newState.status).toBe('succeeded');
-    expect(newState.taskArray).toEqual([mockTask]);
+    expect(tasksAdapter.getSelectors().selectAll(newState)).toEqual([mockTask]);
   });
 
   it('should handle addTask.rejected', () => {
@@ -139,9 +122,6 @@ describe('taskSlice addTask', () => {
   });
 });
 
-/**
- * updateTaskById
- */
 describe('taskSlice updateTaskById', () => {
   it('should handle updateTaskById.pending', () => {
     const state: TasksState = {
@@ -158,12 +138,10 @@ describe('taskSlice updateTaskById', () => {
 
   it('should handle updateTaskById.fulfilled', () => {
     const task: Task = { id: '1', title: 'Task 1' };
-    const state: TasksState = {
-      ...initialState,
-      taskArray: [task],
-      status: 'loading',
-      error: null
-    };
+    const state: TasksState = tasksAdapter.setAll(
+      { ...initialState, status: 'loading', error: null },
+      [task]
+    );
     const updatedTask: Task = { ...task, title: 'Updated Task' };
     const action = {
       type: updateTaskById.fulfilled.type,
@@ -172,7 +150,9 @@ describe('taskSlice updateTaskById', () => {
     const newState = tasksReducer(state, action);
 
     expect(newState.status).toBe('succeeded');
-    expect(newState.taskArray).toContainEqual(updatedTask);
+    expect(tasksAdapter.getSelectors().selectById(newState, '1')).toEqual(
+      updatedTask
+    );
     expect(newState.error).toBeNull();
   });
 
@@ -188,9 +168,6 @@ describe('taskSlice updateTaskById', () => {
   });
 });
 
-/**
- * getTaskById
- */
 describe('taskSlice getTaskById', () => {
   it('should handle getTaskById.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
@@ -211,7 +188,9 @@ describe('taskSlice getTaskById', () => {
     const newState = tasksReducer(state, action);
 
     expect(newState.status).toBe('succeeded');
-    expect(newState.taskArray).toEqual([mockTask]);
+    expect(tasksAdapter.getSelectors().selectById(newState, '1')).toEqual(
+      mockTask
+    );
   });
 
   it('should handle getTaskById.rejected', () => {
@@ -231,9 +210,6 @@ describe('taskSlice getTaskById', () => {
   });
 });
 
-/**
- * removeTaskById
- */
 describe('taskSlice removeTaskById', () => {
   it('should handle removeTaskById.pending', () => {
     const state: TasksState = { ...initialState, status: 'idle', error: null };
@@ -246,17 +222,15 @@ describe('taskSlice removeTaskById', () => {
   it('should handle removeTaskById.fulfilled', () => {
     const task1: Task = { id: '1', title: 'Task 1' };
     const task2: Task = { id: '2', title: 'Task 2' };
-    const state: TasksState = {
-      ...initialState,
-      taskArray: [task1, task2],
-      status: 'loading',
-      error: null
-    };
+    const state: TasksState = tasksAdapter.setAll(
+      { ...initialState, status: 'loading', error: null },
+      [task1, task2]
+    );
     const action = { type: removeTaskById.fulfilled.type, payload: task1 };
     const newState = tasksReducer(state, action);
 
     expect(newState.status).toBe('succeeded');
-    expect(newState.taskArray).toEqual([task2]);
+    expect(tasksAdapter.getSelectors().selectAll(newState)).toEqual([task2]);
   });
 
   it('should handle removeTaskById.rejected', () => {

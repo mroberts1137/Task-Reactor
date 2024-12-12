@@ -1,10 +1,18 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+import { configureStore } from '@reduxjs/toolkit';
+import savedTasksReducer from '../../../app/savedTasksSlice';
 import SavedTasks from '../../../components/timerbox/SavedTasks';
-import { deleteTask } from '../../../app/savedTasksSlice';
+import { RootState } from '../../../app/store';
 
-const mockStore = configureStore([]);
+const makeStore = (initialState = {}) => {
+  return configureStore({
+    reducer: {
+      savedTasks: savedTasksReducer
+    },
+    preloadedState: initialState
+  });
+};
 
 describe('SavedTasks', () => {
   const mockTasks = [
@@ -14,14 +22,12 @@ describe('SavedTasks', () => {
 
   const mockOnTaskSelect = jest.fn();
   const mockOnEditTask = jest.fn();
-
-  let store;
+  let store: ReturnType<typeof makeStore>;
 
   beforeEach(() => {
-    store = mockStore({
+    store = makeStore({
       savedTasks: mockTasks
     });
-    store.dispatch = jest.fn();
   });
 
   it('toggles dropdown visibility when button is clicked', () => {
@@ -36,14 +42,15 @@ describe('SavedTasks', () => {
     );
 
     const dropdownButton = screen.getByText('Show Tasks');
-    expect(screen.queryByText('Task 1')).not.toBeVisible();
+    expect(screen.queryByText('Task 1')).not.toBeInTheDocument();
 
     fireEvent.click(dropdownButton);
-    expect(screen.getByText('Task 1')).toBeVisible();
+    expect(screen.getByText('Task 1')).toBeInTheDocument();
     expect(dropdownButton).toHaveTextContent('Hide Tasks');
 
     fireEvent.click(dropdownButton);
-    expect(screen.queryByText('Task 1')).not.toBeVisible();
+    expect(screen.queryByText('Task 1')).not.toBeInTheDocument();
+    expect(dropdownButton).toHaveTextContent('Show Tasks');
   });
 
   it('allows editing task without closing menu', () => {
@@ -96,7 +103,7 @@ describe('SavedTasks', () => {
     });
   });
 
-  it('deletes task when delete button is clicked', () => {
+  it('deletes task when delete button is clicked', async () => {
     render(
       <Provider store={store}>
         <SavedTasks
@@ -107,10 +114,25 @@ describe('SavedTasks', () => {
       </Provider>
     );
 
+    // Get the initial state
+    const initialState = store.getState() as RootState;
+    expect(initialState.savedTasks).toHaveLength(2);
+    expect(initialState.savedTasks[0].id).toBe('1');
+
     fireEvent.click(screen.getByText('Show Tasks'));
     const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
+
+    // Click the delete button
     fireEvent.click(deleteButtons[0]);
 
-    expect(store.dispatch).toHaveBeenCalledWith(deleteTask('1'));
+    // Wait for state to update
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Get the updated state
+    const updatedState = store.getState() as RootState;
+
+    // Check if the task has been removed
+    expect(updatedState.savedTasks).toHaveLength(1);
+    expect(updatedState.savedTasks[0].id).not.toBe('1');
   });
 });

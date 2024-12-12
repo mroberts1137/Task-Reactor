@@ -23,7 +23,7 @@ export const tasksAdapter = createEntityAdapter<Task>({
 });
 
 export interface TasksState extends EntityState<Task, string> {
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: string | 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
