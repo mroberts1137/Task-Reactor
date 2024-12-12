@@ -11,7 +11,8 @@
     "build": "npm run build -w frontend",
     "frontend:lint": "npm run lint -w frontend",
     "frontend:test": "npm run test -w frontend",
-    "test": "npm run test -w frontend"
+    "test": "npm run test -w frontend",
+    "serve": "node backend/serve-react-app.js"
   },
   "workspaces": [
     "frontend",
