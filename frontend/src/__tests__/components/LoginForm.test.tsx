@@ -8,21 +8,6 @@ import LoginForm from '../../components/LoginForm';
 import userReducer from '../../app/userSlice';
 import { login } from '../../app/userThunks';
 
-// Mock the userSlice
-// jest.mock('../../app/userSlice', () => ({
-//   ...jest.requireActual('../../app/userSlice'),
-//   default: jest.fn(
-//     (
-//       state = { userId: null, user: false, status: 'idle', error: null },
-//       action
-//     ) => state
-//   ),
-//   login: jest.fn(() => async () => ({
-//     type: 'user/login/fulfilled',
-//     payload: { userId: '1', user: { user_id: '1', name: 'testuser' } }
-//   }))
-// }));
-
 // Mock the Loading component
 jest.mock('../../components/Loading', () => () => (
   <div data-testid='loading'>Loading...</div>
@@ -34,26 +19,6 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate
 }));
-
-// const makeStore = (
-//   initialState = {
-//     user: { userId: null, user: false, status: 'idle', error: null }
-//   }
-// ) => {
-//   return configureStore({
-//     reducer: {
-//       user: userReducer || ((state = initialState.user, action) => state)
-//     },
-//     preloadedState: initialState ?? {
-//       user: {
-//         userId: null,
-//         user: false,
-//         status: 'idle',
-//         error: null
-//       }
-//     }
-//   });
-// };
 
 const makeStore = () => {
   return configureStore({
