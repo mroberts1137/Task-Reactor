@@ -38,9 +38,6 @@ router.post(
       // jwt payload. Used to identify user by routes requiring auth
       const payload = { id: user._id };
 
-      // This is currently using HttpOnly Cookies:
-      // remove res.cookie and add token to res.json to switch to only use local session storage
-
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
@@ -48,10 +45,7 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.cookie('token', token, jwt_options);
-
-          // console.log('Set-Cookie header:', res.getHeaders()['set-cookie']);
-
-          res.json({ user });
+          res.json({ user, token }); // Include token in response for mobile
         }
       );
     } catch (err) {
