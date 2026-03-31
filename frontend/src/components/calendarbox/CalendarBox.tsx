@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import TaskCalendar from './TaskCalendar';
+import TaskCalendar from './CustomCalendar';
 import DateDisplay from '../DateDisplay';
 import { DateContext } from '../../contexts/context';
 

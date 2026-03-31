@@ -19,6 +19,7 @@
     "tests/**/*.ts",
     "src/api/axios.ts",
     "src/components/**/*.tsx",
-    "src/styles/themes/**/*.ts"
+    "src/styles/themes/**/*.ts",
+    "src/components/calendarbox/CustomCalendar.js"
   ]
 }
