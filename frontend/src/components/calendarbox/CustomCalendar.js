@@ -15,19 +15,8 @@ const lightTheme = {
     surface: '#FAFAFA',
     border: '#e0e0e0',
     header: '#f8f9fa',
-    text: {
-      primary: '#212121',
-      secondary: '#757575',
-      success: '#ffffff',
-      warning: '#ffffff'
-    },
-    table: {
-      headerBackground: '#f5f5f5',
-      oddRow: '#ffffff',
-      evenRow: '#f9f9f9',
-      hover: '#f5f5f5'
-    },
-    card: { background: '#f8f9fa' }
+    text: { primary: '#212121', secondary: '#757575' },
+    table: { headerBackground: '#f5f5f5', oddRow: '#ffffff', hover: '#f5f5f5' }
   },
   shadows: { card: '0 2px 10px rgba(0,0,0,0.1)' },
   borderRadius: '8px',
@@ -45,46 +34,13 @@ const darkTheme = {
     surface: '#1e1e1e',
     border: '#333333',
     header: '#1a1a1a',
-    text: {
-      primary: '#ffffff',
-      secondary: '#b0bec5',
-      success: '#ffffff',
-      warning: '#ffffff'
-    },
-    table: {
-      headerBackground: '#2c2c2c',
-      oddRow: '#1e1e1e',
-      evenRow: '#252525',
-      hover: '#2c2c2c'
-    },
-    card: { background: '#f8f9fa' }
+    text: { primary: '#ffffff', secondary: '#b0bec5' },
+    table: { headerBackground: '#2c2c2c', oddRow: '#1e1e1e', hover: '#2c2c2c' }
   },
   shadows: { card: '0 2px 10px rgba(255,255,255,0.1)' }
 };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
-const sameDay = (a, b) =>
-  a.getFullYear() === b.getFullYear() &&
-  a.getMonth() === b.getMonth() &&
-  a.getDate() === b.getDate();
-
-// ─── Styled components ────────────────────────────────────────────────────────
-
+// ─── Styled Components ────────────────────────────────────────────────────────
 const CalendarWrap = styled.div`
   font-family: courier, sans-serif;
   width: 100%;
@@ -92,7 +48,6 @@ const CalendarWrap = styled.div`
   margin: 0 auto;
   user-select: none;
 `;
-
 const CalendarCard = styled.div`
   background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -100,7 +55,6 @@ const CalendarCard = styled.div`
   overflow: hidden;
   box-shadow: ${({ theme }) => theme.shadows.card};
 `;
-
 const CalendarHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -108,15 +62,12 @@ const CalendarHeader = styled.div`
   padding: 0.75rem 1rem;
   background: ${({ theme }) => theme.colors.header};
   box-shadow: 0 1px 3px -2px black;
-  color: ${({ theme }) => theme.colors.text.primary};
 `;
-
 const NavGroup = styled.div`
   display: flex;
   align-items: center;
   gap: 2px;
 `;
-
 const NavBtn = styled.button`
   background: none;
   border: none;
@@ -132,24 +83,15 @@ const NavBtn = styled.button`
     background: ${({ theme }) => theme.colors.table.hover};
   }
 `;
-
 const NavBtnSmall = styled(NavBtn)`
   font-size: 1rem;
   padding: 0.25rem 0.4rem;
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
-
-const HeaderCenter = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-`;
 const HeaderTitle = styled(NavBtn)`
   font-size: 1.1rem;
   font-weight: 600;
 `;
-
 const TodayBtn = styled.button`
   background: ${({ theme }) => theme.colors.primary};
   border: none;
@@ -157,32 +99,14 @@ const TodayBtn = styled.button`
   font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
-  padding: 0.2rem 0.6rem;
+  padding: 0.3rem 0.6rem;
   border-radius: ${({ theme }) => theme.borderRadius};
-  line-height: 1;
-  font-family: courier, sans-serif;
   transition: ${({ theme }) => theme.transitions.default};
+  margin-left: 0.5rem;
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
+    filter: brightness(1.1);
   }
 `;
-
-const TodayButton = styled.button`
-  background: none;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: 0.62rem;
-  font-family: courier, sans-serif;
-  cursor: pointer;
-  padding: 0.1rem 0.55rem;
-  transition: ${({ theme }) => theme.transitions.default};
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
 const DayHeaderRow = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -190,7 +114,6 @@ const DayHeaderRow = styled.div`
   padding: 8px 8px 0;
   background: ${({ theme }) => theme.colors.surface};
 `;
-
 const DayLabel = styled.div`
   text-align: center;
   font-size: 0.7rem;
@@ -198,7 +121,6 @@ const DayLabel = styled.div`
   color: ${({ theme }) => theme.colors.text.secondary};
   padding: 4px 0;
 `;
-
 const DayGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -206,7 +128,6 @@ const DayGrid = styled.div`
   padding: 4px 8px 8px;
   background: ${({ theme }) => theme.colors.surface};
 `;
-
 const DayCell = styled.div`
   min-height: 80px;
   border-radius: ${({ theme }) => theme.borderRadius};
@@ -232,27 +153,20 @@ const DayCell = styled.div`
     filter: brightness(0.92);
   }
 `;
-
 const DateNumber = styled.span`
   font-size: 0.8rem;
   font-weight: bold;
   color: ${({ $isSelected, theme }) =>
     $isSelected ? theme.colors.white : theme.colors.text.primary};
 `;
-
-const CellContent = styled.span`
+const CellContent = styled.div`
   font-size: 1rem;
   font-weight: 600;
   align-self: center;
   text-align: center;
   width: 100%;
-  color: ${({ $isSelected, $contentColor, theme }) =>
-    $isSelected
-      ? theme.colors.white
-      : $contentColor || theme.colors.text.primary};
 `;
-
-const CalendarFooter = styled.div`
+const Footer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -265,30 +179,6 @@ const CalendarFooter = styled.div`
     color: ${({ theme }) => theme.colors.text.primary};
   }
 `;
-
-const CalendarLegend = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  padding: 6px 12px;
-  font-size: 0.65rem;
-  background: ${({ theme }) => theme.colors.table.headerBackground};
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  color: ${({ theme }) => theme.colors.text.secondary};
-`;
-
-const LegendDot = styled.span`
-  width: 13px;
-  height: 13px;
-  border-radius: 3px;
-  background: ${({ $bg }) => $bg};
-  display: inline-block;
-  margin-right: 3px;
-  vertical-align: middle;
-  border: ${({ $border }) => $border || 'none'};
-`;
-
 const PickerGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -296,7 +186,6 @@ const PickerGrid = styled.div`
   padding: 14px;
   background: ${({ theme }) => theme.colors.surface};
 `;
-
 const PickerCell = styled.div`
   padding: 14px 0;
   text-align: center;
@@ -316,24 +205,41 @@ const PickerCell = styled.div`
   }
 `;
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// GENERIC CALENDAR COMPONENT
-//
-// Props:
-//   selectedDate   : Date                             – controlled selected date
-//   onDateSelect   : (date: Date) => void             – called on day click
-//   getDayProps    : (date: Date) => {                – optional: per-day customisation
-//                      cellBg?     : string           –   full-cell background color
-//                      content?    : React.ReactNode  –   rendered inside the cell
-//                      contentColor?: string          –   text/icon color for content
-//                    }
-//   legend         : { bg: string, border?: string,   – optional: legend items
-//                      label: string }[]
-// ═══════════════════════════════════════════════════════════════════════════════
-function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
+// ─── Generic Calendar Component ───────────────────────────────────────────────
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
+const sameDay = (a, b) =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+function Calendar({
+  selectedDate,
+  onSelectDate,
+  renderCellContent,
+  getCellBackground,
+  legendComponent
+}) {
   const today = useMemo(() => new Date(), []);
   const [viewDate, setViewDate] = useState(
-    new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
+    new Date(
+      (selectedDate || today).getFullYear(),
+      (selectedDate || today).getMonth(),
+      1
+    )
   );
   const [view, setView] = useState('month');
 
@@ -352,7 +258,7 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
 
   const goToToday = () => {
     const now = new Date();
-    onDateSelect(now);
+    onSelectDate?.(now);
     setViewDate(new Date(now.getFullYear(), now.getMonth(), 1));
     setView('month');
   };
@@ -417,18 +323,14 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
         ? `${viewDate.getFullYear()}`
         : `${decadeStart} – ${decadeStart + 9}`;
 
-  const fmtDate = (d) =>
-    d.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+  const handleDayClick = (date, neighbor) => {
+    onSelectDate?.(date);
+    if (neighbor) setViewDate(new Date(date.getFullYear(), date.getMonth(), 1));
+  };
 
   return (
     <CalendarWrap>
       <CalendarCard>
-        {/* Header */}
         <CalendarHeader>
           <NavGroup>
             {view === 'month' && (
@@ -436,26 +338,14 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
                 «
               </NavBtnSmall>
             )}
-            <NavBtn
-              onClick={prevAction}
-              title={view === 'month' ? 'Previous month' : 'Previous'}
-            >
-              ‹
-            </NavBtn>
+            <NavBtn onClick={prevAction}>‹</NavBtn>
           </NavGroup>
           <NavGroup>
-            <HeaderTitle onClick={drillUp} title='Click to zoom out'>
-              {titleLabel}
-            </HeaderTitle>
-            <TodayButton onClick={goToToday}>Today</TodayButton>
+            <HeaderTitle onClick={drillUp}>{titleLabel}</HeaderTitle>
+            <TodayBtn onClick={goToToday}>Today</TodayBtn>
           </NavGroup>
           <NavGroup>
-            <NavBtn
-              onClick={nextAction}
-              title={view === 'month' ? 'Next month' : 'Next'}
-            >
-              ›
-            </NavBtn>
+            <NavBtn onClick={nextAction}>›</NavBtn>
             {view === 'month' && (
               <NavBtnSmall onClick={nextYear} title='Next year'>
                 »
@@ -464,7 +354,6 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
           </NavGroup>
         </CalendarHeader>
 
-        {/* Month view */}
         {view === 'month' && (
           <>
             <DayHeaderRow>
@@ -475,33 +364,26 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
             <DayGrid>
               {calDays.map(({ date, neighbor }, i) => {
                 const isTdy = sameDay(date, today);
-                const isSel = sameDay(date, selectedDate);
-                const { cellBg, content, contentColor } =
-                  (!neighbor && getDayProps?.(date)) || {};
+                const isSel = selectedDate && sameDay(date, selectedDate);
+                const bg =
+                  !neighbor && getCellBackground
+                    ? getCellBackground(date)
+                    : undefined;
                 return (
                   <DayCell
                     key={i}
                     $isNeighbor={neighbor}
                     $isToday={isTdy}
                     $isSelected={isSel}
-                    $bg={cellBg}
-                    onClick={() => {
-                      onDateSelect(date);
-                      if (neighbor)
-                        setViewDate(
-                          new Date(date.getFullYear(), date.getMonth(), 1)
-                        );
-                    }}
+                    $bg={bg}
+                    onClick={() => handleDayClick(date, neighbor)}
                   >
                     <DateNumber $isSelected={isSel}>
                       {date.getDate()}
                     </DateNumber>
-                    {content && !neighbor && (
-                      <CellContent
-                        $isSelected={isSel}
-                        $contentColor={contentColor}
-                      >
-                        {content}
+                    {!neighbor && renderCellContent && (
+                      <CellContent>
+                        {renderCellContent(date, isSel)}
                       </CellContent>
                     )}
                   </DayCell>
@@ -511,11 +393,11 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
           </>
         )}
 
-        {/* Year picker */}
         {view === 'year' && (
           <PickerGrid>
             {MONTHS.map((m, i) => {
               const isActive =
+                selectedDate &&
                 i === selectedDate.getMonth() &&
                 viewDate.getFullYear() === selectedDate.getFullYear();
               return (
@@ -534,13 +416,12 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
           </PickerGrid>
         )}
 
-        {/* Decade picker */}
         {view === 'decade' && (
           <PickerGrid>
             {Array.from({ length: 10 }, (_, i) => decadeStart + i).map((yr) => (
               <PickerCell
                 key={yr}
-                $isActive={yr === selectedDate.getFullYear()}
+                $isActive={selectedDate && yr === selectedDate.getFullYear()}
                 onClick={() => {
                   setViewDate(new Date(yr, viewDate.getMonth(), 1));
                   setView('year');
@@ -552,49 +433,70 @@ function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
           </PickerGrid>
         )}
 
-        {/* Legend – only rendered if items are provided */}
-        {legend?.length > 0 && (
-          <CalendarLegend>
-            {legend.map((item, i) => (
-              <span key={i}>
-                <LegendDot $bg={item.bg} $border={item.border} />
-                {item.label}
-              </span>
-            ))}
-          </CalendarLegend>
-        )}
+        {legendComponent}
 
-        {/* Footer */}
-        <CalendarFooter>
+        <Footer>
           <span>
-            Selected: <strong>{fmtDate(selectedDate)}</strong>
+            📅 Selected:{' '}
+            <strong>
+              {selectedDate
+                ? selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })
+                : 'None'}
+            </strong>
           </span>
           <span>
-            Today: <strong>{fmtDate(today)}</strong>
+            📆 Today:{' '}
+            <strong>
+              {today.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </strong>
           </span>
-        </CalendarFooter>
+        </Footer>
       </CalendarCard>
     </CalendarWrap>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// TASK APP – demo consumer of <Calendar />
-// ═══════════════════════════════════════════════════════════════════════════════
-
-const formatCurrency = (v) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0
-  }).format(v);
+// ─── Earnings Tracker Implementation ──────────────────────────────────────────
+const Legend = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 0.65rem;
+  background: ${({ theme }) => theme.colors.table.headerBackground};
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+const LegendDot = styled.span`
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  background: ${({ $bg }) => $bg};
+  display: inline-block;
+  margin-right: 3px;
+  vertical-align: middle;
+  border: ${({ $outlined }) => ($outlined ? '1px solid #22dd55' : 'none')};
+`;
 
 const TODAY = new Date();
+const y = TODAY.getFullYear(),
+  mo = TODAY.getMonth();
 const makeTask = (day, rate, hours, tax = 20) => {
-  const gross = rate * hours,
-    net = gross * (1 - tax / 100);
+  const net = rate * hours * (1 - tax / 100);
   return {
-    startTime: new Date(TODAY.getFullYear(), TODAY.getMonth(), day, 9),
+    id: `task-${day}`,
+    startTime: new Date(y, mo, day, 9),
     netIncome: net
   };
 };
@@ -619,14 +521,69 @@ const SAMPLE_TASKS = [
   makeTask(TODAY.getDate(), 80, 5)
 ];
 const DAILY_GOAL = 400;
+const formatCurrency = (v) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(v);
 
-const TASK_LEGEND = [
-  { bg: '#22dd55', label: `Goal met (≥ ${formatCurrency(DAILY_GOAL)})` },
-  { bg: '#22dd5528', border: '1px solid #22dd55', label: 'Earnings logged' },
-  { bg: 'rgba(25,118,210,0.2)', label: 'Today' },
-  { bg: '#1976d2', label: 'Selected' }
-];
+function EarningsCalendar() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const taskMap = useMemo(() => {
+    const map = new Map();
+    SAMPLE_TASKS.forEach((t) => {
+      const d = new Date(t.startTime);
+      const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      map.set(k, (map.get(k) || 0) + t.netIncome);
+    });
+    return map;
+  }, []);
+
+  const getNet = (d) =>
+    taskMap.get(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`) || 0;
+
+  const renderCellContent = (date, isSelected) => {
+    const net = getNet(date);
+    if (net <= 0) return null;
+    const goalMet = net >= DAILY_GOAL;
+    const color = isSelected ? '#fff' : goalMet ? '#155724' : '#28a745';
+    return <span style={{ color }}>{formatCurrency(net)}</span>;
+  };
+
+  const getCellBackground = (date) => {
+    const net = getNet(date);
+    if (net >= DAILY_GOAL) return '#22dd55';
+    if (net > 0) return '#22dd5528';
+    return undefined;
+  };
+
+  const legend = (
+    <Legend>
+      <LegendDot $bg='#22dd55' />
+      Goal met (≥ {formatCurrency(DAILY_GOAL)})
+      <LegendDot $bg='#22dd5528' $outlined />
+      Earnings logged
+      <LegendDot $bg='rgba(25,118,210,0.2)' />
+      Today
+      <LegendDot $bg='#1976d2' />
+      Selected
+    </Legend>
+  );
+
+  return (
+    <Calendar
+      selectedDate={selectedDate}
+      onSelectDate={setSelectedDate}
+      renderCellContent={renderCellContent}
+      getCellBackground={getCellBackground}
+      legendComponent={legend}
+    />
+  );
+}
+
+// ─── Demo App ─────────────────────────────────────────────────────────────────
 const ToggleButton = styled.button`
   background: none;
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -646,35 +603,7 @@ const ToggleButton = styled.button`
 
 export default function App() {
   const [dark, setDark] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const theme = dark ? darkTheme : lightTheme;
-
-  // Build task map: "YYYY-M-D" -> net income
-  const taskMap = useMemo(() => {
-    const map = new Map();
-    SAMPLE_TASKS.forEach((t) => {
-      const d = new Date(t.startTime);
-      const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-      map.set(k, (map.get(k) || 0) + t.netIncome);
-    });
-    return map;
-  }, []);
-
-  // getDayProps: maps each date to cell bg, text content and content color
-  const getDayProps = (date) => {
-    const net =
-      taskMap.get(
-        `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-      ) || 0;
-    if (net <= 0) return {};
-    const goalMet = net >= DAILY_GOAL;
-    return {
-      cellBg: goalMet ? '#22dd55' : '#22dd5528',
-      content: formatCurrency(net),
-      contentColor: goalMet ? '#155724' : '#28a745'
-    };
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -682,7 +611,7 @@ export default function App() {
           minHeight: '100vh',
           background: theme.colors.background,
           padding: '2rem',
-          transition: 'background 0.3s, color 0.3s'
+          transition: 'background 0.3s'
         }}
       >
         <div
@@ -694,14 +623,9 @@ export default function App() {
           }}
         >
           <ToggleButton onClick={() => setDark((d) => !d)}>
-            {dark ? '☀ Light mode' : '🌙 Dark mode'}
+            {dark ? '☀ Light' : '🌙 Dark'}
           </ToggleButton>
-          <Calendar
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-            getDayProps={getDayProps}
-            legend={TASK_LEGEND}
-          />
+          <EarningsCalendar />
         </div>
       </div>
     </ThemeProvider>
