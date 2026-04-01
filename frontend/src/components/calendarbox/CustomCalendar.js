@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
-// ─── Theme (mirrored from app) ────────────────────────────────────────────────
+// ─── Theme ────────────────────────────────────────────────────────────────────
 const lightTheme = {
   colors: {
     primary: '#1976d2',
@@ -127,7 +127,6 @@ const sameDay = (a, b) =>
   a.getDate() === b.getDate();
 
 // ─── Styled components ────────────────────────────────────────────────────────
-
 const CalendarWrap = styled.div`
   font-family: courier, sans-serif;
   width: 100%;
@@ -154,6 +153,13 @@ const CalendarHeader = styled.div`
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
+// Left/right nav group – year arrows flank the month arrow
+const NavGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+`;
+
 const NavBtn = styled.button`
   background: none;
   border: none;
@@ -164,15 +170,60 @@ const NavBtn = styled.button`
   border-radius: ${({ theme }) => theme.borderRadius};
   line-height: 1;
   transition: ${({ theme }) => theme.transitions.default};
-
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
-const HeaderTitle = styled(NavBtn)`
+// Smaller, slightly muted year-jump arrows
+const YearNavBtn = styled(NavBtn)`
+  font-size: 0.95rem;
+  padding: 0.25rem 0.35rem;
+  opacity: 0.65;
+  &:hover {
+    opacity: 1;
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const HeaderCenter = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+`;
+
+const HeaderTitle = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.text.primary};
   font-size: 1.1rem;
   font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  line-height: 1;
+  font-family: courier, sans-serif;
+  transition: ${({ theme }) => theme.transitions.default};
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const TodayButton = styled.button`
+  background: none;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 0.62rem;
+  font-family: courier, sans-serif;
+  cursor: pointer;
+  padding: 0.1rem 0.55rem;
+  transition: ${({ theme }) => theme.transitions.default};
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const DayHeaderRow = styled.div`
@@ -215,7 +266,6 @@ const DayCell = styled.div`
   box-sizing: border-box;
   transition: ${({ theme }) => theme.transitions.default};
   opacity: ${({ $isNeighbor }) => ($isNeighbor ? 0.4 : 1)};
-
   background: ${({ $isSelected, $isToday, $goalMet, $hasEarnings, theme }) => {
     if ($isSelected) return theme.colors.primary;
     if ($isToday) return theme.colors.primary + '33';
@@ -223,7 +273,6 @@ const DayCell = styled.div`
     if ($hasEarnings) return '#22dd5528';
     return theme.colors.table.oddRow;
   }};
-
   &:hover {
     filter: brightness(0.92);
   }
@@ -282,7 +331,6 @@ const InfoBar = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   font-size: 0.7rem;
   color: ${({ theme }) => theme.colors.text.secondary};
-
   strong {
     color: ${({ theme }) => theme.colors.text.primary};
   }
@@ -309,7 +357,6 @@ const PickerCell = styled.div`
     $isActive ? theme.colors.primary : theme.colors.table.oddRow};
   color: ${({ $isActive, theme }) =>
     $isActive ? theme.colors.white : theme.colors.text.primary};
-
   &:hover {
     background: ${({ $isActive, theme }) =>
       $isActive ? theme.colors.primary : theme.colors.table.hover};
@@ -327,7 +374,6 @@ const ToggleButton = styled.button`
   transition: ${({ theme }) => theme.transitions.default};
   margin-bottom: 8px;
   align-self: flex-end;
-
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
     border-color: ${({ theme }) => theme.colors.primary};
@@ -357,26 +403,42 @@ export default function TaskCalendar() {
   const getNet = (d) =>
     taskMap.get(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`) || 0;
 
-  const prevAction = () => {
-    if (view === 'month')
-      setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
-    if (view === 'year')
-      setViewDate(new Date(viewDate.getFullYear() - 1, viewDate.getMonth(), 1));
-    if (view === 'decade')
-      setViewDate(new Date(viewDate.getFullYear() - 10, 0, 1));
+  // Month nav
+  const prevMonth = () =>
+    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
+  const nextMonth = () =>
+    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
+  // Year nav (used by arrows in month view AND prev/next in year/decade views)
+  const prevYear = () =>
+    setViewDate(new Date(viewDate.getFullYear() - 1, viewDate.getMonth(), 1));
+  const nextYear = () =>
+    setViewDate(new Date(viewDate.getFullYear() + 1, viewDate.getMonth(), 1));
+  const prevDecade = () =>
+    setViewDate(new Date(viewDate.getFullYear() - 10, 0, 1));
+  const nextDecade = () =>
+    setViewDate(new Date(viewDate.getFullYear() + 10, 0, 1));
+
+  const goToToday = () => {
+    setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
+    setSelectedDate(today);
+    setView('month');
   };
-  const nextAction = () => {
-    if (view === 'month')
-      setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
-    if (view === 'year')
-      setViewDate(new Date(viewDate.getFullYear() + 1, viewDate.getMonth(), 1));
-    if (view === 'decade')
-      setViewDate(new Date(viewDate.getFullYear() + 10, 0, 1));
-  };
+
   const drillUp = () => {
     if (view === 'month') setView('year');
     else if (view === 'year') setView('decade');
   };
+
+  // Is the view already on the current month? Used to conditionally render the Today button
+  const isCurrentMonth =
+    viewDate.getFullYear() === today.getFullYear() &&
+    viewDate.getMonth() === today.getMonth() &&
+    view === 'month';
+
+  const prevAction =
+    view === 'year' ? prevYear : view === 'decade' ? prevDecade : prevMonth;
+  const nextAction =
+    view === 'year' ? nextYear : view === 'decade' ? nextDecade : nextMonth;
 
   const calDays = useMemo(() => {
     const firstDay = new Date(
@@ -436,9 +498,52 @@ export default function TaskCalendar() {
     <CalendarWrap>
       <CalendarCard>
         <CalendarHeader>
-          <NavBtn onClick={prevAction}>‹</NavBtn>
-          <HeaderTitle onClick={drillUp}>{titleLabel}</HeaderTitle>
-          <NavBtn onClick={nextAction}>›</NavBtn>
+          {/* ← year  ← month */}
+          <NavGroup>
+            <YearNavBtn onClick={prevYear} title='Previous year'>
+              «
+            </YearNavBtn>
+            <NavBtn
+              onClick={prevAction}
+              title={
+                view === 'month'
+                  ? 'Previous month'
+                  : view === 'year'
+                    ? 'Previous year'
+                    : 'Previous decade'
+              }
+            >
+              ‹
+            </NavBtn>
+          </NavGroup>
+
+          <HeaderCenter>
+            <HeaderTitle onClick={drillUp} title='Click to zoom out'>
+              {titleLabel}
+            </HeaderTitle>
+            {!isCurrentMonth && (
+              <TodayButton onClick={goToToday}>Today</TodayButton>
+            )}
+          </HeaderCenter>
+
+          {/* month → / year → */}
+          <NavGroup>
+            <NavBtn
+              onClick={nextAction}
+              title={
+                view === 'month'
+                  ? 'Next month'
+                  : view === 'year'
+                    ? 'Next year'
+                    : 'Next decade'
+              }
+            >
+              ›
+            </NavBtn>
+            <YearNavBtn onClick={nextYear} title='Next year'>
+              »
+            </YearNavBtn>
+          </NavGroup>
         </CalendarHeader>
 
         {view === 'month' && (
