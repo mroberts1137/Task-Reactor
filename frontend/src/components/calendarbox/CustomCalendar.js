@@ -88,6 +88,12 @@ const NavBtnSmall = styled(NavBtn)`
   padding: 0.25rem 0.4rem;
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
+const HeaderCenter = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+`;
 const HeaderTitle = styled(NavBtn)`
   font-size: 1.1rem;
   font-weight: 600;
@@ -105,6 +111,21 @@ const TodayBtn = styled.button`
   margin-left: 0.5rem;
   &:hover {
     filter: brightness(1.1);
+  }
+`;
+const TodayButton = styled.button`
+  background: none;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 0.62rem;
+  font-family: courier, sans-serif;
+  cursor: pointer;
+  padding: 0.1rem 0.55rem;
+  transition: ${({ theme }) => theme.transitions.default};
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
   }
 `;
 const DayHeaderRow = styled.div`
@@ -263,6 +284,11 @@ function Calendar({
     setView('month');
   };
 
+  const isCurrentMonth =
+    viewDate.getFullYear() === today.getFullYear() &&
+    viewDate.getMonth() === today.getMonth() &&
+    view === 'month';
+
   const drillUp = () => {
     if (view === 'month') setView('year');
     else if (view === 'year') setView('decade');
@@ -340,10 +366,16 @@ function Calendar({
             )}
             <NavBtn onClick={prevAction}>‹</NavBtn>
           </NavGroup>
-          <NavGroup>
-            <HeaderTitle onClick={drillUp}>{titleLabel}</HeaderTitle>
-            <TodayBtn onClick={goToToday}>Today</TodayBtn>
-          </NavGroup>
+          {/* <NavGroup> */}
+          <HeaderCenter>
+            <HeaderTitle onClick={drillUp} title='Click to zoom out'>
+              {titleLabel}
+            </HeaderTitle>
+            {!isCurrentMonth && (
+              <TodayButton onClick={goToToday}>Today</TodayButton>
+            )}
+          </HeaderCenter>
+          {/* </NavGroup> */}
           <NavGroup>
             <NavBtn onClick={nextAction}>›</NavBtn>
             {view === 'month' && (
