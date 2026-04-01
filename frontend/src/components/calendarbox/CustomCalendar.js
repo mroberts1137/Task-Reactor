@@ -62,44 +62,7 @@ const darkTheme = {
   shadows: { card: '0 2px 10px rgba(255,255,255,0.1)' }
 };
 
-// ─── Sample data ──────────────────────────────────────────────────────────────
-const TODAY = new Date();
-const y = TODAY.getFullYear(),
-  mo = TODAY.getMonth();
-const makeTask = (day, rate, hours, tax = 20) => {
-  const gross = rate * hours,
-    net = gross * (1 - tax / 100);
-  return {
-    id: `task-${day}`,
-    title: 'Freelance Work',
-    startTime: new Date(y, mo, day, 9),
-    hourlyRate: rate,
-    taxRate: tax,
-    grossIncome: gross,
-    netIncome: net
-  };
-};
-const SAMPLE_TASKS = [
-  makeTask(1, 80, 5),
-  makeTask(2, 80, 3),
-  makeTask(3, 80, 8),
-  makeTask(5, 80, 6),
-  makeTask(7, 80, 4),
-  makeTask(8, 80, 7),
-  makeTask(9, 80, 2),
-  makeTask(10, 80, 9),
-  makeTask(12, 80, 5),
-  makeTask(14, 80, 6),
-  makeTask(15, 80, 8),
-  makeTask(16, 80, 3),
-  makeTask(18, 80, 7),
-  makeTask(19, 80, 5),
-  makeTask(21, 80, 4),
-  makeTask(22, 80, 6),
-  makeTask(23, 80, 8),
-  makeTask(TODAY.getDate(), 80, 5)
-];
-const DAILY_GOAL = 400;
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = [
   'January',
@@ -115,18 +78,13 @@ const MONTHS = [
   'November',
   'December'
 ];
-const formatCurrency = (v) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0
-  }).format(v);
 const sameDay = (a, b) =>
   a.getFullYear() === b.getFullYear() &&
   a.getMonth() === b.getMonth() &&
   a.getDate() === b.getDate();
 
 // ─── Styled components ────────────────────────────────────────────────────────
+
 const CalendarWrap = styled.div`
   font-family: courier, sans-serif;
   width: 100%;
@@ -153,7 +111,6 @@ const CalendarHeader = styled.div`
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
-// Left/right nav group – year arrows flank the month arrow
 const NavGroup = styled.div`
   display: flex;
   align-items: center;
@@ -166,24 +123,20 @@ const NavBtn = styled.button`
   color: ${({ theme }) => theme.colors.text.primary};
   font-size: 1.4rem;
   cursor: pointer;
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.5rem;
   border-radius: ${({ theme }) => theme.borderRadius};
   line-height: 1;
   transition: ${({ theme }) => theme.transitions.default};
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.table.hover};
   }
 `;
 
-// Smaller, slightly muted year-jump arrows
-const YearNavBtn = styled(NavBtn)`
-  font-size: 0.95rem;
-  padding: 0.25rem 0.35rem;
-  opacity: 0.65;
-  &:hover {
-    opacity: 1;
-    color: ${({ theme }) => theme.colors.primary};
-  }
+const NavBtnSmall = styled(NavBtn)`
+  font-size: 1rem;
+  padding: 0.25rem 0.4rem;
+  color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
 const HeaderCenter = styled.div`
@@ -192,12 +145,16 @@ const HeaderCenter = styled.div`
   align-items: center;
   gap: 4px;
 `;
-
-const HeaderTitle = styled.button`
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.text.primary};
+const HeaderTitle = styled(NavBtn)`
   font-size: 1.1rem;
+  font-weight: 600;
+`;
+
+const TodayBtn = styled.button`
+  background: ${({ theme }) => theme.colors.primary};
+  border: none;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   padding: 0.2rem 0.6rem;
@@ -266,12 +223,10 @@ const DayCell = styled.div`
   box-sizing: border-box;
   transition: ${({ theme }) => theme.transitions.default};
   opacity: ${({ $isNeighbor }) => ($isNeighbor ? 0.4 : 1)};
-  background: ${({ $isSelected, $isToday, $goalMet, $hasEarnings, theme }) => {
+  background: ${({ $bg, $isSelected, $isToday, theme }) => {
     if ($isSelected) return theme.colors.primary;
     if ($isToday) return theme.colors.primary + '33';
-    if ($goalMet) return '#22dd55';
-    if ($hasEarnings) return '#22dd5528';
-    return theme.colors.table.oddRow;
+    return $bg || theme.colors.table.oddRow;
   }};
   &:hover {
     filter: brightness(0.92);
@@ -285,21 +240,33 @@ const DateNumber = styled.span`
     $isSelected ? theme.colors.white : theme.colors.text.primary};
 `;
 
-const EarningsText = styled.span`
+const CellContent = styled.span`
   font-size: 1rem;
   font-weight: 600;
   align-self: center;
   text-align: center;
   width: 100%;
-  color: ${({ $isSelected, $goalMet, theme }) =>
+  color: ${({ $isSelected, $contentColor, theme }) =>
     $isSelected
       ? theme.colors.white
-      : $goalMet
-        ? '#155724'
-        : theme.colors.success};
+      : $contentColor || theme.colors.text.primary};
 `;
 
-const Legend = styled.div`
+const CalendarFooter = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 8px 14px;
+  background: ${({ theme }) => theme.colors.header};
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  font-size: 0.7rem;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  strong {
+    color: ${({ theme }) => theme.colors.text.primary};
+  }
+`;
+
+const CalendarLegend = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -319,21 +286,7 @@ const LegendDot = styled.span`
   display: inline-block;
   margin-right: 3px;
   vertical-align: middle;
-  border: ${({ $outlined }) => ($outlined ? '1px solid #22dd55' : 'none')};
-`;
-
-const InfoBar = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 8px 14px;
-  background: ${({ theme }) => theme.colors.header};
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  font-size: 0.7rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
-  strong {
-    color: ${({ theme }) => theme.colors.text.primary};
-  }
+  border: ${({ $border }) => $border || 'none'};
 `;
 
 const PickerGrid = styled.div`
@@ -363,52 +316,31 @@ const PickerCell = styled.div`
   }
 `;
 
-const ToggleButton = styled.button`
-  background: none;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius};
-  cursor: pointer;
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-size: 0.75rem;
-  padding: 4px 10px;
-  transition: ${({ theme }) => theme.transitions.default};
-  margin-bottom: 8px;
-  align-self: flex-end;
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-// ─── Calendar component ───────────────────────────────────────────────────────
-export default function TaskCalendar() {
+// ═══════════════════════════════════════════════════════════════════════════════
+// GENERIC CALENDAR COMPONENT
+//
+// Props:
+//   selectedDate   : Date                             – controlled selected date
+//   onDateSelect   : (date: Date) => void             – called on day click
+//   getDayProps    : (date: Date) => {                – optional: per-day customisation
+//                      cellBg?     : string           –   full-cell background color
+//                      content?    : React.ReactNode  –   rendered inside the cell
+//                      contentColor?: string          –   text/icon color for content
+//                    }
+//   legend         : { bg: string, border?: string,   – optional: legend items
+//                      label: string }[]
+// ═══════════════════════════════════════════════════════════════════════════════
+function Calendar({ selectedDate, onDateSelect, getDayProps, legend }) {
   const today = useMemo(() => new Date(), []);
   const [viewDate, setViewDate] = useState(
-    new Date(today.getFullYear(), today.getMonth(), 1)
+    new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
   );
-  const [selectedDate, setSelectedDate] = useState(today);
   const [view, setView] = useState('month');
 
-  const taskMap = useMemo(() => {
-    const map = new Map();
-    SAMPLE_TASKS.forEach((t) => {
-      if (!t.startTime) return;
-      const d = new Date(t.startTime);
-      const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-      map.set(k, (map.get(k) || 0) + t.netIncome);
-    });
-    return map;
-  }, []);
-
-  const getNet = (d) =>
-    taskMap.get(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`) || 0;
-
-  // Month nav
   const prevMonth = () =>
     setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
   const nextMonth = () =>
     setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
-  // Year nav (used by arrows in month view AND prev/next in year/decade views)
   const prevYear = () =>
     setViewDate(new Date(viewDate.getFullYear() - 1, viewDate.getMonth(), 1));
   const nextYear = () =>
@@ -419,8 +351,9 @@ export default function TaskCalendar() {
     setViewDate(new Date(viewDate.getFullYear() + 10, 0, 1));
 
   const goToToday = () => {
-    setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
-    setSelectedDate(today);
+    const now = new Date();
+    onDateSelect(now);
+    setViewDate(new Date(now.getFullYear(), now.getMonth(), 1));
     setView('month');
   };
 
@@ -428,17 +361,6 @@ export default function TaskCalendar() {
     if (view === 'month') setView('year');
     else if (view === 'year') setView('decade');
   };
-
-  // Is the view already on the current month? Used to conditionally render the Today button
-  const isCurrentMonth =
-    viewDate.getFullYear() === today.getFullYear() &&
-    viewDate.getMonth() === today.getMonth() &&
-    view === 'month';
-
-  const prevAction =
-    view === 'year' ? prevYear : view === 'decade' ? prevDecade : prevMonth;
-  const nextAction =
-    view === 'year' ? nextYear : view === 'decade' ? nextDecade : nextMonth;
 
   const calDays = useMemo(() => {
     const firstDay = new Date(
@@ -484,9 +406,10 @@ export default function TaskCalendar() {
   }, [viewDate]);
 
   const decadeStart = Math.floor(viewDate.getFullYear() / 10) * 10;
-  const selNet = getNet(selectedDate);
-  const selGoalMet = selNet >= DAILY_GOAL;
-
+  const prevAction =
+    view === 'month' ? prevMonth : view === 'year' ? prevYear : prevDecade;
+  const nextAction =
+    view === 'month' ? nextMonth : view === 'year' ? nextYear : nextDecade;
   const titleLabel =
     view === 'month'
       ? `${MONTHS[viewDate.getMonth()]} ${viewDate.getFullYear()}`
@@ -494,58 +417,54 @@ export default function TaskCalendar() {
         ? `${viewDate.getFullYear()}`
         : `${decadeStart} – ${decadeStart + 9}`;
 
+  const fmtDate = (d) =>
+    d.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+
   return (
     <CalendarWrap>
       <CalendarCard>
+        {/* Header */}
         <CalendarHeader>
-          {/* ← year  ← month */}
           <NavGroup>
-            <YearNavBtn onClick={prevYear} title='Previous year'>
-              «
-            </YearNavBtn>
+            {view === 'month' && (
+              <NavBtnSmall onClick={prevYear} title='Previous year'>
+                «
+              </NavBtnSmall>
+            )}
             <NavBtn
               onClick={prevAction}
-              title={
-                view === 'month'
-                  ? 'Previous month'
-                  : view === 'year'
-                    ? 'Previous year'
-                    : 'Previous decade'
-              }
+              title={view === 'month' ? 'Previous month' : 'Previous'}
             >
               ‹
             </NavBtn>
           </NavGroup>
-
-          <HeaderCenter>
+          <NavGroup>
             <HeaderTitle onClick={drillUp} title='Click to zoom out'>
               {titleLabel}
             </HeaderTitle>
-            {!isCurrentMonth && (
-              <TodayButton onClick={goToToday}>Today</TodayButton>
-            )}
-          </HeaderCenter>
-
-          {/* month → / year → */}
+            <TodayButton onClick={goToToday}>Today</TodayButton>
+          </NavGroup>
           <NavGroup>
             <NavBtn
               onClick={nextAction}
-              title={
-                view === 'month'
-                  ? 'Next month'
-                  : view === 'year'
-                    ? 'Next year'
-                    : 'Next decade'
-              }
+              title={view === 'month' ? 'Next month' : 'Next'}
             >
               ›
             </NavBtn>
-            <YearNavBtn onClick={nextYear} title='Next year'>
-              »
-            </YearNavBtn>
+            {view === 'month' && (
+              <NavBtnSmall onClick={nextYear} title='Next year'>
+                »
+              </NavBtnSmall>
+            )}
           </NavGroup>
         </CalendarHeader>
 
+        {/* Month view */}
         {view === 'month' && (
           <>
             <DayHeaderRow>
@@ -555,20 +474,19 @@ export default function TaskCalendar() {
             </DayHeaderRow>
             <DayGrid>
               {calDays.map(({ date, neighbor }, i) => {
-                const net = getNet(date);
-                const goalMet = !neighbor && net >= DAILY_GOAL;
                 const isTdy = sameDay(date, today);
                 const isSel = sameDay(date, selectedDate);
+                const { cellBg, content, contentColor } =
+                  (!neighbor && getDayProps?.(date)) || {};
                 return (
                   <DayCell
                     key={i}
                     $isNeighbor={neighbor}
                     $isToday={isTdy}
                     $isSelected={isSel}
-                    $goalMet={goalMet}
-                    $hasEarnings={net > 0 && !neighbor}
+                    $bg={cellBg}
                     onClick={() => {
-                      setSelectedDate(date);
+                      onDateSelect(date);
                       if (neighbor)
                         setViewDate(
                           new Date(date.getFullYear(), date.getMonth(), 1)
@@ -578,10 +496,13 @@ export default function TaskCalendar() {
                     <DateNumber $isSelected={isSel}>
                       {date.getDate()}
                     </DateNumber>
-                    {net > 0 && !neighbor && (
-                      <EarningsText $isSelected={isSel} $goalMet={goalMet}>
-                        {formatCurrency(net)}
-                      </EarningsText>
+                    {content && !neighbor && (
+                      <CellContent
+                        $isSelected={isSel}
+                        $contentColor={contentColor}
+                      >
+                        {content}
+                      </CellContent>
                     )}
                   </DayCell>
                 );
@@ -590,6 +511,7 @@ export default function TaskCalendar() {
           </>
         )}
 
+        {/* Year picker */}
         {view === 'year' && (
           <PickerGrid>
             {MONTHS.map((m, i) => {
@@ -612,6 +534,7 @@ export default function TaskCalendar() {
           </PickerGrid>
         )}
 
+        {/* Decade picker */}
         {view === 'decade' && (
           <PickerGrid>
             {Array.from({ length: 10 }, (_, i) => decadeStart + i).map((yr) => (
@@ -629,41 +552,158 @@ export default function TaskCalendar() {
           </PickerGrid>
         )}
 
-        <Legend>
-          <LegendDot $bg='#22dd55' />
-          Goal met (≥ {formatCurrency(DAILY_GOAL)})
-          <LegendDot $bg='#22dd5528' $outlined />
-          Earnings logged
-          <LegendDot $bg='rgba(25,118,210,0.2)' />
-          Today
-          <LegendDot $bg='#1976d2' />
-          Selected
-        </Legend>
+        {/* Legend – only rendered if items are provided */}
+        {legend?.length > 0 && (
+          <CalendarLegend>
+            {legend.map((item, i) => (
+              <span key={i}>
+                <LegendDot $bg={item.bg} $border={item.border} />
+                {item.label}
+              </span>
+            ))}
+          </CalendarLegend>
+        )}
 
-        <InfoBar>
+        {/* Footer */}
+        <CalendarFooter>
           <span>
-            📅 Selected:{' '}
-            <strong>
-              {selectedDate.toLocaleDateString('en-US', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </strong>
+            Selected: <strong>{fmtDate(selectedDate)}</strong>
           </span>
-          {selNet > 0 ? (
-            <span>
-              💰 Earnings: <strong>{formatCurrency(selNet)}</strong>{' '}
-              {selGoalMet
-                ? '✅ Goal met!'
-                : `⚠️ ${formatCurrency(DAILY_GOAL - selNet)} short`}
-            </span>
-          ) : (
-            <span>💰 No earnings recorded</span>
-          )}
-        </InfoBar>
+          <span>
+            Today: <strong>{fmtDate(today)}</strong>
+          </span>
+        </CalendarFooter>
       </CalendarCard>
     </CalendarWrap>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TASK APP – demo consumer of <Calendar />
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const formatCurrency = (v) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(v);
+
+const TODAY = new Date();
+const makeTask = (day, rate, hours, tax = 20) => {
+  const gross = rate * hours,
+    net = gross * (1 - tax / 100);
+  return {
+    startTime: new Date(TODAY.getFullYear(), TODAY.getMonth(), day, 9),
+    netIncome: net
+  };
+};
+const SAMPLE_TASKS = [
+  makeTask(1, 80, 5),
+  makeTask(2, 80, 3),
+  makeTask(3, 80, 8),
+  makeTask(5, 80, 6),
+  makeTask(7, 80, 4),
+  makeTask(8, 80, 7),
+  makeTask(9, 80, 2),
+  makeTask(10, 80, 9),
+  makeTask(12, 80, 5),
+  makeTask(14, 80, 6),
+  makeTask(15, 80, 8),
+  makeTask(16, 80, 3),
+  makeTask(18, 80, 7),
+  makeTask(19, 80, 5),
+  makeTask(21, 80, 4),
+  makeTask(22, 80, 6),
+  makeTask(23, 80, 8),
+  makeTask(TODAY.getDate(), 80, 5)
+];
+const DAILY_GOAL = 400;
+
+const TASK_LEGEND = [
+  { bg: '#22dd55', label: `Goal met (≥ ${formatCurrency(DAILY_GOAL)})` },
+  { bg: '#22dd5528', border: '1px solid #22dd55', label: 'Earnings logged' },
+  { bg: 'rgba(25,118,210,0.2)', label: 'Today' },
+  { bg: '#1976d2', label: 'Selected' }
+];
+
+const ToggleButton = styled.button`
+  background: none;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  transition: ${({ theme }) => theme.transitions.default};
+  margin-bottom: 8px;
+  align-self: flex-end;
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+export default function App() {
+  const [dark, setDark] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const theme = dark ? darkTheme : lightTheme;
+
+  // Build task map: "YYYY-M-D" -> net income
+  const taskMap = useMemo(() => {
+    const map = new Map();
+    SAMPLE_TASKS.forEach((t) => {
+      const d = new Date(t.startTime);
+      const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      map.set(k, (map.get(k) || 0) + t.netIncome);
+    });
+    return map;
+  }, []);
+
+  // getDayProps: maps each date to cell bg, text content and content color
+  const getDayProps = (date) => {
+    const net =
+      taskMap.get(
+        `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+      ) || 0;
+    if (net <= 0) return {};
+    const goalMet = net >= DAILY_GOAL;
+    return {
+      cellBg: goalMet ? '#22dd55' : '#22dd5528',
+      content: formatCurrency(net),
+      contentColor: goalMet ? '#155724' : '#28a745'
+    };
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <div
+        style={{
+          minHeight: '100vh',
+          background: theme.colors.background,
+          padding: '2rem',
+          transition: 'background 0.3s, color 0.3s'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            maxWidth: 700,
+            margin: '0 auto'
+          }}
+        >
+          <ToggleButton onClick={() => setDark((d) => !d)}>
+            {dark ? '☀ Light mode' : '🌙 Dark mode'}
+          </ToggleButton>
+          <Calendar
+            selectedDate={selectedDate}
+            onDateSelect={setSelectedDate}
+            getDayProps={getDayProps}
+            legend={TASK_LEGEND}
+          />
+        </div>
+      </div>
+    </ThemeProvider>
   );
 }
